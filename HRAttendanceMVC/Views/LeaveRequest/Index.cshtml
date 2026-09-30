@@ -1,0 +1,55 @@
+@model IEnumerable<LeaveRequest>
+@{
+    ViewData["Title"] = "Leave Requests";
+    var isHr = User.IsInRole("HR");
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Leave Requests</h2>
+    <div>
+        <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Back</a>
+        <a class="btn btn-primary" asp-action="Create">+ Create Leave</a>
+    </div>
+</div>
+<div class="table-responsive card">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Leave Type</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Days</th>
+                <th>Reason</th>
+                <th>Status</th>
+                @if (isHr)
+                {
+                    <th>Action</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
+                    <td>@x.Employee?.FullName</td>
+                    <td>@x.LeaveType?.Name</td>
+                    <td>@x.FromDate.ToString("dd-MM-yyyy")</td>
+                    <td>@x.ToDate.ToString("dd-MM-yyyy")</td>
+                    <td>@x.TotalDays</td>
+                    <td>@x.Reason</td>
+                    <td><span class="badge bg-secondary">@x.Status</span></td>
+                    @if (isHr)
+                    {
+                        <td>
+                            @if (x.Status == "Pending")
+                            {
+                                <form asp-action="UpdateStatus" method="post" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@x.Id" /><input type="hidden" name="status" value="Approved" /><button class="btn btn-sm btn-success">Approve</button></form>
+                                <form asp-action="UpdateStatus" method="post" class="d-inline">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@x.Id" /><input type="hidden" name="status" value="Rejected" /><button class="btn btn-sm btn-danger">Reject</button></form>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

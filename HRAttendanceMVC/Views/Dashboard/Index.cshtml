@@ -1,0 +1,465 @@
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+<link rel="stylesheet" href="~/css/dashboard.css" />
+
+<div class="dashboard-page">
+
+    <!-- =========================
+    HERO SECTION
+    ========================== -->
+    <section class="hero-section">
+
+        <div class="small-label">
+            HR ATTENDANCE
+        </div>
+
+        <h1>
+            Smart <span>AI</span> for Operations. Real Human Leadership for <span>Growth</span>.
+        </h1>
+
+        <p class="hero-description">
+            Plan, Recruit, Onboard, Pay, Manage, Upskill, Appraise and
+            Empower your people — all in one platform.
+        </p>
+
+
+        <!-- =========================
+        STATISTICS
+        ========================== -->
+        <div class="stats-container">
+
+            <!-- Active Employees -->
+            <div class="stat-box stat-green">
+
+                <div class="stat-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <div>
+                    <h3>@ViewBag.Employees</h3>
+                    <p>Active Employees</p>
+                </div>
+
+            </div>
+
+
+            <!-- Today Present -->
+            <div class="stat-box stat-blue">
+
+                <div class="stat-icon">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+
+                <div>
+                    <h3>@ViewBag.TodayPresent</h3>
+                    <p>Today Present</p>
+                </div>
+
+            </div>
+
+
+            <!-- Pending Leaves -->
+            <div class="stat-box stat-yellow">
+
+                <div class="stat-icon">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+
+                <div>
+                    <h3>@ViewBag.PendingLeaves</h3>
+                    <p>Pending Leaves</p>
+                </div>
+
+            </div>
+
+
+            <!-- Leave Types -->
+            <div class="stat-box stat-purple">
+
+                <div class="stat-icon">
+                    <i class="fa-solid fa-file-lines"></i>
+                </div>
+
+                <div>
+                    <h3>@ViewBag.TotalLeaveTypes</h3>
+                    <p>Leave Types</p>
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+        ACTION BUTTONS
+        ========================== -->
+        @if (User.IsInRole("HR") || User.IsInRole("Employee"))
+        {
+            <div class="action-buttons">
+
+                @if (User.IsInRole("HR"))
+                {
+                    <a asp-controller="Employee"
+                       asp-action="Create"
+                       class="primary-action">
+
+                        <i class="fa-solid fa-user-plus"></i>
+                        Add Employee
+
+                    </a>
+                }
+
+
+                <a asp-controller="Attendance"
+                   asp-action="Create"
+                   class="secondary-action">
+
+                    <i class="fa-solid fa-user-check"></i>
+                    Mark Attendance
+
+                </a>
+
+
+
+
+                <a asp-controller="LeaveRequest"
+                   asp-action="Create"
+                   class="secondary-action">
+
+                    <i class="fa-solid fa-calendar-plus"></i>
+                    Create Leave
+
+                </a>
+
+            </div>
+        }
+        
+
+    </section>
+
+
+    <!-- =========================
+         NAVOS SECTION
+    ========================== -->
+    <section class="navos-card">
+
+        <div class="navos-left">
+
+            <div class="navos-logo">
+                <span>HR</span>
+            </div>
+
+            <h2>
+                NAV<span>igate.</span><br />
+                O<span>perate.</span><br />
+                S<span>upport.</span>
+            </h2>
+
+            <p>
+                Your HR dashboard assistant that helps you perform
+                attendance and payroll tasks with simple commands.
+            </p>
+
+
+            <div class="quick-command">
+                <span>
+                    <i class="fa-solid fa-terminal"></i>
+                </span>
+                <strong>View today's attendance</strong>
+            </div>
+
+
+            <div class="quick-command">
+                <span>
+                    <i class="fa-solid fa-terminal"></i>
+                </span>
+                <strong>Generate attendance report</strong>
+            </div>
+
+
+            <div class="quick-command">
+                <span>
+                    <i class="fa-solid fa-terminal"></i>
+                </span>
+                <strong>Check pending leaves</strong>
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CHAT
+        ========================== -->
+        <div class="navos-right">
+
+            <div class="chat-window">
+
+                <div class="chat-header">
+                    <span>
+                        <i class="fa-solid fa-robot"></i>
+                        HR Assistant
+                    </span>
+
+                    <span>•••</span>
+                </div>
+
+
+                <div class="chat-body">
+
+                    <div class="bot-message">
+                        Hi, how can I help you today?
+                    </div>
+
+
+                    <div class="user-message">
+                        Show today's attendance
+                    </div>
+
+
+                    <div class="bot-message">
+                        Today's attendance report is ready.
+                        You can view it from the Attendance section.
+                    </div>
+
+                </div>
+
+
+                <div class="chat-input">
+
+                    <span>
+                        <i class="fa-solid fa-paperclip"></i>
+                    </span>
+
+                    <span class="placeholder">
+                        Please type your query
+                    </span>
+
+                    <button type="button">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         QUICK ACTIONS
+    ========================== -->
+    @if (User.IsInRole("HR") || User.IsInRole("Employee"))
+    {
+        <section class="quick-section">
+
+            <h2>Quick Actions</h2>
+
+            <div class="quick-grid">
+
+
+                <!-- Add Employee -->
+                @if (User.IsInRole("HR"))
+                {
+                    <a asp-controller="Employee"
+                       asp-action="Create"
+                       class="quick-card">
+
+                        <div class="quick-card-icon">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+
+                        <div>
+                            <h4>Add Employee</h4>
+                            <p>Create a new employee record</p>
+                        </div>
+
+                    </a>
+                }
+
+
+                <!-- Mark Attendance --> 
+                <a asp-controller="Attendance"
+                   asp-action="Create"
+                   class="quick-card">
+
+                    <div class="quick-card-icon">
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </div>
+
+                    <div>
+                        <h4>Mark Attendance</h4>
+                        <p>Record employee attendance</p>
+                    </div>
+
+                </a>
+
+
+                <!-- Create Leave -->
+                <a asp-controller="LeaveRequest"
+                   asp-action="Create"
+                   class="quick-card">
+
+                    <div class="quick-card-icon">
+                        <i class="fa-solid fa-calendar-plus"></i>
+                    </div>
+
+                    <div>
+                        <h4>Create Leave</h4>
+                        <p>Submit a new leave request</p>
+                    </div>
+
+                </a>
+
+            </div>
+
+        </section>
+    }
+
+
+   
+    <section class="image-features-section">
+
+        <div class="image-features-header">
+            <h2>What makes <span>33,000+ companies</span> back HR</h2>
+            <p>Whether you're replacing spreadsheets or outgrowing your current HRMS, here's what changes on day one.</p>
+        </div>
+
+        <div class="image-features-grid">
+
+            <!-- Card 1 (Mint) -->
+            <div class="img-card card-mint">
+                <div class="img-card-icon icon-mint">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <h3>Stop stitching together 5 tools for one employee lifecycle</h3>
+                <p>Recruitment, onboarding, payroll, attendance, PMS, expense claims, exit, alumni — all under a single login. One employee record, zero duplicate data entry.</p>
+            </div>
+
+            <!-- Card 2 (Purple) -->
+            <div class="img-card card-purple">
+                <div class="img-card-icon icon-purple">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                </div>
+                <h3>Close payroll in minutes, not days</h3>
+                <p>Auto-computed PF, ESI, PT, LWF, and TDS across all 28 states. Statutory updates applied before you even notice. One-click payroll close, direct government portal filing.</p>
+            </div>
+
+            <!-- Card 3 (Blue) -->
+            <div class="img-card card-blue">
+                <div class="img-card-icon icon-blue">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <h3>HR NAVOS — the only AI HR assistant you'll ever need</h3>
+                <p>Grant leave, pull reports, update records, approve requisitions — by typing what you need, not clicking through menus. NAVOS is execution-first and respects your roles and permissions. Included on all paid plans.</p>
+            </div>
+
+            <!-- Card 4 (Orange) -->
+            <div class="img-card card-orange">
+                <div class="img-card-icon icon-orange">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <h3>Attendance data that actually flows into payroll</h3>
+                <p>Biometric, GPS, GeoMark+, or VISAGE face recognition — every punch flows into one leave and attendance engine, straight through to payroll. No reconciliation spreadsheets.</p>
+            </div>
+
+            <!-- Card 5 (Full Width Pink) -->
+            <div class="img-card card-pink img-card-full">
+                <div class="img-card-icon icon-purple">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                </div>
+                <h3>Your HR team shouldn't be answering "where's my payslip?" 200 times a month</h3>
+                <p>Payslips, leave balances, claims, Form 16, tax declarations — employees access everything from the HR app. HR gets hours back, every single week.</p>
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="image-features-buttons">
+            <a href="#" class="img-btn-purple">Explore HRMS</a>
+            <a href="#" class="img-btn-purple">Explore Payroll</a>
+        </div>
+
+    </section>
+
+    <section class="ecosystem-section">
+
+        <div class="ecosystem-header">
+            <h2>More than software. An <span>ecosystem</span> that grows with your HR team.</h2>
+            <p>Free courses, a nationwide HR community, compliance wikis, and expert webinars — all included with every plan. No premium tier required.</p>
+        </div>
+
+        <div class="ecosystem-grid">
+
+            <!-- Box 1: HR Academy (Yellow Tint) -->
+            <div class="eco-card eco-yellow">
+                <div class="eco-img-box">
+                    <i class="fa-solid fa-laptop-code eco-icon"></i>
+                </div>
+                <h3>HR Academy</h3>
+                <p>Free certification courses on payroll, compliance, and HR operations</p>
+                <a href="#" class="know-more">Know More</a>
+            </div>
+
+            <!-- Box 2: HR Community (Mint Tint) -->
+            <div class="eco-card eco-mint">
+                <div class="eco-img-box">
+                    <i class="fa-solid fa-people-group eco-icon"></i>
+                </div>
+                <h3>HR Community</h3> 
+                <p>HR professionals across India sharing real solutions — not theory</p>
+                <a href="#" class="know-more">Know More</a>
+            </div>
+
+            <!-- Box 3: HR Resource Library (Cyan Tint) -->
+            <div class="eco-card eco-cyan">
+                <div class="eco-img-box">
+                    <i class="fa-solid fa-folder-open eco-icon"></i>
+                </div>
+                <h3>HR Resource Library</h3>
+                <p>Policy templates, offer letter drafts, and how-to guides you can use tomorrow</p>
+                <a href="#" class="know-more">Know More</a>
+            </div>
+
+            <!-- Box 4: HR Compliances Wiki (Mint Tint) -->
+            <div class="eco-card eco-mint">
+                <div class="eco-img-box">
+                    <i class="fa-solid fa-list-check eco-icon"></i>
+                </div>
+                <h3>HR Compliances Wiki</h3>
+                <p>State-by-state reference for PF, ESI, PT, LWF, minimum wages — updated monthly</p>
+                <a href="#" class="know-more">Know More</a>
+            </div>
+
+            <!-- Box 5: FM Podcasts (Cyan Tint) -->
+            <div class="eco-card eco-cyan">
+                <div class="eco-img-box">
+                    <i class="fa-solid fa-podcast eco-icon"></i>
+                </div>
+                <h3>FM Podcasts</h3>
+                <p>CHROs and practitioners talking real problems — not product pitches</p>
+                <a href="#" class="know-more">Know More</a>
+            </div>
+
+            <!-- Box 6: Parichay Webinars (Yellow Tint) -->
+            <div class="eco-card eco-yellow">
+                <div class="eco-img-box">
+                    <i class="fa-solid fa-display eco-icon"></i>
+                </div>
+                <h3>Parichay Webinars</h3>
+                <p>Live sessions on statutory updates, budget impact, and evolving labour codes — with Q&A</p>
+                <a href="#" class="know-more">Know More</a>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>

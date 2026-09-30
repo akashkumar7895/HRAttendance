@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - HR Attendance</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- External Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/dashboard.css" />
+</head>
+<body>
+    <!-- Main Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light navbar-custom">
+        <div class="container">
+            <a class="navbar-brand fw-bold color_pink" asp-controller="Dashboard" asp-action="Index">HR Attendance</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="nav" class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link color_pink" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                    </li>
+
+                    <!-- Product Dropdown -->
+                    @* <li class="nav-item dropdown"> *@
+                    @*     <a class="nav-link dropdown-toggle color_pink" href="javascript:void(0);" role="button" aria-expanded="false">Product</a> *@
+                    @*     <ul class="dropdown-menu"> *@
+                    @*         <li><a class="dropdown-item" asp-controller="Employee" asp-action="Index">Employees</a></li> *@
+                    @*         <li><a class="dropdown-item" asp-controller="Attendance" asp-action="Index">Attendance</a></li> *@
+                    @*         <li><a class="dropdown-item" asp-controller="LeaveType" asp-action="Index">Leave Types</a></li> *@
+                    @*         <li><a class="dropdown-item" asp-controller="LeaveRequest" asp-action="Index">Leave Requests</a></li> *@
+                    @*     </ul> *@
+                    @* </li> *@
+
+
+                    @if (User.IsInRole("HR") || User.IsInRole("Employee"))
+                    {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle color_pink" href="javascript:void(0);" role="button" aria-expanded="false">Product</a>
+
+                        <ul class="dropdown-menu">
+                            @if (User.IsInRole("HR"))
+                            {
+                                <li><a class="dropdown-item" asp-controller="Employee" asp-action="Index">Employees</a></li>
+                                <li><a class="dropdown-item" asp-controller="Attendance" asp-action="Index">Attendance</a></li>
+                                <li><a class="dropdown-item" asp-controller="LeaveType" asp-action="Index">Leave Types</a></li>
+                                <li><a class="dropdown-item" asp-controller="LeaveRequest" asp-action="Index">Leave Requests</a></li>
+                            }
+                            else if (User.IsInRole("Employee"))
+                            {
+                                <li><a class="dropdown-item" asp-controller="Attendance" asp-action="Index">My Attendance</a></li>
+                                <li><a class="dropdown-item" asp-controller="LeaveRequest" asp-action="Index">Leave Requests</a></li>
+                            }
+                            
+                        </ul>
+                    </li>
+                    }
+
+                    <!-- HR & Payroll Administration Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle color_pink" href="javascript:void(0);" role="button" aria-expanded="false">
+                            <span class="d-none d-xl-inline">Resources</span>
+                            <span class="d-inline d-xl-none">HR & Payroll Administration</span>
+                        </a>  
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="WhatIsHrms">What is HRMS?</a></li>
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="GuideLeaveManagement">Guide to Leave Management</a></li>
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="GuideAttendanceManagement">Guide to Attendance Management</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Resources Dropdown -->
+                    @* <li class="nav-item dropdown"> *@
+                    @*     <a class="nav-link dropdown-toggle color_pink" href="javascript:void(0);" role="button" aria-expanded="false">Resources</a> *@
+                    @*     <ul class="dropdown-menu"> *@
+                    @*         <li><a class="dropdown-item" asp-controller="Footer" asp-action="Guides">Guides</a></li> *@
+                    @*         <li><a class="dropdown-item" asp-controller="Footer" asp-action="Templates">Templates</a></li> *@
+                    @*         <li><a class="dropdown-item" asp-controller="Footer" asp-action="Ebooks">Ebooks</a></li> *@
+                    @*         <li><a class="dropdown-item" asp-controller="Footer" asp-action="Podcasts">Podcasts</a></li> *@
+                    @*         <li><a class="dropdown-item" asp-controller="Footer" asp-action="Academy">Academy</a></li> *@
+                    @*     </ul> *@
+                    @* </li> *@
+
+                    <!-- HR Customers Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle color_pink" href="javascript:void(0);" role="button" aria-expanded="false">
+                            <span class="d-none d-xl-inline">Customers</span>
+                            <span class="d-inline d-xl-none">Customers</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="HrHelp">HR Help</a></li>
+                            <li><a class="dropdown-item" asp-controller="Account" asp-action="Login">Login</a></li>
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="Videos">Videos</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Company Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle color_pink" href="javascript:void(0);" role="button" aria-expanded="false">Company</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="About">About</a></li>
+                            @* <li><a class="dropdown-item" asp-controller="Footer" asp-action="Customers">Customers</a></li> *@
+                            @* <li><a class="dropdown-item" asp-controller="Footer" asp-action="Partners">Partners</a></li> *@
+                            @* <li><a class="dropdown-item" asp-controller="Footer" asp-action="Careers">Careers</a></li> *@
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="ContactUs">Contact us</a></li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <!-- Right-side Auth Buttons (Login / Logout Toggle) -->
+                <ul class="navbar-nav ms-auto">
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item d-flex align-items-center me-2">
+                            <span class="fw-bold color_pink me-2">@User.Identity.Name</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-purple btn-sm px-3" asp-controller="Account" asp-action="Logout">Logout</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="btn btn-purple btn-sm px-3" asp-controller="Account" asp-action="Login">Login</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="container p-4">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show auto-hide-alert"
+                 role="alert"
+                 data-auto-hide="3000">
+
+                @TempData["Success"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show auto-hide-alert"
+                 role="alert"
+                 data-auto-hide="3000">
+
+                @TempData["Error"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close">
+                </button>
+            </div>
+        }
+        @RenderBody()
+
+        <footer class="footer-section">
+
+            <div class="footer-grid">
+
+                <!-- Product -->
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <ul>
+                        <li>
+                            <a asp-controller="Footer" asp-action="HrSoftware">
+                                HR Software
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="LeaveManagement">
+                                Leave Management
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="AttendanceManagement">
+                                Attendance Management
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="EmployeeEngagement">
+                                Employee Engagement
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="HrServiceStatus">
+                                HR Service Status
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <!-- HR & Payroll Administration -->
+                <div class="footer-col">
+                    <h4>HR & Payroll Administration</h4>
+
+                    <ul>
+                        <li>
+                            <a asp-controller="Footer" asp-action="WhatIsHrms">
+                                What is HRMS?
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="GuideLeaveManagement">
+                                Guide to Leave Management
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="GuideAttendanceManagement">
+                                Guide to Attendance Management
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <!-- Resources -->
+                <div class="footer-col">
+                    <h4>Resources</h4>
+
+                    <ul>
+                        <li>
+                            <a asp-controller="Footer" asp-action="Guides">
+                                Guides
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Templates">
+                                Templates
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Ebooks">
+                                Ebooks
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Podcasts">
+                                Podcasts
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Academy">
+                                Academy
+                            </a>
+                        </li>
+
+                       
+                    </ul>
+                </div>
+
+
+                <!-- HR Customers -->
+                <div class="footer-col">
+
+                    <h4>HR Customers</h4>
+
+                    <ul>
+                        <li>
+                            <a asp-controller="Footer" asp-action="HrHelp">
+                                HR Help
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Account" asp-action="Login">
+                                Login
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Videos">
+                                Videos
+                            </a>
+                        </li>
+                    </ul>
+
+
+                    <div class="store-buttons">
+
+                        <a href="#" class="store-badge">
+                            <i class="fa-brands fa-google-play"></i>
+
+                            <div>
+                                <span>GET IT ON</span>
+                                <strong>Google Play</strong>
+                            </div>
+                        </a>
+
+
+                        <a href="#" class="store-badge">
+
+                            <i class="fa-brands fa-apple"></i>
+
+                            <div>
+                                <span>Available on the</span>
+                                <strong>App Store</strong>
+                            </div>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Company -->
+                <div class="footer-col">
+
+                    <h4>Company</h4>
+
+                    <ul>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="About">
+                                About
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Customers">
+                                Customers
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Partners">
+                                Partners
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="Careers">
+                                Careers
+                            </a>
+                        </li>
+
+                        <li>
+                            <a asp-controller="Footer" asp-action="ContactUs">
+                                Contact us
+                            </a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+            </div>
+
+
+            <!-- Footer Bottom -->
+
+            <div class="footer-bottom">
+
+                <div class="footer-brand-container">
+
+                    <div class="footer-logo">
+                        HR<span>Attendance</span>
+                    </div>
+
+                </div>
+
+
+                <div class="footer-contact">
+
+                    <a href="https://wa.me/" class="whatsapp-link">
+
+                        <i class="fa-brands fa-whatsapp"></i>
+
+                        Message us on WhatsApp
+
+                    </a>
+
+
+                    <div class="address-box">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        <span>
+                            B-33, 2nd Floor, Sector-6,
+                            Noida, Uttar Pradesh,
+                            201301, India
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="footer-copyright">
+
+                HR Attendance Management
+                &copy; @DateTime.Now.Year
+
+            </div>
+
+        </footer>
+    </main>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+            // Auto hide Success / Error messages
+             document.querySelectorAll('.auto-hide-alert').forEach(function (alert) {
+
+              const hideTime = parseInt(
+             alert.getAttribute('data-auto-hide')
+             ) || 3000;
+
+             setTimeout(function () {
+
+             // Bootstrap fade effect
+              alert.classList.remove('show');
+
+             // Completely remove after fade
+             setTimeout(function () {
+             alert.remove();
+          }, 3000);
+
+       }, hideTime);
+    });
+        document.addEventListener('DOMContentLoaded', function () {
+            const dropdownToggles = document.querySelectorAll('.navbar-custom .dropdown-toggle');
+
+            dropdownToggles.forEach(function (toggle) {
+                toggle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const parent = toggle.closest('.dropdown');
+                    const menu = parent ? parent.querySelector('.dropdown-menu') : null;
+                    const isOpen = menu && menu.classList.contains('show');
+
+                    // Close all dropdowns
+                    document.querySelectorAll('.navbar-custom .dropdown-menu').forEach(function (m) {
+                        m.classList.remove('show');
+                    });
+                    document.querySelectorAll('.navbar-custom .dropdown-toggle').forEach(function (t) {
+                        t.classList.remove('show');
+                        t.setAttribute('aria-expanded', 'false');
+                    });
+
+                    // Toggle clicked dropdown
+                    if (!isOpen && menu) {
+                        menu.classList.add('show');
+                        toggle.classList.add('show');
+                        toggle.setAttribute('aria-expanded', 'true');
+                    }
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.navbar-custom .dropdown')) {
+                    document.querySelectorAll('.navbar-custom .dropdown-menu').forEach(function (m) {
+                        m.classList.remove('show');
+                    });
+                    document.querySelectorAll('.navbar-custom .dropdown-toggle').forEach(function (t) {
+                        t.classList.remove('show');
+                        t.setAttribute('aria-expanded', 'false');
+                    });
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

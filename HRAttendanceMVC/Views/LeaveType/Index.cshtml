@@ -1,0 +1,29 @@
+@model IEnumerable<LeaveType>
+@{
+    ViewData["Title"] = "Leave Types";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Leave Types</h2>
+    <div>
+        <a class="btn btn-secondary" asp-controller="Dashboard" asp-action="Index">Back</a>
+        <a class="btn btn-primary" asp-action="Create">+ Add Leave Type</a>
+    </div>
+</div>
+<div class="table-responsive card">
+    <table class="table table-hover mb-0">
+        <thead><tr><th>Name</th><th>Total Days</th><th>Action</th></tr></thead>
+        <tbody>
+            @foreach (var x in Model)
+            {
+                <tr>
+                    <td>@x.Name</td>
+                    <td>@x.TotalDays</td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@x.Id">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@x.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this leave type?');">@Html.AntiForgeryToken()<button class="btn btn-sm btn-outline-danger">Delete</button></form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

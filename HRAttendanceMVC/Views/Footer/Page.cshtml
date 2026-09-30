@@ -1,0 +1,1376 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string title = ViewBag.Title ?? "HR Attendance";
+    string subtitle = ViewBag.Subtitle ?? "";
+    string description = ViewBag.Description ?? "";
+
+    string icon = ViewBag.Icon ?? "bi-grid-fill";
+    string theme = ViewBag.Theme ?? "purple";
+    string category = ViewBag.Category ?? "HR ATTENDANCE";
+
+    string pageType = ViewBag.PageType ?? "";
+
+    string stat1 = ViewBag.Stat1 ?? "10+";
+    string stat1Label = ViewBag.Stat1Label ?? "Features";
+
+    string stat2 = ViewBag.Stat2 ?? "500+";
+    string stat2Label = ViewBag.Stat2Label ?? "Employees";
+
+    string stat3 = ViewBag.Stat3 ?? "99%";
+    string stat3Label = ViewBag.Stat3Label ?? "Accuracy";
+
+    string card1Title = ViewBag.Card1Title ?? "Employee Management";
+    string card1Text = ViewBag.Card1Text ?? "Manage your employees easily.";
+
+    string card2Title = ViewBag.Card2Title ?? "Attendance Management";
+    string card2Text = ViewBag.Card2Text ?? "Track employee attendance.";
+
+    string card3Title = ViewBag.Card3Title ?? "HR Reports";
+    string card3Text = ViewBag.Card3Text ?? "Get useful HR insights.";
+}
+
+<link rel="stylesheet"
+      href="~/css/footer-pages.css"
+      asp-append-version="true" />
+
+<link rel="stylesheet"
+      href="~/css/Contact.css"
+      asp-append-version="true" />
+
+<div class="footer-page @theme">
+
+    @* =========================================================
+       CONTACT PAGE
+       ========================================================= *@
+
+    @if (pageType == "contact")
+    {
+        <div class="contact-page">
+
+            <!-- CONTACT HERO -->
+            <section class="contact-hero">
+
+                <div class="contact-container">
+
+                    <div class="contact-breadcrumb">
+
+                        <a asp-controller="Dashboard"
+                           asp-action="Index">
+                            Home
+                        </a>
+
+                        <i class="bi bi-chevron-right"></i>
+
+                        <span>
+                            Contact Us
+                        </span>
+
+                    </div>
+
+
+                    <div class="contact-hero-content">
+
+                        <div class="contact-label">
+
+                            <span></span>
+
+                            HR ATTENDANCE SUPPORT
+
+                        </div>
+
+
+                        <h1>
+
+                            Let's talk about
+
+                            <span>
+                                your HR needs.
+                            </span>
+
+                        </h1>
+
+
+                        <p>
+
+                            Have a question about HR Attendance Management?
+                            Our team is ready to help you with employee
+                            management, attendance, leave and HR operations.
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTACT MAIN -->
+            <section class="contact-main">
+
+                <div class="contact-container">
+
+                    <div class="contact-grid">
+
+
+                        <!-- LEFT INFORMATION -->
+                        <div class="contact-info">
+
+                            <span class="contact-section-label">
+                                GET IN TOUCH
+                            </span>
+
+
+                            <h2>
+
+                                We'd love to
+
+                                <span>
+                                    hear from you.
+                                </span>
+
+                            </h2>
+
+
+                            <p>
+
+                                Whether you need help with your HR platform,
+                                want to learn more about our services, or have
+                                a general question, feel free to contact us.
+
+                            </p>
+
+
+                            <!-- EMAIL -->
+                            <div class="contact-info-card">
+
+                                <div class="contact-info-icon">
+
+                                    <i class="bi bi-envelope-fill"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <small>
+                                        Email Us
+                                    </small>
+
+
+                                    <a href="mailto:support@hrattendance.com">
+
+                                        support@hrattendance.com
+
+                                    </a>
+
+
+                                    <span>
+
+                                        We usually reply within 1 business day.
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PHONE -->
+                            <div class="contact-info-card">
+
+                                <div class="contact-info-icon">
+
+                                    <i class="bi bi-telephone-fill"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <small>
+                                        Call Us
+                                    </small>
+
+
+                                    <a href="tel:+919999999999">
+
+                                        +91 99999 99999
+
+                                    </a>
+
+
+                                    <span>
+
+                                        Monday - Friday, 9:00 AM - 6:00 PM
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- ADDRESS -->
+                            <div class="contact-info-card">
+
+                                <div class="contact-info-icon">
+
+                                    <i class="bi bi-geo-alt-fill"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <small>
+                                        Visit Us
+                                    </small>
+
+
+                                    <strong>
+
+                                        HR Attendance Management
+
+                                    </strong>
+
+
+                                    <span>
+
+                                        B-33, 2nd Floor, Sector-6,
+                                        Noida, Uttar Pradesh,
+                                        201301, India
+
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- WHATSAPP -->
+                            <a href="https://wa.me/919999999999"
+                               target="_blank"
+                               class="contact-whatsapp">
+
+                                <i class="bi bi-whatsapp"></i>
+
+
+                                <div>
+
+                                    <strong>
+                                        Message us on WhatsApp
+                                    </strong>
+
+                                    <span>
+                                        Quick support for your questions
+                                    </span>
+
+                                </div>
+
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- RIGHT FORM -->
+                        <div class="contact-form-card">
+
+
+                            <div class="contact-form-header">
+
+                                <div class="contact-form-icon">
+
+                                    <i class="bi bi-chat-dots-fill"></i>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span>
+                                        CONTACT US
+                                    </span>
+
+                                    <h3>
+                                        Send us a message
+                                    </h3>
+
+                                </div>
+
+                            </div>
+
+
+                            @if (ViewBag.SuccessMessage != null)
+                            {
+                                <div class="contact-success">
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                    @ViewBag.SuccessMessage
+
+                                </div>
+                            }
+
+
+                            @if (ViewBag.ErrorMessage != null)
+                            {
+                                <div class="contact-error">
+
+                                    <i class="bi bi-exclamation-circle-fill"></i>
+
+                                    @ViewBag.ErrorMessage
+
+                                </div>
+                            }
+
+
+                            <form asp-controller="Footer"
+                                  asp-action="SubmitContact"
+                                  method="post"
+                                  class="contact-form">
+
+                                @Html.AntiForgeryToken()
+
+
+                                <div class="contact-form-row">
+
+
+                                    <!-- NAME -->
+                                    <div class="contact-field">
+
+                                        <label>
+                                            Full Name
+                                        </label>
+
+
+                                        <div class="contact-input">
+
+                                            <i class="bi bi-person"></i>
+
+
+                                            <input type="text"
+                                                   name="Name"
+                                                   placeholder="Enter your full name"
+                                                   required />
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- EMAIL -->
+                                    <div class="contact-field">
+
+                                        <label>
+                                            Email Address
+                                        </label>
+
+
+                                        <div class="contact-input">
+
+                                            <i class="bi bi-envelope"></i>
+
+
+                                            <input type="email"
+                                                   name="Email"
+                                                   placeholder="Enter your email"
+                                                   required />
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- PHONE -->
+                                <div class="contact-field">
+
+                                    <label>
+                                        Phone Number
+                                    </label>
+
+
+                                    <div class="contact-input">
+
+                                        <i class="bi bi-telephone"></i>
+
+
+                                        <input type="tel"
+                                               name="Phone"
+                                               placeholder="Enter your phone number" />
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- SUBJECT -->
+                                <div class="contact-field">
+
+                                    <label>
+                                        Subject
+                                    </label>
+
+
+                                    <div class="contact-input">
+
+                                        <i class="bi bi-chat-left-text"></i>
+
+
+                                        <input type="text"
+                                               name="Subject"
+                                               placeholder="How can we help you?"
+                                               required />
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- MESSAGE -->
+                                <div class="contact-field">
+
+                                    <label>
+                                        Message
+                                    </label>
+
+
+                                    <div class="contact-textarea">
+
+                                        <i class="bi bi-pencil"></i>
+
+
+                                        <textarea name="Message"
+                                                  rows="5"
+                                                  placeholder="Write your message here..."
+                                                  required></textarea>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- SUBMIT -->
+                                <button type="submit"
+                                        class="contact-submit">
+
+                                    Send Message
+
+                                    <i class="bi bi-arrow-right"></i>
+
+                                </button>
+
+
+                                <p class="contact-form-note">
+
+                                    <i class="bi bi-shield-check"></i>
+
+                                    Your information is safe and will only
+                                    be used to respond to your request.
+
+                                </p>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- HELP -->
+            <section class="contact-help">
+
+                <div class="contact-container">
+
+                    <div class="contact-help-heading">
+
+                        <span>
+                            NEED MORE HELP?
+                        </span>
+
+
+                        <h2>
+
+                            We're here when
+
+                            <strong>
+                                you need us.
+                            </strong>
+
+                        </h2>
+
+                    </div>
+
+
+                    <div class="contact-help-grid">
+
+
+                        <!-- HR HELP -->
+                        <a asp-controller="Footer"
+                           asp-action="HrHelp"
+                           class="contact-help-card">
+
+                            <div>
+
+                                <i class="bi bi-headset"></i>
+
+                            </div>
+
+
+                            <h3>
+                                HR Help
+                            </h3>
+
+
+                            <p>
+
+                                Find helpful information and support
+                                for your HR operations.
+
+                            </p>
+
+
+                            <span>
+
+                                Get Help
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </span>
+
+                        </a>
+
+
+                        <!-- VIDEOS -->
+                        <a asp-controller="Footer"
+                           asp-action="Videos"
+                           class="contact-help-card">
+
+                            <div>
+
+                                <i class="bi bi-play-circle-fill"></i>
+
+                            </div>
+
+
+                            <h3>
+                                Watch Videos
+                            </h3>
+
+
+                            <p>
+
+                                Learn more about HR Attendance through
+                                useful videos and tutorials.
+
+                            </p>
+
+
+                            <span>
+
+                                Watch Videos
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </span>
+
+                        </a>
+
+
+                        <!-- ABOUT -->
+                        <a asp-controller="Footer"
+                           asp-action="About"
+                           class="contact-help-card">
+
+                            <div>
+
+                                <i class="bi bi-building"></i>
+
+                            </div>
+
+
+                            <h3>
+                                About Us
+                            </h3>
+
+
+                            <p>
+
+                                Learn more about HR Attendance and
+                                our workforce management platform.
+
+                            </p>
+
+
+                            <span>
+
+                                Learn More
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </span>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- FINAL CTA -->
+            <section class="contact-final">
+
+                <div class="contact-container">
+
+                    <div class="contact-final-box">
+
+                        <div>
+
+                            <span>
+                                HR ATTENDANCE MANAGEMENT
+                            </span>
+
+
+                            <h2>
+
+                                Have questions?
+                                Let's start a conversation.
+
+                            </h2>
+
+
+                            <p>
+
+                                Our team is ready to help you
+                                simplify your HR operations.
+
+                            </p>
+
+                        </div>
+
+
+                        <a href="mailto:support@hrattendance.com">
+
+                            Email Us
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+    }
+
+    else
+    {
+
+        <!-- =========================================================
+             YOUR EXISTING CODE - UNCHANGED
+             ========================================================= -->
+        <!-- HERO -->
+        <section class="fp-hero">
+
+            <div class="fp-container">
+
+                <div class="fp-breadcrumb">
+
+                    <a asp-controller="Dashboard"
+                       asp-action="Index">
+                        Home
+                    </a>
+
+                    <i class="bi bi-chevron-right"></i>
+
+                    <span>
+                        @title
+                    </span>
+
+                </div>
+
+
+                <div class="fp-hero-grid">
+
+                    <!-- LEFT -->
+                    <div class="fp-hero-content">
+
+                        <div class="fp-category">
+
+                            <span></span>
+
+                            @category
+
+                        </div>
+
+
+                        <h1>
+                            @title
+                        </h1>
+
+
+                        <h2>
+                            @subtitle
+                        </h2>
+
+
+                        <p>
+                            @description
+                        </p>
+
+
+                        <div class="fp-actions">
+
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="fp-primary">
+
+                                Get Started
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+
+                            <a asp-controller="Dashboard"
+                               asp-action="Index"
+                               class="fp-outline">
+
+                                Explore Platform
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- RIGHT DYNAMIC CARD -->
+                    <div class="fp-dashboard">
+
+                        <div class="fp-dashboard-top">
+
+                            <div class="fp-main-icon">
+
+                                <i class="bi @icon"></i>
+
+                            </div>
+
+
+                            <div>
+
+                                <small>
+                                    @category
+                                </small>
+
+
+                                <h3>
+                                    @title
+                                </h3>
+
+                            </div>
+
+
+                            <i class="bi bi-three-dots"></i>
+
+                        </div>
+
+
+                        <div class="fp-dashboard-description">
+
+                            @description
+
+                        </div>
+
+
+                        <div class="fp-mini-stats">
+
+                            <div>
+
+                                <strong>
+                                    @stat1
+                                </strong>
+
+                                <span>
+                                    @stat1Label
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    @stat2
+                                </strong>
+
+                                <span>
+                                    @stat2Label
+                                </span>
+
+                            </div>
+
+
+                            <div>
+
+                                <strong>
+                                    @stat3
+                                </strong>
+
+                                <span>
+                                    @stat3Label
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="fp-dashboard-progress">
+
+                            <div class="progress-title">
+
+                                <span>
+                                    Platform Activity
+                                </span>
+
+
+                                <strong>
+                                    92%
+                                </strong>
+
+                            </div>
+
+
+                            <div class="progress-track">
+
+                                <span></span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="fp-dashboard-items">
+
+                            <div>
+
+                                <span>
+
+                                    <i class="bi bi-check-circle-fill"></i>
+
+                                    Active
+
+                                </span>
+
+
+                                <b>
+                                    Today
+                                </b>
+
+                            </div>
+
+
+                            <div>
+
+                                <span>
+
+                                    <i class="bi bi-shield-check"></i>
+
+                                    Secure
+
+                                </span>
+
+
+                                <b>
+                                    Protected
+                                </b>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- STATS -->
+        <section class="fp-stats">
+
+            <div class="fp-container">
+
+                <div class="fp-stats-grid">
+
+                    <div>
+
+                        <strong>
+                            @stat1
+                        </strong>
+
+                        <span>
+                            @stat1Label
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            @stat2
+                        </strong>
+
+                        <span>
+                            @stat2Label
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            @stat3
+                        </strong>
+
+                        <span>
+                            @stat3Label
+                        </span>
+
+                    </div>
+
+
+                    <div>
+
+                        <strong>
+                            24/7
+                        </strong>
+
+                        <span>
+                            Accessibility
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INTRO -->
+        <section class="fp-intro">
+
+            <div class="fp-container">
+
+                <div class="fp-section-heading">
+
+                    <span>
+                        @category
+                    </span>
+
+
+                    <h2>
+
+                        Everything you need for
+
+                        <b>
+                            @title
+                        </b>
+
+                    </h2>
+
+
+                    <p>
+                        @description
+                    </p>
+
+                </div>
+
+
+                <!-- DYNAMIC CARDS -->
+                <div class="fp-cards">
+
+
+                    <div class="fp-card">
+
+                        <div class="fp-card-icon">
+
+                            <i class="bi @icon"></i>
+
+                        </div>
+
+
+                        <small>
+                            01
+                        </small>
+
+
+                        <h3>
+                            @card1Title
+                        </h3>
+
+
+                        <p>
+                            @card1Text
+                        </p>
+
+
+                        <a href="#">
+
+                            Learn More
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="fp-card">
+
+                        <div class="fp-card-icon">
+
+                            <i class="bi bi-lightning-charge-fill"></i>
+
+                        </div>
+
+
+                        <small>
+                            02
+                        </small>
+
+
+                        <h3>
+                            @card2Title
+                        </h3>
+
+
+                        <p>
+                            @card2Text
+                        </p>
+
+
+                        <a href="#">
+
+                            Explore
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+
+                    <div class="fp-card">
+
+                        <div class="fp-card-icon">
+
+                            <i class="bi bi-bar-chart-fill"></i>
+
+                        </div>
+
+
+                        <small>
+                            03
+                        </small>
+
+
+                        <h3>
+                            @card3Title
+                        </h3>
+
+
+                        <p>
+                            @card3Text
+                        </p>
+
+
+                        <a href="#">
+
+                            Explore
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- PROCESS -->
+        <section class="fp-process">
+
+            <div class="fp-container">
+
+                <div class="fp-process-grid">
+
+
+                    <div>
+
+                        <span class="fp-section-label">
+                            SIMPLE WORKFLOW
+                        </span>
+
+
+                        <h2>
+
+                            Manage
+
+                            <b>
+                                @title
+                            </b>
+
+                            easily.
+
+                        </h2>
+
+
+                        <p>
+
+                            A simple workflow helps your team
+                            manage daily HR operations faster
+                            and more efficiently.
+
+                        </p>
+
+
+                        <div class="fp-steps">
+
+
+                            <div class="fp-step">
+
+                                <span>
+                                    01
+                                </span>
+
+
+                                <div>
+
+                                    <h4>
+                                        Get Started
+                                    </h4>
+
+
+                                    <p>
+
+                                        Start using the platform
+                                        for your organization.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="fp-step">
+
+                                <span>
+                                    02
+                                </span>
+
+
+                                <div>
+
+                                    <h4>
+                                        Manage Information
+                                    </h4>
+
+
+                                    <p>
+
+                                        Manage your HR information
+                                        from one centralized location.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="fp-step">
+
+                                <span>
+                                    03
+                                </span>
+
+
+                                <div>
+
+                                    <h4>
+                                        Track Results
+                                    </h4>
+
+
+                                    <p>
+
+                                        View useful information
+                                        and workforce insights.
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VISUAL -->
+                    <div class="fp-visual">
+
+                        <div class="fp-orbit">
+
+
+                            <div class="fp-orbit-center">
+
+                                <i class="bi @icon"></i>
+
+
+                                <strong>
+                                    @title
+                                </strong>
+
+                            </div>
+
+
+                            <div class="orbit orbit-1">
+
+                                <i class="bi bi-people-fill"></i>
+
+                                People
+
+                            </div>
+
+
+                            <div class="orbit orbit-2">
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                                Manage
+
+                            </div>
+
+
+                            <div class="orbit orbit-3">
+
+                                <i class="bi bi-graph-up"></i>
+
+                                Reports
+
+                            </div>
+
+
+                            <div class="orbit orbit-4">
+
+                                <i class="bi bi-shield-check"></i>
+
+                                Secure
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CTA -->
+        <section class="fp-cta-section">
+
+            <div class="fp-container">
+
+                <div class="fp-cta">
+
+
+                    <div>
+
+                        <span>
+                            HR ATTENDANCE MANAGEMENT
+                        </span>
+
+
+                        <h2>
+                            Ready to get started?
+                        </h2>
+
+
+                        <p>
+
+                            Simplify your HR operations
+                            with @title.
+
+                        </p>
+
+                    </div>
+
+
+                    <div class="fp-cta-buttons">
+
+
+                        <a asp-controller="Account"
+                           asp-action="Login"
+                           class="fp-cta-primary">
+
+                            Get Started
+
+                            <i class="bi bi-arrow-right"></i>
+
+                        </a>
+
+
+
+                        <a asp-controller="Footer"
+                           asp-action="ContactUs"
+                           class="fp-cta-secondary">
+
+                            Contact Us
+
+                        </a>
+
+                    </div>  
+
+                </div>
+
+            </div>
+
+        </section>
+
+    }
+
+</div>

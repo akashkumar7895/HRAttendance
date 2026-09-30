@@ -1,0 +1,29 @@
+@model Attendance
+@{
+    ViewData["Title"] = "Edit Attendance";
+    var employees = ViewBag.Employees as IEnumerable<Employee> ?? Enumerable.Empty<Employee>();
+}
+<h2>Edit Attendance</h2>
+<form asp-action="Edit" method="post" class="card p-4 mt-3">
+    @Html.AntiForgeryToken()<input type="hidden" asp-for="Id" /><div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="EmployeeId">Employee</label>
+        <select asp-for="EmployeeId" class="form-select">
+            @foreach (var e in employees)
+            {
+                <option value="@e.Id">@e.EmployeeCode - @e.FullName</option>
+            }
+        </select>
+    </div>
+    <div class="row">
+        <div class="col-md-4 mb-3"><label asp-for="AttendanceDate"></label><input asp-for="AttendanceDate" type="date" class="form-control" /></div>
+        <div class="col-md-4 mb-3"><label asp-for="Status"></label><select asp-for="Status" class="form-select"><option>Present</option><option>Absent</option><option>Half Day</option><option>Work From Home</option><option>On Leave</option></select></div>
+        <div class="col-md-2 mb-3"><label asp-for="CheckIn"></label><input asp-for="CheckIn" type="time" class="form-control" /></div>
+        <div class="col-md-2 mb-3"><label asp-for="CheckOut"></label><input asp-for="CheckOut" type="time" class="form-control" /></div>
+    </div>
+    <div class="mb-3"><label asp-for="Remarks"></label><textarea asp-for="Remarks" class="form-control"></textarea></div>
+    <button class="btn btn-primary mb-2">Update</button> <a class="btn btn-secondary" asp-action="Index">Back</a>
+</form>
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+}

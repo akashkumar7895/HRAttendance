@@ -1,0 +1,283 @@
+﻿@model HRAttendanceMVC.Application.DTOs.LoginDto
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - HR Attendance Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        /* LEFT BRAND SECTION */
+        .brand-section {
+            background: linear-gradient(135deg, #7b02a8 0%, #9602cb 50%, #ba2be0 100%);
+            color: #ffffff;
+        }
+
+        .feature-icon {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        /* ================= INPUT BOX ================= */
+
+        .input-group {
+            width: 100%;
+            border: 1px solid #dee2e6;
+            border-radius: 8px !important;
+            overflow: hidden;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+            /* Full purple border on focus */
+            .input-group:focus-within {
+                border-color: #9602cb;
+                box-shadow: 0 0 0 0.25rem rgba(150, 2, 203, 0.15);
+            }
+
+            /* Icon */
+            .input-group .input-group-text {
+                border: 0 !important;
+                border-radius: 0 !important;
+                background-color: #f8f9fa;
+                color: #6c757d;
+            }
+
+            /* Input */
+            .input-group .form-control {
+                border: 0 !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                outline: none;
+            }
+
+                .input-group .form-control:focus {
+                    border: 0 !important;
+                    box-shadow: none !important;
+                    outline: none;
+                }
+
+            /* Password Eye Button */
+            .input-group .btn {
+                border: 0 !important;
+                border-radius: 0 !important;
+                background-color: #f8f9fa;
+                color: #6c757d;
+                box-shadow: none !important;
+            }
+
+                .input-group .btn:hover {
+                    background-color: #e9ecef;
+                    color: #9602cb;
+                }
+
+        /* ================= PURPLE BUTTON ================= */
+
+        .btn-purple {
+            background-color: #9602cb;
+            border: 1px solid #9602cb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-purple:hover {
+                background-color: #7b02a8;
+                border-color: #7b02a8;
+                transform: translateY(-1px);
+            }
+
+        /* ================= LINK ================= */
+
+        .custom-link {
+            color: #9602cb;
+            font-weight: 600;
+        }
+
+            .custom-link:hover {
+                color: #7b02a8;
+                text-decoration: underline !important;
+            }
+
+        /* ================= HR ROLE BOX ================= */
+
+        .hr-role-box {
+            width: 100%;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 12px;
+            box-sizing: border-box;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container-fluid p-0 vh-100 overflow-hidden">
+        <div class="row g-0 h-100">
+
+            <!-- Left Half Page: Branding & Info Section -->
+            <div class="col-lg-6 d-none d-lg-flex brand-section p-5 flex-column justify-content-between">
+                <!-- Top Brand Logo -->
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-people-fill fs-3"></i>
+                    <span class="fs-4 fw-bold">HR Attendance Portal</span>
+                </div>
+
+                <!-- Middle Content Section -->
+                <div class="my-auto pe-lg-5">
+                    <h1 class="display-5 fw-bold mb-3">Manage Your Team Effortlessly.</h1>
+                    <p class="fs-5 opacity-75 mb-4">
+                        A modern solution to track employee attendance, manage leave requests, and streamline your workplace operations all in one place.
+                    </p>
+
+                    <!-- Key Feature Highlights -->
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="feature-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Real-time Attendance Tracking</h6>
+                                <small class="opacity-75">Automate logs and monitor check-ins effortlessly.</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="feature-icon">
+                                <i class="bi bi-calendar2-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Smart Leave Management</h6>
+                                <small class="opacity-75">Quick approvals, balance updates, and transparent workflows.</small>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="feature-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Role-Based Access Control</h6>
+                                <small class="opacity-75">Secure dashboards customized for Admins and HR Managers.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Footer Info -->
+                <div class="small opacity-50">
+                    &copy; @DateTime.Now.Year HR Attendance System. All rights reserved.
+                </div>
+            </div>
+
+            <!-- Right Half Page: Login Form Section -->
+            <div class="col-lg-6 d-flex align-items-center justify-content-center bg-white p-4 p-sm-5">
+                <div class="w-100" style="max-width: 420px;">
+
+                    <div class="text-center text-lg-start mb-4">
+                        <h2 class="fw-bold text-dark mb-1">Welcome Back!</h2>
+                        <p class="text-muted">Enter your credentials to access your portal</p>
+                    </div>
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="Login" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-secondary">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Email" class="form-control border-start-0 ps-0" placeholder="name@company.com" required />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold text-secondary">Password</label>
+
+                            <div class="input-group">
+                                <span class="input-group-text bg-light text-muted border-end-0">
+                                    <i class="bi bi-lock"></i>
+                                </span>
+
+                                <input asp-for="Password"
+                                       type="password"
+                                       id="passwordInput"
+                                       class="form-control border-start-0 border-end-0 ps-0"
+                                       placeholder="••••••••"
+                                       required />
+
+                                <button type="button"
+                                        class="btn btn-light border border-start-0"
+                                        id="togglePassword"
+                                        tabindex="-1">
+                                    <i class="bi bi-eye" id="togglePasswordIcon"></i>
+                                </button>
+                            </div>
+
+                            <span asp-validation-for="Password" class="text-danger small"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-purple text-white w-100 fw-bold py-2 mt-2 shadow-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4 pt-2 border-top">
+                        <span class="text-muted small">Want to create a new account?</span>
+                        <a asp-action="Signup" class="custom-link text-decoration-none ms-1">Signup</a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById("togglePassword").addEventListener("click", function () {
+
+            const passwordInput = document.getElementById("passwordInput");
+            const passwordIcon = document.getElementById("togglePasswordIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                passwordIcon.classList.remove("bi-eye");
+                passwordIcon.classList.add("bi-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                passwordIcon.classList.remove("bi-eye-slash");
+                passwordIcon.classList.add("bi-eye");
+            }
+        });
+    </script>
+</body>
+</html>
