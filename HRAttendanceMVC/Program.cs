@@ -1,4 +1,4 @@
-using HRAttendanceMVC.Infrastructure.Interfaces;
+﻿using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using HRAttendanceMVC.Infrastructure.Data;
@@ -52,6 +52,15 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+
+// Prevent browser caching of sensitive data across logins and back-button navigation
+//app.Use(async (context, next) =>
+//{
+//    context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+//    context.Response.Headers["Pragma"] = "no-cache";
+//    context.Response.Headers["Expires"] = "0";
+//    await next();
+//});
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,4 +1,4 @@
-using HRAttendanceMVC.Domain.Enities;
+﻿using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 
@@ -13,9 +13,9 @@ public class AttendanceService : IAttendanceService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IReadOnlyList<Attendance>> GetAttendancesByDateAsync(DateTime date)
+    public async Task<IReadOnlyList<Attendance>> GetAttendancesByDateAsync(DateTime date, int? hrUserId = null)
     {
-        return await _unitOfWork.Attendances.GetByDateWithEmployeeAsync(date);
+        return await _unitOfWork.Attendances.GetByDateWithEmployeeAsync(date, hrUserId);
     }
 
     public async Task<Attendance?> GetAttendanceByIdAsync(int id)
@@ -87,8 +87,8 @@ public class AttendanceService : IAttendanceService
         return ServiceResult.Ok("Attendance deleted successfully.");
     }
 
-    public async Task<int> GetTodayPresentCountAsync()
+    public async Task<int> GetTodayPresentCountAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.Attendances.GetPresentCountByDateAsync(DateTime.Today);
+        return await _unitOfWork.Attendances.GetPresentCountByDateAsync(DateTime.Today, hrUserId);
     }
 }

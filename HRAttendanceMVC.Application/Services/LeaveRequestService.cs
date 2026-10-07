@@ -1,4 +1,4 @@
-using HRAttendanceMVC.Domain.Enities;
+﻿using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 
@@ -18,9 +18,9 @@ public class LeaveRequestService : ILeaveRequestService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IReadOnlyList<LeaveRequest>> GetAllLeaveRequestsAsync()
+    public async Task<IReadOnlyList<LeaveRequest>> GetAllLeaveRequestsAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.LeaveRequests.GetAllWithDetailsAsync();
+        return await _unitOfWork.LeaveRequests.GetAllWithDetailsAsync(hrUserId);
     }
 
     public async Task<LeaveRequest?> GetLeaveRequestByIdAsync(int id)
@@ -81,8 +81,8 @@ public class LeaveRequestService : ILeaveRequestService
         return ServiceResult.Ok($"Leave request {status.ToLowerInvariant()}.");
     }
 
-    public async Task<int> GetPendingLeaveCountAsync()
+    public async Task<int> GetPendingLeaveCountAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.LeaveRequests.GetPendingCountAsync();
+        return await _unitOfWork.LeaveRequests.GetPendingCountAsync(hrUserId);
     }
 }

@@ -1,4 +1,4 @@
-using HRAttendanceMVC.Domain.Enities;
+﻿using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 
@@ -13,19 +13,24 @@ public class EmployeeService : IEmployeeService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IReadOnlyList<Employee>> GetAllEmployeesAsync()
+    public async Task<IReadOnlyList<Employee>> GetAllEmployeesAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.Employees.GetAllOrderedByNameAsync();
+        return await _unitOfWork.Employees.GetAllOrderedByNameAsync(hrUserId);
     }
 
-    public async Task<IReadOnlyList<Employee>> GetActiveEmployeesAsync()
+    public async Task<IReadOnlyList<Employee>> GetActiveEmployeesAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.Employees.GetActiveEmployeesOrderedByNameAsync();
+        return await _unitOfWork.Employees.GetActiveEmployeesOrderedByNameAsync(hrUserId);
     }
 
     public async Task<Employee?> GetEmployeeByIdAsync(int id)
     {
         return await _unitOfWork.Employees.GetByIdAsync(id);
+    }
+
+    public async Task<Employee?> GetEmployeeByEmailAsync(string email)
+    {
+        return await _unitOfWork.Employees.GetByEmailAsync(email);
     }
 
     public async Task<ServiceResult<Employee>> CreateEmployeeAsync(Employee employee)
@@ -35,7 +40,7 @@ public class EmployeeService : IEmployeeService
             return ServiceResult<Employee>.Failed("Employee Code is required.", nameof(employee.EmployeeCode));
         }
 
-        var isUnique = await _unitOfWork.Employees.IsCodeUniqueAsync(employee.EmployeeCode.Trim());
+        var isUnique = await _unitOfWork.Employees.IsCodeUniqueAsync(employee.EmployeeCode.Trim(), null, employee.HrUserId);
         if (!isUnique)
         {
             return ServiceResult<Employee>.Failed("Employee Code already exists.", nameof(employee.EmployeeCode));
@@ -61,7 +66,7 @@ public class EmployeeService : IEmployeeService
             return ServiceResult<Employee>.Failed("Employee not found.");
         }
 
-        var isUnique = await _unitOfWork.Employees.IsCodeUniqueAsync(employee.EmployeeCode.Trim(), id);
+        var isUnique = await _unitOfWork.Employees.IsCodeUniqueAsync(employee.EmployeeCode.Trim(), id, existing.HrUserId);
         if (!isUnique)
         {
             return ServiceResult<Employee>.Failed("Employee Code already exists.", nameof(employee.EmployeeCode));

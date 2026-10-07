@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HRAttendanceMVC.Domain.Enities;
 
@@ -36,6 +36,8 @@ public class Employee
 
     [Display(Name = "Active")]
     public bool IsActive { get; set; } = true;
+
+    public int HrUserId { get; set; }
 
     public string FullName => $"{FirstName} {LastName}";
 }

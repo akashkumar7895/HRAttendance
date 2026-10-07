@@ -1,204 +1,4 @@
-﻿//using System.Security.Claims;
-//using HRAttendanceMVC.Application.DTOs;
-//using HRAttendanceMVC.Application.Interfaces;
-//using Microsoft.AspNetCore.Authentication;
-//using Microsoft.AspNetCore.Authentication.Cookies;
-//using Microsoft.AspNetCore.Mvc;
-
-//namespace HRAttendanceMVC.Controllers
-//{
-//    public class AccountController : Controller
-//    {
-//        private readonly IAuthService _authService;
-
-//        public AccountController(IAuthService authService)
-//        {
-//            _authService = authService;
-//        }
-
-//        [HttpGet]
-//        public IActionResult Login()
-//        {
-//            if (User.Identity != null &&
-//                User.Identity.IsAuthenticated)
-//            {
-//                return RedirectToAction("Index", "Dashboard");
-//            }
-
-//            return View();
-//        }
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Login(LoginDto loginDto)
-//        {
-//            if (!ModelState.IsValid)
-//            {
-//                return View(loginDto);
-//            }
-
-//            var user = await _authService.LoginAsync(loginDto);
-
-//            if (user == null)
-//            {
-//                ModelState.AddModelError(
-//                    string.Empty,
-//                    "Incorrect email or password!"
-//                );
-
-//                return View(loginDto);
-//            }
-
-//            var claims = new List<Claim>
-//            {
-//                new Claim(
-//                    ClaimTypes.NameIdentifier,
-//                    user.Id.ToString()
-//                ),
-
-//                new Claim(
-//                    ClaimTypes.Name,
-//                    user.Name ?? string.Empty
-//                ),
-
-//                new Claim(
-//                    ClaimTypes.Email,
-//                    user.Email ?? string.Empty
-//                ),
-
-//                new Claim(
-//                    ClaimTypes.Role,
-//                    string.IsNullOrWhiteSpace(user.Role)
-//                        ? "HR"
-//                        : user.Role
-//                )
-//            };
-
-//            var claimsIdentity = new ClaimsIdentity(
-//                claims,
-//                CookieAuthenticationDefaults.AuthenticationScheme
-//            );
-
-//            var principal = new ClaimsPrincipal(claimsIdentity);
-
-//            await HttpContext.SignInAsync(
-//                CookieAuthenticationDefaults.AuthenticationScheme,
-//                principal,
-//                new AuthenticationProperties
-//                {
-//                    IsPersistent = true,
-//                    AllowRefresh = true
-//                }
-//            );
-
-//            TempData["Success"] =
-//                $"Welcome back, {user.Name}";
-
-//            return RedirectToAction(
-//                "Index",
-//                "Dashboard"
-//            );
-//        }
-
-//        [HttpGet]
-//        public IActionResult Signup()
-//        {
-//            if (User.Identity != null &&
-//                User.Identity.IsAuthenticated)
-//            {
-//                return RedirectToAction("Index", "Dashboard");
-//            }
-
-//            return View();
-//        }
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Signup(SignupDto signupDto)
-//        {
-//            if (!ModelState.IsValid)
-//            {
-//                return View(signupDto);
-//            }
-
-//            // Public signup se sirf HR create hoga
-//            signupDto.Role = "HR";
-
-//            var result = await _authService.SignupAsync(signupDto);
-
-//            if (!result.IsSuccess)
-//            {
-//                ModelState.AddModelError(
-//                    string.Empty,
-//                    result.Message
-//                );
-
-//                return View(signupDto);
-//            }
-
-//            TempData["Success"] =
-//                "HR account has been created successfully. Please login.";
-
-//            return RedirectToAction(
-//                "Login",
-//                "Account"
-//            );
-//        }
-
-//        [HttpGet]
-//        public async Task<IActionResult> Logout()
-//        {
-//            await HttpContext.SignOutAsync(
-//                CookieAuthenticationDefaults.AuthenticationScheme
-//            );
-
-//            Response.Cookies.Delete(
-//                CookieAuthenticationDefaults.AuthenticationScheme
-//            );
-
-//            TempData["Success"] =
-//                "You have been successfully logged out.";
-
-//            return RedirectToAction(
-//                "Index",
-//                "Dashboard"
-//            );
-//        }
-
-//        [HttpPost]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> LogoutPost()
-//        {
-//            await HttpContext.SignOutAsync(
-//                CookieAuthenticationDefaults.AuthenticationScheme
-//            );
-
-//            Response.Cookies.Delete(
-//                CookieAuthenticationDefaults.AuthenticationScheme
-//            );
-
-//            TempData["Success"] =
-//                "You have been successfully logged out.";
-
-//            return RedirectToAction(
-//                "Login",
-//                "Account"
-//            );
-//        }
-
-//        [HttpGet]
-//        public IActionResult AccessDenied()
-//        {
-//            return View();
-//        }
-//    }
-//}
-
-
-
-
-
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using HRAttendanceMVC.Application.DTOs;
 using HRAttendanceMVC.Application.Interfaces;
 using Microsoft.AspNetCore.Authentication;
@@ -277,8 +77,7 @@ namespace HRAttendanceMVC.Controllers
                     user.Email ?? string.Empty
                 ),
 
-                // IMPORTANT:
-                // Database me jo actual role hai wahi claim hoga.
+                
                 new Claim(
                     ClaimTypes.Role,
                     string.IsNullOrWhiteSpace(user.Role)
@@ -393,10 +192,12 @@ namespace HRAttendanceMVC.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme
             );
 
-            Response.Cookies.Delete(
-                CookieAuthenticationDefaults.AuthenticationScheme
-            );
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
 
+            TempData.Clear();
             TempData["Success"] =
                 "You have been successfully logged out.";
 
@@ -418,16 +219,18 @@ namespace HRAttendanceMVC.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme
             );
 
-            Response.Cookies.Delete(
-                CookieAuthenticationDefaults.AuthenticationScheme
-            );
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
 
+            TempData.Clear();
             TempData["Success"] =
                 "You have been successfully logged out.";
 
             return RedirectToAction(
-                "Login",
-                "Account"
+                "Index",
+                "Dashboard"
             );
         }
 

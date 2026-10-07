@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HRAttendanceMVC.Domain.Enities;
 
@@ -12,4 +12,6 @@ public class LeaveType
     [Range(0, 365)]
     [Display(Name = "Total Days")]
     public int TotalDays { get; set; }
+
+    public int HrUserId { get; set; }
 }

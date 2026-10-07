@@ -1,4 +1,4 @@
-using HRAttendanceMVC.Domain.Enities;
+﻿using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 
@@ -13,9 +13,9 @@ public class LeaveTypeService : ILeaveTypeService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IReadOnlyList<LeaveType>> GetAllLeaveTypesAsync()
+    public async Task<IReadOnlyList<LeaveType>> GetAllLeaveTypesAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.LeaveTypes.GetAllOrderedByNameAsync();
+        return await _unitOfWork.LeaveTypes.GetAllOrderedByNameAsync(hrUserId);
     }
 
     public async Task<LeaveType?> GetLeaveTypeByIdAsync(int id)
@@ -30,7 +30,7 @@ public class LeaveTypeService : ILeaveTypeService
             return ServiceResult<LeaveType>.Failed("Leave type name is required.", nameof(leaveType.Name));
         }
 
-        var isUnique = await _unitOfWork.LeaveTypes.IsNameUniqueAsync(leaveType.Name.Trim());
+        var isUnique = await _unitOfWork.LeaveTypes.IsNameUniqueAsync(leaveType.Name.Trim(), null, leaveType.HrUserId);
         if (!isUnique)
         {
             return ServiceResult<LeaveType>.Failed("Leave type already exists.", nameof(leaveType.Name));
@@ -56,7 +56,7 @@ public class LeaveTypeService : ILeaveTypeService
             return ServiceResult<LeaveType>.Failed("Leave type not found.");
         }
 
-        var isUnique = await _unitOfWork.LeaveTypes.IsNameUniqueAsync(leaveType.Name.Trim(), id);
+        var isUnique = await _unitOfWork.LeaveTypes.IsNameUniqueAsync(leaveType.Name.Trim(), id, existing.HrUserId);
         if (!isUnique)
         {
             return ServiceResult<LeaveType>.Failed("Leave type already exists.", nameof(leaveType.Name));
@@ -91,8 +91,8 @@ public class LeaveTypeService : ILeaveTypeService
         return ServiceResult.Ok("Leave type deleted successfully.");
     }
 
-    public async Task<int> GetTotalLeaveTypesCountAsync()
+    public async Task<int> GetTotalLeaveTypesCountAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.LeaveTypes.CountAsync();
+        return await _unitOfWork.LeaveTypes.GetCountAsync(hrUserId);
     }
 }

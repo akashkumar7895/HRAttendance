@@ -1,4 +1,4 @@
-using HRAttendanceMVC.Domain.Enities;
+﻿using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,12 +20,16 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Employee>()
-            .HasIndex(x => x.EmployeeCode)
-            .IsUnique();
+            .HasIndex(x => x.EmployeeCode);
+
+        modelBuilder.Entity<Employee>()
+            .HasIndex(x => x.HrUserId);
 
         modelBuilder.Entity<LeaveType>()
-            .HasIndex(x => x.Name)
-            .IsUnique();
+            .HasIndex(x => x.Name);
+
+        modelBuilder.Entity<LeaveType>()
+            .HasIndex(x => x.HrUserId);
 
         modelBuilder.Entity<Attendance>()
             .HasIndex(x => new
@@ -68,7 +72,7 @@ public class AppDbContext : DbContext
             .HasMaxLength(50)
             .IsRequired();
 
-        // Same email allowed nahi hoga
+        // Emails will not be allowed in the evening.
         modelBuilder.Entity<User>()
             .HasIndex(x => x.Email)
             .IsUnique();

@@ -1,4 +1,4 @@
-using HRAttendanceMVC.Domain.Enities;
+﻿using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Infrastructure.Data;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +9,19 @@ public class AttendanceRepository : Repository<Attendance>, IAttendanceRepositor
 {
     public AttendanceRepository(AppDbContext context) : base(context) { }
 
-    public async Task<IReadOnlyList<Attendance>> GetByDateWithEmployeeAsync(DateTime date)
+    public async Task<IReadOnlyList<Attendance>> GetByDateWithEmployeeAsync(DateTime date, int? hrUserId = null)
     {
         var targetDate = date.Date;
-        return await DbSet
+        var query = DbSet
             .Include(x => x.Employee)
-            .Where(x => x.AttendanceDate.Date == targetDate)
+            .Where(x => x.AttendanceDate.Date == targetDate);
+
+        if (hrUserId.HasValue)
+        {
+            query = query.Where(x => x.Employee != null && x.Employee.HrUserId == hrUserId.Value);
+        }
+
+        return await query
             .OrderBy(x => x.Employee != null ? x.Employee.FirstName : string.Empty)
             .ToListAsync();
     }
@@ -35,10 +42,17 @@ public class AttendanceRepository : Repository<Attendance>, IAttendanceRepositor
             (!excludeId.HasValue || x.Id != excludeId.Value));
     }
 
-    public async Task<int> GetPresentCountByDateAsync(DateTime date)
+    public async Task<int> GetPresentCountByDateAsync(DateTime date, int? hrUserId = null)
     {
         var targetDate = date.Date;
-        return await DbSet.CountAsync(x =>
-            x.AttendanceDate.Date == targetDate && x.Status == "Present");
+        var query = DbSet
+            .Where(x => x.AttendanceDate.Date == targetDate && x.Status == "Present");
+
+        if (hrUserId.HasValue)
+        {
+            query = query.Where(x => x.Employee != null && x.Employee.HrUserId == hrUserId.Value);
+        }
+
+        return await query.CountAsync();
     }
 }

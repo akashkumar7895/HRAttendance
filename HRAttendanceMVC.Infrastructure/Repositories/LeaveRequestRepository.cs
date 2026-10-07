@@ -9,11 +9,19 @@ public class LeaveRequestRepository : Repository<LeaveRequest>, ILeaveRequestRep
 {
     public LeaveRequestRepository(AppDbContext context) : base(context) { }
 
-    public async Task<IReadOnlyList<LeaveRequest>> GetAllWithDetailsAsync()
+    public async Task<IReadOnlyList<LeaveRequest>> GetAllWithDetailsAsync(int? hrUserId = null)
     {
-        return await DbSet
+        var query = DbSet
             .Include(x => x.Employee)
             .Include(x => x.LeaveType)
+            .AsQueryable();
+
+        if (hrUserId.HasValue)
+        {
+            query = query.Where(x => x.Employee != null && x.Employee.HrUserId == hrUserId.Value);
+        }
+
+        return await query
             .OrderByDescending(x => x.CreatedAt)
             .ToListAsync();
     }
@@ -26,9 +34,16 @@ public class LeaveRequestRepository : Repository<LeaveRequest>, ILeaveRequestRep
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<int> GetPendingCountAsync()
+    public async Task<int> GetPendingCountAsync(int? hrUserId = null)
     {
-        return await DbSet.CountAsync(x => x.Status == "Pending");
+        var query = DbSet.Where(x => x.Status == "Pending");
+
+        if (hrUserId.HasValue)
+        {
+            query = query.Where(x => x.Employee != null && x.Employee.HrUserId == hrUserId.Value);
+        }
+
+        return await query.CountAsync();
     }
 
     public async Task<bool> HasRequestsForLeaveTypeAsync(int leaveTypeId)
@@ -39,5 +54,14 @@ public class LeaveRequestRepository : Repository<LeaveRequest>, ILeaveRequestRep
     public async Task<bool> HasRequestsForEmployeeAsync(int employeeId)
     {
         return await DbSet.AnyAsync(x => x.EmployeeId == employeeId);
+    }
+
+    public async Task<IReadOnlyList<LeaveRequest>> GetByEmployeeIdWithDetailsAsync(int employeeId)
+    {
+        return await DbSet
+            .Include(x => x.LeaveType)
+            .Where(x => x.EmployeeId == employeeId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync();
     }
 }
