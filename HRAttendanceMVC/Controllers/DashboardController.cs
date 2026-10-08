@@ -28,6 +28,7 @@ public class DashboardController : Controller
             var summary = await _dashboardService.GetDashboardSummaryAsync(hrUserId);
             ViewBag.Employees = summary.ActiveEmployees;
             ViewBag.TodayPresent = summary.TodayPresent;
+            ViewBag.TodayAbsent = Math.Max(0, summary.ActiveEmployees - summary.TodayPresent);
             ViewBag.PendingLeaves = summary.PendingLeaves;
             ViewBag.TotalLeaveTypes = summary.TotalLeaveTypes;
         }
@@ -41,6 +42,7 @@ public class DashboardController : Controller
                 // Employee ka Employees table mein record mila — apna data dikhao
                 ViewBag.Employees = empData.Employee.IsActive ? 1 : 0;
                 ViewBag.TodayPresent = empData.TodayAttendanceStatus == "Present" ? 1 : 0;
+                ViewBag.TodayAbsent = empData.TodayAttendanceStatus == "Absent" ? 1 : 0;
                 ViewBag.PendingLeaves = empData.PendingLeavesCount;
                 ViewBag.TotalLeaveTypes = await _dashboardService.GetLeaveTypeCountForHrAsync(empData.Employee.HrUserId);
             }
@@ -50,6 +52,7 @@ public class DashboardController : Controller
                 var globalSummary = await _dashboardService.GetDashboardSummaryAsync(null);
                 ViewBag.Employees = globalSummary.ActiveEmployees;
                 ViewBag.TodayPresent = globalSummary.TodayPresent;
+                ViewBag.TodayAbsent = Math.Max(0, globalSummary.ActiveEmployees - globalSummary.TodayPresent);   
                 ViewBag.PendingLeaves = globalSummary.PendingLeaves;
                 ViewBag.TotalLeaveTypes = globalSummary.TotalLeaveTypes;
             }

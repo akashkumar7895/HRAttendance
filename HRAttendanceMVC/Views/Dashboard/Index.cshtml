@@ -31,7 +31,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         <!-- =========================
         STATISTICS
         ========================== -->
-        <div class="stats-container">
+        <div class="stats-container" style="grid-template-columns: repeat(5, 1fr);">
 
             <!-- Active Employees -->
             <div class="stat-box stat-green">
@@ -61,7 +61,19 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                 </div>
 
             </div>
+            <!-- Today Absent -->
+            <div class="stat-box stat-red">
 
+                <div class="stat-icon">
+                    <i class="fa-solid fa-user-xmark"></i>
+                </div>
+
+                <div>
+                    <h3>@ViewBag.TodayAbsent</h3>
+                    <p>Today Absent</p>
+                </div>
+
+            </div>
 
             <!-- Pending Leaves -->
             <div class="stat-box stat-yellow">
