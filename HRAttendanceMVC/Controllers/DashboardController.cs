@@ -61,6 +61,7 @@ public class DashboardController : Controller
         {
             ViewBag.Employees = 0;
             ViewBag.TodayPresent = 0;
+            ViewBag.TodayAbsent = 0;
             ViewBag.PendingLeaves = 0;
             ViewBag.TotalLeaveTypes = 0;
         }
