@@ -11,6 +11,7 @@ public class UnitOfWork : IUnitOfWork
     private IAttendanceRepository? _attendances;
     private ILeaveRequestRepository? _leaveRequests;
     private ILeaveTypeRepository? _leaveTypes;
+    private IPayrollRepository? _payrolls;
     private bool _disposed;
 
     public UnitOfWork(AppDbContext context)
@@ -29,6 +30,9 @@ public class UnitOfWork : IUnitOfWork
 
     public ILeaveTypeRepository LeaveTypes =>
         _leaveTypes ??= new LeaveTypeRepository(_context);
+
+    public IPayrollRepository Payrolls =>
+        _payrolls ??= new PayrollRepository(_context);
 
     public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

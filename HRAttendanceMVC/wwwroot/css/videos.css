@@ -1,0 +1,579 @@
+/* =========================================================
+   HR VIDEOS PAGE - INTERACTIVE VIDEO PLAYER & TUTORIALS
+   ========================================================= */
+
+.videos-page {
+    width: 100%;
+    background: #ffffff;
+    color: #241e30;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    overflow-x: hidden;
+}
+
+.videos-page * {
+    box-sizing: border-box;
+}
+
+.videos-container {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+}
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
+.videos-hero {
+    position: relative;
+    padding: 40px 0 80px;
+    background: radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.16), transparent 28%),
+                radial-gradient(circle at 10% 85%, rgba(255, 255, 255, 0.12), transparent 30%),
+                linear-gradient(135deg, #0a3d62 0%, #1266a5 45%, #1e88e5 80%, #42a5f5 100%);
+    color: #ffffff;
+    overflow: hidden;
+    text-align: center;
+}
+
+.videos-hero::before {
+    content: "";
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    top: -160px;
+    right: -120px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+
+.videos-hero::after {
+    content: "";
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    bottom: -170px;
+    left: -100px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+
+.videos-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.videos-breadcrumb a {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    transition: color 0.2s;
+}
+
+.videos-breadcrumb a:hover {
+    color: #ffffff !important;
+}
+
+.videos-breadcrumb i {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.videos-breadcrumb span {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.videos-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 18px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(4px);
+}
+
+.videos-badge span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff5252;
+    box-shadow: 0 0 10px #ff5252;
+}
+
+.videos-hero h1 {
+    font-size: clamp(32px, 4vw, 46px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 auto 16px;
+    max-width: 840px;
+}
+
+.videos-hero h1 span {
+    color: #fed766;
+}
+
+.videos-hero p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 auto;
+    max-width: 660px;
+}
+
+/* =========================================================
+   FEATURED VIDEO STAGE (CLICK TO PLAY)
+   ========================================================= */
+
+.featured-video-section {
+    padding: 70px 0 60px;
+    background: #ffffff;
+}
+
+.video-stage-card {
+    background: #ffffff;
+    border: 1px solid #e1e8f0;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 16px 45px rgba(18, 102, 165, 0.12);
+}
+
+.video-screen-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0d1b2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.video-screen-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: none;
+}
+
+.video-screen-container.playing iframe {
+    display: block;
+}
+
+.video-screen-container.playing .video-thumbnail-overlay {
+    display: none;
+}
+
+.video-thumbnail-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(10, 61, 98, 0.92) 0%, rgba(18, 102, 165, 0.88) 100%),
+                radial-gradient(circle at center, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-align: center;
+    padding: 30px;
+    transition: background 0.3s ease;
+}
+
+.video-thumbnail-overlay:hover {
+    background: linear-gradient(135deg, rgba(10, 61, 98, 0.96) 0%, rgba(18, 102, 165, 0.92) 100%);
+}
+
+.play-pulse-btn {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #1266a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 34px;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+    animation: pulsePlay 1.8s infinite;
+    transition: transform 0.25s ease, background 0.25s;
+    margin-bottom: 22px;
+}
+
+.video-thumbnail-overlay:hover .play-pulse-btn {
+    transform: scale(1.1);
+    background: #fed766;
+    color: #0a3d62;
+}
+
+@keyframes pulsePlay {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.6);
+    }
+    70% {
+        box-shadow: 0 0 0 25px rgba(255, 255, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+.video-thumbnail-overlay h3 {
+    color: #ffffff;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 800;
+    margin: 0 0 10px;
+    max-width: 720px;
+}
+
+.video-thumbnail-overlay p {
+    color: rgba(255, 255, 255, 0.88);
+    font-size: 15px;
+    margin: 0 0 16px;
+    max-width: 580px;
+}
+
+.video-tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 16px;
+    border-radius: 20px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.video-meta-bar {
+    padding: 26px 32px;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-top: 1px solid #edf2f7;
+}
+
+.video-info h4 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1523;
+}
+
+.video-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #6d6677;
+}
+
+.video-meta-badges {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #f1f6fb;
+    color: #1266a5;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* =========================================================
+   PLAYLIST / MORE HR TUTORIAL VIDEOS
+   ========================================================= */
+
+.video-playlist-section {
+    padding: 70px 0 85px;
+    background: #f8fafc;
+    border-top: 1px solid #edf2f7;
+}
+
+.section-title-center {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 50px;
+}
+
+.badge-sublabel {
+    display: inline-block;
+    color: #1266a5;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+}
+
+.section-title-center h2 {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    color: #1a1523;
+    margin: 0 0 12px;
+}
+
+.section-title-center p {
+    font-size: 16px;
+    color: #6d6677;
+    margin: 0;
+}
+
+.video-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 28px;
+}
+
+.video-card-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.25s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-card-item:hover {
+    transform: translateY(-6px);
+    border-color: #1266a5;
+    box-shadow: 0 16px 36px rgba(18, 102, 165, 0.12);
+}
+
+.card-thumb-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #0d1b2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.thumb-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: rgba(255, 255, 255, 0.25);
+}
+
+.card-thumb-wrap.bg-1 { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); }
+.card-thumb-wrap.bg-2 { background: linear-gradient(135deg, #093028 0%, #237a57 100%); }
+.card-thumb-wrap.bg-3 { background: linear-gradient(135deg, #4b1248 0%, #f0c27b 100%); }
+
+.card-play-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #1266a5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    z-index: 2;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.video-card-item:hover .card-play-icon {
+    transform: scale(1.15);
+    background: #fed766;
+    color: #0a3d62;
+}
+
+.video-duration {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.75);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    z-index: 2;
+}
+
+.video-card-body {
+    padding: 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.video-category-tag {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1266a5;
+    margin-bottom: 8px;
+}
+
+.video-card-body h4 {
+    margin: 0 0 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1523;
+    line-height: 1.4;
+}
+
+.video-card-body p {
+    margin: 0 0 18px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #6d6677;
+    flex: 1;
+}
+
+.watch-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #1266a5;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.video-card-item:hover .watch-link {
+    transform: translateX(4px);
+    color: #0a3d62;
+}
+
+/* =========================================================
+   BOTTOM CTA SECTION
+   ========================================================= */
+
+.videos-cta-section {
+    padding: 80px 0;
+    background: #ffffff;
+}
+
+.videos-cta-card {
+    background: linear-gradient(135deg, #0a3d62 0%, #1266a5 60%, #1e88e5 100%);
+    border-radius: 24px;
+    padding: 55px 50px;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 20px 45px rgba(18, 102, 165, 0.25);
+}
+
+.videos-cta-text h2 {
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 800;
+    margin: 0 0 10px;
+}
+
+.videos-cta-text p {
+    font-size: 16px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 600px;
+}
+
+.videos-cta-actions {
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.btn-cta-blue-white {
+    padding: 13px 26px;
+    background: #ffffff;
+    color: #1266a5 !important;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.btn-cta-blue-white:hover {
+    transform: translateY(-3px);
+    color: #0a3d62 !important;
+}
+
+.btn-cta-blue-glass {
+    padding: 13px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s;
+}
+
+.btn-cta-blue-glass:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 991px) {
+    .videos-cta-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 30px;
+    }
+
+    .videos-cta-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .video-meta-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 576px) {
+    .videos-hero {
+        padding: 25px 0 60px;
+    }
+
+    .play-pulse-btn {
+        width: 70px;
+        height: 70px;
+        font-size: 26px;
+    }
+
+    .videos-cta-card {
+        padding: 30px 20px;
+    }
+}

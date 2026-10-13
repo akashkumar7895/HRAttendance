@@ -38,6 +38,26 @@
       href="~/css/Contact.css"
       asp-append-version="true" />
 
+<link rel="stylesheet"
+      href="~/css/about.css"
+      asp-append-version="true" />
+
+<link rel="stylesheet"
+      href="~/css/hrhelp.css"
+      asp-append-version="true" />
+
+<link rel="stylesheet"
+      href="~/css/whatishrms.css"
+      asp-append-version="true" />
+
+<link rel="stylesheet"
+      href="~/css/videos.css"
+      asp-append-version="true" />
+
+<link rel="stylesheet"
+      href="~/css/policies.css"
+      asp-append-version="true" />
+
 <div class="footer-page @theme">
 
     @* =========================================================
@@ -677,10 +697,1713 @@
 
         </div>
     }
+    else if (pageType == "about")
+    {
+        <div class="about-page">
+            <!-- HERO SECTION -->
+            <section class="about-hero">
+                <div class="about-container">
+                    <div class="about-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index">Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>About Us</span>
+                    </div>
 
+                    <div class="about-hero-grid">
+                        <div class="about-hero-content">
+                            <div class="about-badge">
+                                <span></span>
+                                Who We Are
+                            </div>
+                            <h1>
+                                Empowering Modern
+                                <span>Workforce & HR Teams</span>
+                            </h1>
+                            <p>
+                                HR Attendance is a comprehensive workforce platform engineered to automate attendance tracking, streamline employee operations, simplify leave policies, and deliver error-free payroll workflows.
+                            </p>
+                            <div class="about-hero-actions">
+                                <a asp-controller="Account" asp-action="Login" class="btn-about-primary">
+                                    Get Started Free <i class="bi bi-arrow-right"></i>
+                                </a>
+                                <a asp-controller="Footer" asp-action="ContactUs" class="btn-about-outline">
+                                    <i class="bi bi-envelope"></i> Contact Our Team
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="about-hero-card">
+                            <div class="hero-stats-grid">
+                                <div class="hero-stat-box">
+                                    <i class="bi bi-people-fill"></i>
+                                    <h3>500+</h3>
+                                    <p>Active Employees Managed</p>
+                                </div>
+                                <div class="hero-stat-box">
+                                    <i class="bi bi-shield-check"></i>
+                                    <h3>99.9%</h3>
+                                    <p>Platform Reliability</p>
+                                </div>
+                                <div class="hero-stat-box">
+                                    <i class="bi bi-calendar2-check-fill"></i>
+                                    <h3>100%</h3>
+                                    <p>Automated Attendance</p>
+                                </div>
+                                <div class="hero-stat-box">
+                                    <i class="bi bi-lightning-charge-fill"></i>
+                                    <h3>24/7</h3>
+                                    <p>Real-Time Tracking</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHO WE ARE & WHAT WE DO -->
+            <section class="about-intro-section">
+                <div class="about-container">
+                    <div class="about-intro-grid">
+                        <div class="about-intro-visual">
+                            <div class="intro-image-frame">
+                                <div class="intro-feature-pill">
+                                    <div class="pill-icon purple">
+                                        <i class="bi bi-fingerprint"></i>
+                                    </div>
+                                    <div class="pill-text">
+                                        <h5>Smart Attendance Tracking</h5>
+                                        <p>Precise check-in & check-out with instant daily reporting.</p>
+                                    </div>
+                                </div>
+                                <div class="intro-feature-pill">
+                                    <div class="pill-icon green">
+                                        <i class="bi bi-calendar-event"></i>
+                                    </div>
+                                    <div class="pill-text">
+                                        <h5>Leave Management System</h5>
+                                        <p>Hassle-free leave requests, balance tracker, and approvals.</p>
+                                    </div>
+                                </div>
+                                <div class="intro-feature-pill">
+                                    <div class="pill-icon blue">
+                                        <i class="bi bi-cash-stack"></i>
+                                    </div>
+                                    <div class="pill-text">
+                                        <h5>Integrated Payroll</h5>
+                                        <p>Automated salary calculations, allowances, and slip generation.</p>
+                                    </div>
+                                </div>
+                                <div class="intro-feature-pill">
+                                    <div class="pill-icon pink">
+                                        <i class="bi bi-graph-up-arrow"></i>
+                                    </div>
+                                    <div class="pill-text">
+                                        <h5>Real-Time HR Analytics</h5>
+                                        <p>Visual statistics and actionable insights for business growth.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="about-intro-text">
+                            <span class="section-label">Our Story</span>
+                            <h2 class="section-title">
+                                We make workforce management <span>simple, transparent & fast.</span>
+                            </h2>
+                            <p>
+                                Founded with the mission to eliminate manual spreadsheets and attendance errors, HR Attendance delivers a unified cloud ecosystem where HR managers, founders, and employees collaborate effortlessly.
+                            </p>
+                            <p>
+                                Our platform combines state-of-the-art attendance records, customized leave workflows, centralized employee profiles, and automated payroll computations into one intuitive dashboard.
+                            </p>
+                            <ul class="about-highlights-list">
+                                <li><i class="bi bi-check-circle-fill"></i> Real-time check-in logs</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Multi-role access (HR & Employee)</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Instant salary slip generation</li>
+                                <li><i class="bi bi-check-circle-fill"></i> Bank-grade security & privacy</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MISSION & VISION -->
+            <section class="about-mission-section">
+                <div class="about-container">
+                    <div class="about-mv-grid">
+                        <div class="mv-card mission">
+                            <div class="mv-icon">
+                                <i class="bi bi-bullseye"></i>
+                            </div>
+                            <h3>Our Mission</h3>
+                            <p>
+                                To empower organizations of all sizes with digital HR automation tools that save time, eliminate payroll disputes, ensure compliance, and boost workforce productivity.
+                            </p>
+                        </div>
+                        <div class="mv-card vision">
+                            <div class="mv-icon">
+                                <i class="bi bi-eye-fill"></i>
+                            </div>
+                            <h3>Our Vision</h3>
+                            <p>
+                                To become the most intuitive and trusted HRMS platform in the industry, enabling frictionless workplace operations and fostering better employee engagement worldwide.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CORE VALUES -->
+            <section class="about-values-section">
+                <div class="about-container">
+                    <div class="section-header-center">
+                        <span class="section-label">Core Values</span>
+                        <h2 class="section-title">Principles that drive everything we build</h2>
+                        <p>We build software guided by transparency, reliability, and human-centered design.</p>
+                    </div>
+
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="value-icon val-1">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <h4>Data Security</h4>
+                            <p>Every employee record, attendance log, and financial salary entry is protected with strong encryption and strict access boundaries.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon val-2">
+                                <i class="bi bi-speedometer2"></i>
+                            </div>
+                            <h4>Speed & Simplicity</h4>
+                            <p>No cluttered menus or complicated training required. Get up and running in minutes with clean, frictionless interfaces.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon val-3">
+                                <i class="bi bi-check2-all"></i>
+                            </div>
+                            <h4>Zero Accuracy Gaps</h4>
+                            <p>Automated calculations remove human error from attendance tracking, leave deductions, and payroll payout summaries.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon val-4">
+                                <i class="bi bi-heart-pulse-fill"></i>
+                            </div>
+                            <h4>People-First Focus</h4>
+                            <p>Engineered to empower both HR leaders and individual team members, promoting a culture of clarity and mutual trust.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- WHY CHOOSE US -->
+            <section class="about-why-section">
+                <div class="about-container">
+                    <div class="section-header-center">
+                        <span class="section-label">Why Choose Us</span>
+                        <h2 class="section-title">Built for modern businesses that value efficiency</h2>
+                    </div>
+
+                    <div class="why-features-grid">
+                        <div class="why-feature-item">
+                            <div class="why-icon">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="why-content">
+                                <h4>Save 20+ Hours Monthly</h4>
+                                <p>Automate repetitive administrative tasks like attendance logging, leave approvals, and pay slip generation.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature-item">
+                            <div class="why-icon">
+                                <i class="bi bi-device-hdd-fill"></i>
+                            </div>
+                            <div class="why-content">
+                                <h4>Centralized Employee Directory</h4>
+                                <p>All employee designations, departments, contact info, and joining records organized in one secure place.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature-item">
+                            <div class="why-icon">
+                                <i class="bi bi-printer-fill"></i>
+                            </div>
+                            <div class="why-content">
+                                <h4>Instant Salary Slip Export</h4>
+                                <p>Generate professional, print-ready payroll slips with full breakdown of basic salary, HRA, and deductions.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature-item">
+                            <div class="why-icon">
+                                <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                            </div>
+                            <div class="why-content">
+                                <h4>Detailed Audit Reports</h4>
+                                <p>Export attendance records and leave patterns to make informed workforce decisions and performance reviews.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature-item">
+                            <div class="why-icon">
+                                <i class="bi bi-phone-fill"></i>
+                            </div>
+                            <div class="why-content">
+                                <h4>Mobile & Tablet Responsive</h4>
+                                <p>Access the platform seamlessly from desktops, tablets, and smartphones without missing a single beat.</p>
+                            </div>
+                        </div>
+
+                        <div class="why-feature-item">
+                            <div class="why-icon">
+                                <i class="bi bi-headset"></i>
+                            </div>
+                            <div class="why-content">
+                                <h4>Dedicated Support</h4>
+                                <p>Our support team is always available to help you configure policies, onboard teams, and resolve queries.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA SECTION -->
+            <section class="about-cta-section">
+                <div class="about-container">
+                    <div class="about-cta-box">
+                        <div class="about-cta-content">
+                            <h2>Ready to simplify your HR operations?</h2>
+                            <p>Join growing organizations that trust HR Attendance to manage attendance, employees, and payroll smoothly.</p>
+                        </div>
+                        <div class="about-cta-buttons">
+                            <a asp-controller="Account" asp-action="Login" class="btn-cta-main">
+                                Get Started Now <i class="bi bi-arrow-right"></i>
+                            </a>
+                            <a asp-controller="Footer" asp-action="ContactUs" class="btn-cta-secondary">
+                                Contact Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    }
+    else if (pageType == "hrhelp")
+    {
+        <div class="hrhelp-page">
+            <!-- HERO & SEARCH SECTION -->
+            <section class="hrhelp-hero">
+                <div class="hrhelp-container">
+                    <div class="hrhelp-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index">Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>HR Help & Support</span>
+                    </div>
+
+                    <div class="hrhelp-badge">
+                        <span></span>
+                        Knowledge Base & Assistance
+                    </div>
+
+                    <h1>
+                        How can we help your <span>HR team today?</span>
+                    </h1>
+                    <p>
+                        Search our knowledge base for attendance guides, leave policies, payroll FAQs, employee management tips, or connect with our support experts.
+                    </p>
+
+                    <!-- SEARCH BAR -->
+                    <div class="hrhelp-search-container">
+                        <div class="hrhelp-search-box">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" id="helpSearchInput" placeholder="Search topics, e.g., 'mark attendance', 'apply leave', 'payroll slip'..." />
+                            <button type="button" onclick="performHelpSearch()">Search</button>
+                        </div>
+                        <div class="hrhelp-tags">
+                            <span>Popular Topics:</span>
+                            <a href="#topic-attendance">Attendance Tracking</a>
+                            <a href="#topic-leaves">Leave Requests</a>
+                            <a href="#topic-payroll">Generate Payroll</a>
+                            <a href="#topic-employees">Add Employees</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HELP CATEGORIES -->
+            <section class="hrhelp-topics-section" id="help-topics">
+                <div class="hrhelp-container">
+                    <div class="hrhelp-section-header">
+                        <span class="hrhelp-badge-label">Explore by Topic</span>
+                        <h2>Browse Help by Module</h2>
+                        <p>Detailed documentation and step-by-step assistance for all core features of HR Attendance.</p>
+                    </div>
+
+                    <div class="hrhelp-cards-grid">
+                        <!-- Card 1: Attendance -->
+                        <div class="hrhelp-card" id="topic-attendance">
+                            <div class="hrhelp-card-icon icon-green">
+                                <i class="bi bi-fingerprint"></i>
+                            </div>
+                            <h3>Attendance Management</h3>
+                            <p>Guides on daily check-ins, check-outs, marking attendance status (Present, Absent, Late), and reports.</p>
+                            <ul class="hrhelp-card-links">
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('attendance-records')">
+                                        <i class="bi bi-chevron-right"></i> View Attendance Records
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('attendance-guide')">
+                                        <i class="bi bi-chevron-right"></i> Complete Attendance Guide
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Card 2: Employees -->
+                        <div class="hrhelp-card" id="topic-employees">
+                            <div class="hrhelp-card-icon icon-purple">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <h3>Employee Management</h3>
+                            <p>Learn how to onboard new staff, set departments, assign designations, and update employee credentials.</p>
+                            <ul class="hrhelp-card-links">
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('employee-directory')">
+                                        <i class="bi bi-chevron-right"></i> Manage Employee Directory
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('employee-create')">
+                                        <i class="bi bi-chevron-right"></i> Add New Employee
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Card 3: Leaves -->
+                        <div class="hrhelp-card" id="topic-leaves">
+                            <div class="hrhelp-card-icon icon-blue">
+                                <i class="bi bi-calendar2-week-fill"></i>
+                            </div>
+                            <h3>Leave &amp; Time-Off</h3>
+                            <p>Configure company leave types (Sick, Casual, Annual), approve/reject leave requests, and track balances.</p>
+                            <ul class="hrhelp-card-links">
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('leave-requests')">
+                                        <i class="bi bi-chevron-right"></i> Leave Requests Review
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('leave-policies')">
+                                        <i class="bi bi-chevron-right"></i> Configure Leave Policies
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Card 4: Payroll -->
+                        <div class="hrhelp-card" id="topic-payroll">
+                            <div class="hrhelp-card-icon icon-orange">
+                                <i class="bi bi-cash-coin"></i>
+                            </div>
+                            <h3>Payroll &amp; Salary Slips</h3>
+                            <p>Automate monthly salary processing, enter basic pay &amp; allowances, calculate net pay, and generate printable slips.</p>
+                            <ul class="hrhelp-card-links">
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('payroll-dashboard')">
+                                        <i class="bi bi-chevron-right"></i> Payroll Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0)" onclick="openHelpModal('payroll-create')">
+                                        <i class="bi bi-chevron-right"></i> Create Monthly Payroll
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STEP-BY-STEP WORKFLOWS -->
+            <section class="hrhelp-guides-section">
+                <div class="hrhelp-container">
+                    <div class="hrhelp-section-header">
+                        <span class="hrhelp-badge-label">Quick Start</span>
+                        <h2>Common HR Tasks Made Simple</h2>
+                        <p>Follow these 3-step walk-throughs to get your tasks done in minutes.</p>
+                    </div>
+
+                    <div class="hrhelp-steps-grid">
+                        <div class="hrhelp-step-item">
+                            <div class="step-badge">1</div>
+                            <h4>How to Mark Daily Attendance</h4>
+                            <p>
+                                Go to <strong>Attendance &gt; Create Attendance</strong>, pick the employee name, select the date, set status (Present/Absent/Late), input check-in/out times, and click <strong>Save</strong>.
+                            </p>
+                        </div>
+
+                        <div class="hrhelp-step-item">
+                            <div class="step-badge">2</div>
+                            <h4>How to Process Monthly Payroll</h4>
+                            <p>
+                                Navigate to <strong>Payroll &gt; Add Payroll</strong>, choose employee, month and year. Enter basic salary, HRA, allowances, and deductions. Net salary updates live in real-time!
+                            </p>
+                        </div>
+
+                        <div class="hrhelp-step-item">
+                            <div class="step-badge">3</div>
+                            <h4>How to Approve Leave Requests</h4>
+                            <p>
+                                Open <strong>Product &gt; Leave Requests</strong>. Review pending employee requests with start and end dates. Click Approve or Reject to automatically update employee leave records.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQS SECTION -->
+            <section class="hrhelp-faq-section" id="help-faqs">
+                <div class="hrhelp-container">
+                    <div class="hrhelp-section-header">
+                        <span class="hrhelp-badge-label">FAQ</span>
+                        <h2>Frequently Asked Questions</h2>
+                        <p>Quick answers to common questions about accounts, attendance, and payroll.</p>
+                    </div>
+
+                    <div class="faq-accordion">
+                        <div class="faq-item active">
+                            <div class="faq-header" onclick="toggleFaq(this)">
+                                <h4>
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    How do I add a new employee to the system?
+                                </h4>
+                                <i class="bi bi-chevron-down faq-toggle-icon"></i>
+                            </div>
+                            <div class="faq-body">
+                                Sign in as HR, go to <strong>Product &gt; Employees</strong>, and click <strong>+ Add Employee</strong>. Fill in the employee code, first name, last name, email, department, designation, and joining date. The employee will immediately appear in your directory.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-header" onclick="toggleFaq(this)">
+                                <h4>
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    Can I edit an attendance entry after creating it?
+                                </h4>
+                                <i class="bi bi-chevron-down faq-toggle-icon"></i>
+                            </div>
+                            <div class="faq-body">
+                                Yes. As an HR administrator, go to <strong>Attendance</strong> list, locate the record you want to modify, and click the <strong>Edit</strong> button. Update the status, check-in, or check-out times and click <strong>Save Changes</strong>.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-header" onclick="toggleFaq(this)">
+                                <h4>
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    How does the net salary calculation work in Payroll?
+                                </h4>
+                                <i class="bi bi-chevron-down faq-toggle-icon"></i>
+                            </div>
+                            <div class="faq-body">
+                                Net salary is automatically calculated via the formula: <code>Net Salary = Basic Salary + HRA + Other Allowances - Deductions</code>. Our interactive form recalculates the exact amount live as you type each component.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-header" onclick="toggleFaq(this)">
+                                <h4>
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    Can I print or download a salary slip?
+                                </h4>
+                                <i class="bi bi-chevron-down faq-toggle-icon"></i>
+                            </div>
+                            <div class="faq-body">
+                                Absolutely. In the <strong>Payroll</strong> dashboard, click the eye icon (View Slip) on any payroll entry. A clean, branded salary slip opens with a one-click <strong>Print</strong> button pre-configured for clean A4 printing without headers or footers.
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <div class="faq-header" onclick="toggleFaq(this)">
+                                <h4>
+                                    <i class="bi bi-question-circle-fill"></i>
+                                    What roles are supported in HR Attendance?
+                                </h4>
+                                <i class="bi bi-chevron-down faq-toggle-icon"></i>
+                            </div>
+                            <div class="faq-body">
+                                The platform supports two dedicated roles: <strong>HR</strong> (full admin control over employees, attendance logs, leave policies, and payroll) and <strong>Employee</strong> (self-service portal to view attendance history and submit leave requests).
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTACT SUPPORT BAR -->
+            <section class="hrhelp-support-section">
+                <div class="hrhelp-container">
+                    <div class="hrhelp-support-card">
+                        <div class="hrhelp-support-text">
+                            <h2>Still need assistance?</h2>
+                            <p>Our dedicated HR software support team is here to help you solve issues and get the most out of HR Attendance.</p>
+                        </div>
+                        <div class="hrhelp-support-actions">
+                            <a asp-controller="Footer" asp-action="ContactUs" class="btn-help-primary">
+                                <i class="bi bi-chat-dots-fill me-1"></i> Contact Support
+                            </a>
+                            <a href="mailto:support@hrattendance.com" class="btn-help-outline">
+                                <i class="bi bi-envelope me-1"></i> Email Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- IN-PAGE HELP DETAIL MODAL (No page navigation) -->
+            <div class="hrhelp-modal-overlay" id="helpModalOverlay" onclick="closeHelpModal(event)">
+                <div class="hrhelp-modal-dialog" onclick="event.stopPropagation()">
+                    <div class="hrhelp-modal-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="hrhelp-modal-icon" id="modalIcon">
+                                <i class="bi bi-info-circle-fill"></i>
+                            </div>
+                            <div>
+                                <span class="hrhelp-modal-tag" id="modalTag">HR Feature</span>
+                                <h3 class="hrhelp-modal-title" id="modalTitle">Feature Details</h3>
+                            </div>
+                        </div>
+                        <button type="button" class="hrhelp-modal-close" onclick="closeHelpModal()" title="Close">&times;</button>
+                    </div>
+
+                    <div class="hrhelp-modal-body" id="modalContent">
+                        <!-- Dynamic Information populated by JS -->
+                    </div>
+
+                    <div class="hrhelp-modal-footer">
+                        <button type="button" class="btn btn-secondary px-4 py-2" onclick="closeHelpModal()">Got it</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            var helpTopicsData = {
+                'attendance-records': {
+                    tag: 'Attendance Module',
+                    title: 'View Attendance Records',
+                    iconClass: 'icon-green',
+                    icon: 'bi-fingerprint',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-check2-circle text-success me-2"></i>Daily Attendance Tracking Overview</h5>
+                            <p>Here you can monitor all recorded check-ins, check-outs, and employee attendance statuses across your organization.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Key Functionalities:</h6>
+                                <ul>
+                                    <li><strong>Daily Date Filter:</strong> Pick any calendar date to see who was Present, Late, or Absent.</li>
+                                    <li><strong>Precise Timestamps:</strong> Exact arrival and departure logs for punctuality audits.</li>
+                                    <li><strong>Status Tagging:</strong> Mark customized remarks for official approvals, remote work, or half-days.</li>
+                                    <li><strong>Headcount Analytics:</strong> Instant count of active attendees vs total staff strength.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                'attendance-guide': {
+                    tag: 'Attendance Strategy',
+                    title: 'Complete Attendance Management Guide',
+                    iconClass: 'icon-green',
+                    icon: 'bi-journal-check',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-shield-check text-success me-2"></i>Best Practices for Attendance Control</h5>
+                            <p>Eliminate paper registers, buddy punching, and missing records with automated digital attendance workflows.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Core Guidelines:</h6>
+                                <ul>
+                                    <li><strong>Shift & Grace Periods:</strong> Define 15-minute grace windows before marking an arrival as 'Late'.</li>
+                                    <li><strong>Employee Transparency:</strong> Employees review their personal punch history preventing salary deduction disputes.</li>
+                                    <li><strong>Automated Monthly Reconcile:</strong> Validated attendance directly links into the payroll salary calculation.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                'employee-directory': {
+                    tag: 'Employee Module',
+                    title: 'Manage Employee Directory',
+                    iconClass: 'icon-purple',
+                    icon: 'bi-people-fill',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-person-lines-fill text-primary me-2"></i>Centralized Staff Profiles</h5>
+                            <p>Access your complete organizational workforce database organized neatly with full profile attributes.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Features:</h6>
+                                <ul>
+                                    <li><strong>Employee Code:</strong> Unique identification code assigned to each staff member.</li>
+                                    <li><strong>Department & Designation:</strong> Organize team members by Engineering, HR, Sales, Marketing, etc.</li>
+                                    <li><strong>Contact Records:</strong> Corporate email address and phone records for easy communication.</li>
+                                    <li><strong>Status Management:</strong> Quickly activate or deactivate employee accounts on departure.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                'employee-create': {
+                    tag: 'Employee Onboarding',
+                    title: 'Add New Employee Guide',
+                    iconClass: 'icon-purple',
+                    icon: 'bi-person-plus-fill',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-plus-circle-fill text-primary me-2"></i>Simple 3-Minute Employee Onboarding</h5>
+                            <p>Bring new team members onto the platform with simple profile initialization.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Required Fields:</h6>
+                                <ul>
+                                    <li><strong>Staff Name & Code:</strong> Full legal name and company employee code (e.g., EMP001).</li>
+                                    <li><strong>Email & Contact:</strong> Used for secure logins, notifications, and communications.</li>
+                                    <li><strong>Job Role:</strong> Department and designation selection.</li>
+                                    <li><strong>Joining Date:</strong> Calibrates leave accrual calculations and anniversary reminders.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                'leave-requests': {
+                    tag: 'Leave Module',
+                    title: 'Leave Requests Review Workflow',
+                    iconClass: 'icon-blue',
+                    icon: 'bi-send-check-fill',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-clock-history text-info me-2"></i>Instant Digital Leave Approvals</h5>
+                            <p>Review, approve, or reject employee time-off requests with real-time balance calculations.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Workflow Highlights:</h6>
+                                <ul>
+                                    <li><strong>Zero Paper Slips:</strong> Staff submits online; managers approve directly from their dashboard.</li>
+                                    <li><strong>Team Coverage:</strong> Check overlapping department leaves to prevent understaffed shifts.</li>
+                                    <li><strong>Quota Validation:</strong> System checks available leave balance before allowing submission.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                'leave-policies': {
+                    tag: 'Leave Policies',
+                    title: 'Configure Leave Policies',
+                    iconClass: 'icon-blue',
+                    icon: 'bi-calendar2-range-fill',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-gear-fill text-info me-2"></i>Custom Company Time-Off Rules</h5>
+                            <p>Set up leave categories suited to your organization's legal labor compliance and HR guidelines.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Standard Policy Categories:</h6>
+                                <ul>
+                                    <li><strong>Sick Leave:</strong> Medical appointments, recovery, and healthcare contingencies.</li>
+                                    <li><strong>Casual / Personal Leave:</strong> Urgent family matters, celebrations, and short breaks.</li>
+                                    <li><strong>Annual Paid Vacation:</strong> Earned tenure holidays for rest and recreation.</li>
+                                    <li><strong>Loss of Pay (Unpaid):</strong> Tracked for deduction sync during payroll disbursement.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                'payroll-dashboard': {
+                    tag: 'Payroll Module',
+                    title: 'Payroll Dashboard Overview',
+                    iconClass: 'icon-orange',
+                    icon: 'bi-cash-coin',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-wallet2 text-warning me-2"></i>Monthly Compensation & Salary Records</h5>
+                            <p>Manage monthly employee payout records, payment statuses, and historical payroll archives.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Key Features:</h6>
+                                <ul>
+                                    <li><strong>Payment Status:</strong> Easily mark pending salaries as 'Paid' upon bank transfer.</li>
+                                    <li><strong>Summary Totals:</strong> Aggregated gross pay, deductions, and total net compensation.</li>
+                                    <li><strong>Printable Pay Slips:</strong> Instant A4 printable payslip export with one click.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                },
+                'payroll-create': {
+                    tag: 'Payroll Processing',
+                    title: 'Create Monthly Payroll Guide',
+                    iconClass: 'icon-orange',
+                    icon: 'bi-calculator-fill',
+                    content: `
+                        <div class="modal-feature-preview">
+                            <h5><i class="bi bi-currency-rupee text-warning me-2"></i>Interactive Live Net Salary Calculation</h5>
+                            <p>Generate error-free payroll entries with dynamic real-time net pay computations.</p>
+                            
+                            <div class="preview-info-box">
+                                <h6>Salary Components:</h6>
+                                <ul>
+                                    <li><strong>Basic Salary:</strong> Base contractual compensation.</li>
+                                    <li><strong>HRA:</strong> House Rent Allowance component.</li>
+                                    <li><strong>Other Allowances:</strong> Performance, travel, or medical allowances.</li>
+                                    <li><strong>Deductions:</strong> Unpaid leaves, taxes, or provident fund contributions.</li>
+                                    <li><strong>Net Pay:</strong> Automatically computed as: <code>Basic + HRA + Allowances - Deductions</code>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `
+                }
+            };
+
+            function openHelpModal(topicKey) {
+                var data = helpTopicsData[topicKey];
+                if (!data) return;
+
+                document.getElementById('modalTag').innerText = data.tag;
+                document.getElementById('modalTitle').innerText = data.title;
+                
+                var iconContainer = document.getElementById('modalIcon');
+                iconContainer.className = 'hrhelp-modal-icon ' + data.iconClass;
+                iconContainer.innerHTML = '<i class="bi ' + data.icon + '"></i>';
+
+                document.getElementById('modalContent').innerHTML = data.content;
+
+                var overlay = document.getElementById('helpModalOverlay');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeHelpModal(e) {
+                if (e && e.target && e.target !== document.getElementById('helpModalOverlay')) {
+                    // clicked inside dialog
+                    return;
+                }
+                var overlay = document.getElementById('helpModalOverlay');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            // Keyboard ESC to close
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeHelpModal();
+                }
+            });
+
+            function toggleFaq(header) {
+                var item = header.parentElement;
+                item.classList.toggle('active');
+            }
+
+            function performHelpSearch() {
+                var query = document.getElementById('helpSearchInput').value.toLowerCase().trim();
+                if (!query) return;
+
+                var faqItems = document.querySelectorAll('.faq-item');
+                var found = false;
+
+                faqItems.forEach(function(item) {
+                    var text = item.textContent.toLowerCase();
+                    if (text.includes(query)) {
+                        item.classList.add('active');
+                        if (!found) {
+                            item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            found = true;
+                        }
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+
+                if (!found) {
+                    var topicsSection = document.getElementById('help-topics');
+                    if (topicsSection) {
+                        topicsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var searchInput = document.getElementById('helpSearchInput');
+                if (searchInput) {
+                    searchInput.addEventListener('keypress', function(e) {
+                        if (e.key === 'Enter') {
+                            performHelpSearch();
+                        }
+                    });
+                }
+            });
+        </script>
+    }
+    else if (pageType == "whatishrms")
+    {
+        <div class="whatishrms-page">
+            <!-- HERO SECTION -->
+            <section class="hrms-hero">
+                <div class="hrms-container">
+                    <div class="hrms-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index">Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>HR &amp; Payroll Administration</span>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>What is HRMS?</span>
+                    </div>
+
+                    <div class="hrms-hero-grid">
+                        <div class="hrms-hero-content">
+                            <div class="hrms-badge">
+                                <span></span>
+                                HR Automation Guide
+                            </div>
+                            <h1>
+                                Human Resource
+                                <span>Management System (HRMS)</span>
+                            </h1>
+                            <p>
+                                An all-in-one software platform that unites core HR operations: employee databases, daily attendance tracking, time-off administration, and payroll automation into a single secure hub.
+                            </p>
+                            <div class="hrms-hero-actions">
+                                <a asp-controller="Account" asp-action="Login" class="btn-hrms-primary">
+                                    Experience HRMS <i class="bi bi-arrow-right"></i>
+                                </a>
+                                <a asp-controller="Footer" asp-action="ContactUs" class="btn-hrms-outline">
+                                    Talk to an Expert
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="hrms-hero-card">
+                            <h4><i class="bi bi-stars"></i> Why Businesses Need HRMS</h4>
+                            <ul>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Eliminates Manual Errors:</strong> No more scattered spreadsheets or duplicate data entry across departments.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Saves 20+ Hours Monthly:</strong> Automates repetitive attendance logging &amp; leave approvals in seconds.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Error-Free Payouts:</strong> Seamlessly feeds attendance &amp; leaves into monthly payroll calculation.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Role-Based Security:</strong> Clear division between HR management controls and Employee self-service.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CORE CONCEPT & WHAT HRMS DOES -->
+            <section class="hrms-overview-section">
+                <div class="hrms-container">
+                    <div class="hrms-overview-grid">
+                        <div class="hrms-overview-text">
+                            <span class="hrms-tag">Core Concept</span>
+                            <h2>What exactly is a modern <span>HRMS software?</span></h2>
+                            <p>
+                                A <strong>Human Resource Management System (HRMS)</strong> is a comprehensive digital suite that unifies workforce data and administrative tasks into one centralized, accessible system.
+                            </p>
+                            <p>
+                                Instead of using paper registers for attendance, email threads for leave requests, and separate Excel sheets for salary calculations, HRMS synchronizes all operations in real-time.
+                            </p>
+                            <p>
+                                It reduces overhead costs, enhances transparency between management and staff, and ensures timely payroll disbursements without compliance headaches.
+                            </p>
+                        </div>
+
+                        <div class="hrms-feature-frame">
+                            <div class="hrms-frame-item">
+                                <div class="frame-icon purple">
+                                    <i class="bi bi-person-badge-fill"></i>
+                                </div>
+                                <div class="frame-details">
+                                    <h5>Centralized Staff Records</h5>
+                                    <p>Maintain complete employee profiles, designations, joining dates &amp; departments.</p>
+                                </div>
+                            </div>
+                            <div class="hrms-frame-item">
+                                <div class="frame-icon green">
+                                    <i class="bi bi-alarm-fill"></i>
+                                </div>
+                                <div class="frame-details">
+                                    <h5>Live Time &amp; Attendance</h5>
+                                    <p>Track check-ins, check-outs, tardiness, and daily punctuality records automatically.</p>
+                                </div>
+                            </div>
+                            <div class="hrms-frame-item">
+                                <div class="frame-icon blue">
+                                    <i class="bi bi-calendar2-range-fill"></i>
+                                </div>
+                                <div class="frame-details">
+                                    <h5>Automated Leave Management</h5>
+                                    <p>Configure custom policies, view real-time balances, and approve requests in one click.</p>
+                                </div>
+                            </div>
+                            <div class="hrms-frame-item">
+                                <div class="frame-icon orange">
+                                    <i class="bi bi-currency-rupee"></i>
+                                </div>
+                                <div class="frame-details">
+                                    <h5>Integrated Payroll Processing</h5>
+                                    <p>Generate accurate salary slips with basic pay, allowances &amp; deductions instantly.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4 CORE PILLARS OF HR ATTENDANCE HRMS -->
+            <section class="hrms-pillars-section">
+                <div class="hrms-container">
+                    <div class="hrms-section-header">
+                        <h2>Key Pillars of Our Integrated HRMS</h2>
+                        <p>How HR Attendance transforms daily workforce operations into streamlined digital workflows.</p>
+                    </div>
+
+                    <div class="hrms-pillars-grid">
+                        <div class="hrms-pillar-card">
+                            <div class="pillar-icon-box" style="background:#f4e7fa; color:#8d00b8;">
+                                <i class="bi bi-diagram-3-fill"></i>
+                            </div>
+                            <h4>1. Employee Directory</h4>
+                            <p>Securely stores employee codes, department rosters, contact info, and joining dates with quick edit and active/inactive status switches.</p>
+                        </div>
+
+                        <div class="hrms-pillar-card">
+                            <div class="pillar-icon-box" style="background:#e4f7ed; color:#07834b;">
+                                <i class="bi bi-fingerprint"></i>
+                            </div>
+                            <h4>2. Smart Attendance</h4>
+                            <p>Allows employees and HR to log attendance statuses (Present, Absent, Late) with precise timestamp tracking and daily headcount analytics.</p>
+                        </div>
+
+                        <div class="hrms-pillar-card">
+                            <div class="pillar-icon-box" style="background:#e4f2fb; color:#1266a5;">
+                                <i class="bi bi-send-check-fill"></i>
+                            </div>
+                            <h4>3. Leave Workflow</h4>
+                            <p>Empowers employees to apply for leave online, while managers review, approve, or reject with complete balance transparency and zero paperwork.</p>
+                        </div>
+
+                        <div class="hrms-pillar-card">
+                            <div class="pillar-icon-box" style="background:#fff0dd; color:#c96a00;">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                            <h4>4. Payroll Management</h4>
+                            <p>Calculates net salary in real-time, accounts for deductions and allowances, and creates printable, itemized payslips ready for disbursement.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COMPARISON: MANUAL VS HRMS -->
+            <section class="hrms-comparison-section">
+                <div class="hrms-container">
+                    <div class="hrms-section-header">
+                        <h2>Manual Process vs. Modern HRMS</h2>
+                        <p>See why high-growth companies transition to automated HR management.</p>
+                    </div>
+
+                    <div class="comparison-table-wrapper">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-feature">HR Operation</th>
+                                    <th class="col-manual">Traditional / Manual Way</th>
+                                    <th class="col-hrms">With HR Attendance HRMS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="cell-feature">Attendance Tracking</td>
+                                    <td class="cell-manual"><i class="bi bi-x-circle-fill"></i> Paper registers, proxy punch risks &amp; lost logs</td>
+                                    <td class="cell-hrms"><i class="bi bi-check-circle-fill"></i> Digital timestamps, real-time status &amp; zero fraud</td>
+                                </tr>
+                                <tr>
+                                    <td class="cell-feature">Leave Approvals</td>
+                                    <td class="cell-manual"><i class="bi bi-x-circle-fill"></i> Lost paper slips, delayed emails &amp; balance confusion</td>
+                                    <td class="cell-hrms"><i class="bi bi-check-circle-fill"></i> 1-click digital approval with automatic quota checks</td>
+                                </tr>
+                                <tr>
+                                    <td class="cell-feature">Payroll Calculation</td>
+                                    <td class="cell-manual"><i class="bi bi-x-circle-fill"></i> Days spent cross-checking records with Excel formulas</td>
+                                    <td class="cell-hrms"><i class="bi bi-check-circle-fill"></i> Instant net pay compute, allowances &amp; slip printout</td>
+                                </tr>
+                                <tr>
+                                    <td class="cell-feature">Staff Record Keeping</td>
+                                    <td class="cell-manual"><i class="bi bi-x-circle-fill"></i> Physical file folders susceptible to damage &amp; loss</td>
+                                    <td class="cell-hrms"><i class="bi bi-check-circle-fill"></i> Encrypted database with role-based security access</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA SECTION -->
+            <section class="hrms-cta-section">
+                <div class="hrms-container">
+                    <div class="hrms-cta-card">
+                        <div class="hrms-cta-text">
+                            <h2>Transform your HR operations today</h2>
+                            <p>Experience the simplicity, accuracy, and speed of our modern HR Attendance system.</p>
+                        </div>
+                        <div class="hrms-cta-actions">
+                            <a asp-controller="Account" asp-action="Login" class="btn-cta-white">
+                                Get Started Free <i class="bi bi-arrow-right"></i>
+                            </a>
+                            <a asp-controller="Footer" asp-action="ContactUs" class="btn-cta-glass">
+                                Contact Our Team
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    }
+    else if (pageType == "videos")
+    {
+        <div class="videos-page">
+            <!-- HERO SECTION -->
+            <section class="videos-hero">
+                <div class="videos-container">
+                    <div class="videos-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index">Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>HR Customers</span>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Videos &amp; Demos</span>
+                    </div>
+
+                    <div class="videos-badge">
+                        <span></span>
+                        Video Learning Hub
+                    </div>
+
+                    <h1>
+                        Learn Human Resource Management <span>Through Interactive Videos</span>
+                    </h1>
+                    <p>
+                        Watch our curated video tutorials explaining what an HRMS is, how it automates employee attendance, handles leave management, and simplifies payroll operations.
+                    </p>
+                </div>
+            </section>
+
+            <!-- FEATURED VIDEO STAGE -->
+            <section class="featured-video-section">
+                <div class="videos-container">
+                    <div class="video-stage-card">
+                        <!-- Screen Container (Click to Play) -->
+                        <div class="video-screen-container" id="mainVideoPlayer">
+                            <!-- YouTube Embed (HRMS Explainer) -->
+                            <iframe id="videoIframe"
+                                    src=""
+                                    title="What is a Human Resource Management System (HRMS)?"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen>
+                            </iframe>
+
+                            <!-- Thumbnail & Big Pulse Play Overlay -->
+                            <div class="video-thumbnail-overlay" id="videoOverlay" onclick="playHrmsVideo('uu-j7zXGEPA')">
+                                <div class="play-pulse-btn">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                                <span class="video-tag-pill mb-3">
+                                    <i class="bi bi-play-circle-fill"></i> Click to Play Video
+                                </span>
+                                <h3 id="currentVideoTitle">
+                                    What is a Human Resource Management System (HRMS)? Complete Explanation
+                                </h3>
+                                <p id="currentVideoDesc">
+                                    Watch this comprehensive video guide explaining HRMS: employee data management, real-time attendance tracking, leave requests, and payroll automation.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Video Metadata Bar -->
+                        <div class="video-meta-bar">
+                            <div class="video-info">
+                                <h4 id="metaVideoTitle">What is a Human Resource Management System (HRMS)?</h4>
+                                <p>Comprehensive digital training on how HRMS works and benefits businesses.</p>
+                            </div>
+                            <div class="video-meta-badges">
+                                <span class="meta-pill">
+                                    <i class="bi bi-clock-fill"></i> Full HD Guide
+                                </span>
+                                <span class="meta-pill">
+                                    <i class="bi bi-check2-circle"></i> Beginner to Advanced
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MORE HR TUTORIAL VIDEOS -->
+            <section class="video-playlist-section">
+                <div class="videos-container">
+                    <div class="section-title-center">
+                        <span class="badge-sublabel">Video Library</span>
+                        <h2>More HRMS Walkthroughs &amp; Guides</h2>
+                        <p>Click on any video below to load and watch it in the main player above.</p>
+                    </div>
+
+                    <div class="video-cards-grid">
+                        <!-- Video Card 1: What is HRMS -->
+                        <div class="video-card-item" onclick="switchVideo('uu-j7zXGEPA', 'What is a Human Resource Management System (HRMS)?', 'Detailed explanation of HRMS software, core functions, and workforce administration.', 'HRMS Fundamentals')">
+                            <div class="card-thumb-wrap bg-1">
+                                <div class="thumb-bg">
+                                    <i class="bi bi-diagram-3-fill"></i>
+                                </div>
+                                <div class="card-play-icon">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                                <span class="video-duration">Watch Now</span>
+                            </div>
+                            <div class="video-card-body">
+                                <span class="video-category-tag">Core HRMS</span>
+                                <h4>What is a Human Resource Management System (HRMS)?</h4>
+                                <p>Learn what HRMS is, how it centralizes employee records, and why companies need it.</p>
+                                <span class="watch-link">
+                                    Play Video <i class="bi bi-arrow-right"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Video Card 2: HRMS Architecture & Working -->
+                        <div class="video-card-item" onclick="switchVideo('A5Ym9w6y6wU', 'Understanding HRMS Modules: Attendance, Leave &amp; Payroll', 'How modern HRMS modules connect together to track attendance, handle leaves, and generate payroll.', 'HRMS Modules')">
+                            <div class="card-thumb-wrap bg-2">
+                                <div class="thumb-bg">
+                                    <i class="bi bi-fingerprint"></i>
+                                </div>
+                                <div class="card-play-icon">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                                <span class="video-duration">Tutorial</span>
+                            </div>
+                            <div class="video-card-body">
+                                <span class="video-category-tag">HRMS Modules</span>
+                                <h4>HRMS Working &amp; Key Features Explained</h4>
+                                <p>Understand how smart attendance, employee directory, and automated operations work.</p>
+                                <span class="watch-link">
+                                    Play Video <i class="bi bi-arrow-right"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Video Card 3: What does HRMS mean & Benefits -->
+                        <div class="video-card-item" onclick="switchVideo('yVb8aM_XqY4', 'What Does HRMS Mean? Benefits &amp; Implementation', 'Understand how HRMS eliminates manual spreadsheets and simplifies employee lifecycle.', 'Business Value')">
+                            <div class="card-thumb-wrap bg-3">
+                                <div class="thumb-bg">
+                                    <i class="bi bi-cash-coin"></i>
+                                </div>
+                                <div class="card-play-icon">
+                                    <i class="bi bi-play-fill"></i>
+                                </div>
+                                <span class="video-duration">Walkthrough</span>
+                            </div>
+                            <div class="video-card-body">
+                                <span class="video-category-tag">Benefits</span>
+                                <h4>What Does HRMS Mean? Business Benefits</h4>
+                                <p>Discover how transitioning to an HRMS saves hundreds of administrative hours annually.</p>
+                                <span class="watch-link">
+                                    Play Video <i class="bi bi-arrow-right"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA SECTION -->
+            <section class="videos-cta-section">
+                <div class="videos-container">
+                    <div class="videos-cta-card">
+                        <div class="videos-cta-text">
+                            <h2>Ready to implement what you learned?</h2>
+                            <p>Get started with HR Attendance today and experience hassle-free employee, attendance, and payroll management.</p>
+                        </div>
+                        <div class="videos-cta-actions">
+                            <a asp-controller="Account" asp-action="Login" class="btn-cta-blue-white">
+                                Get Started Free <i class="bi bi-arrow-right"></i>
+                            </a>
+                            <a asp-controller="Footer" asp-action="ContactUs" class="btn-cta-blue-glass">
+                                Request Live Demo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            // Default HRMS explainer video (YouTube embed URL)
+            var currentVideoId = "uu-j7zXGEPA";
+
+            function playHrmsVideo(videoId) {
+                var playerContainer = document.getElementById('mainVideoPlayer');
+                var iframe = document.getElementById('videoIframe');
+                
+                var idToPlay = videoId || currentVideoId;
+                var embedUrl = "https://www.youtube.com/embed/" + idToPlay + "?autoplay=1&rel=0&modestbranding=1";
+                
+                iframe.src = embedUrl;
+                playerContainer.classList.add('playing');
+            }
+
+            function switchVideo(videoId, title, desc, metaCategory) {
+                currentVideoId = videoId;
+                
+                // Update player metadata text
+                document.getElementById('currentVideoTitle').innerText = title;
+                document.getElementById('currentVideoDesc').innerText = desc;
+                document.getElementById('metaVideoTitle').innerText = title;
+                
+                // Scroll up smoothly to main video player
+                document.getElementById('mainVideoPlayer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                // Start playback immediately
+                playHrmsVideo(videoId);
+            }
+        </script>
+    }
+    else if (pageType == "policies")
+    {
+        <div class="policies-page">
+            <!-- HERO SECTION -->
+            <section class="policies-hero">
+                <div class="policies-container">
+                    <div class="policies-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index">Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Company</span>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Document &amp; Policies</span>
+                    </div>
+
+                    <div class="policies-badge">
+                        <span></span>
+                        Compliance &amp; Governance
+                    </div>
+
+                    <h1>
+                        Company Documents <span>&amp; HR Policies</span>
+                    </h1>
+                    <p>
+                        Official guidelines, workplace codes of conduct, leave regulations, data privacy terms, and standard operating procedures for all employees and administrators.
+                    </p>
+
+                    <!-- LIVE SEARCH BAR -->
+                    <div class="policies-search-wrap">
+                        <i class="bi bi-search policies-search-icon"></i>
+                        <input type="text"
+                               id="policySearchInput"
+                               class="policies-search-input"
+                               placeholder="Search policies (e.g. 'Leave', 'Attendance', 'Code of Conduct', 'Privacy')..."
+                               onkeyup="filterPolicies()" />
+                    </div>
+                </div>
+            </section>
+
+            <!-- CATEGORY FILTER TABS -->
+            <section class="policies-filter-section">
+                <div class="policies-container">
+                    <div class="policies-tabs">
+                        <button class="policy-tab-btn active" onclick="filterCategory('all', this)">
+                            <i class="bi bi-grid-fill"></i> All Policies
+                        </button>
+                        <button class="policy-tab-btn" onclick="filterCategory('attendance', this)">
+                            <i class="bi bi-fingerprint"></i> Attendance &amp; Time
+                        </button>
+                        <button class="policy-tab-btn" onclick="filterCategory('conduct', this)">
+                            <i class="bi bi-shield-check"></i> Code of Conduct
+                        </button>
+                        <button class="policy-tab-btn" onclick="filterCategory('compensation', this)">
+                            <i class="bi bi-cash-stack"></i> Payroll &amp; Benefits
+                        </button>
+                        <button class="policy-tab-btn" onclick="filterCategory('security', this)">
+                            <i class="bi bi-lock-fill"></i> Security &amp; IT
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- POLICIES & DOCUMENTS GRID -->
+            <section class="policies-list-section">
+                <div class="policies-container">
+                    <div class="policies-grid" id="policiesGrid">
+
+                        <!-- Policy 1: Attendance & Punctuality -->
+                        <div class="policy-card" data-category="attendance" data-title="attendance punctuality shift policy">
+                            <div class="policy-card-top">
+                                <div class="policy-card-icon green">
+                                    <i class="bi bi-clock-history"></i>
+                                </div>
+                                <span class="policy-category-badge">Attendance</span>
+                            </div>
+                            <h3>Attendance &amp; Punctuality Policy</h3>
+                            <p>Guidelines covering daily punch-in times, grace periods, core working hours, tardiness penalties, and absence notice rules.</p>
+                            <div class="policy-card-meta">
+                                <span><i class="bi bi-file-earmark-text"></i> PDF Doc</span>
+                                <span><i class="bi bi-calendar3"></i> Updated: Jan 2026</span>
+                            </div>
+                            <div class="policy-card-actions">
+                                <button type="button" class="btn-policy-view" onclick="openPolicyModal('attendance-policy')">
+                                    <i class="bi bi-eye"></i> View Policy
+                                </button>
+                                <button type="button" class="btn-policy-download" onclick="downloadPolicyNotice('Attendance & Punctuality Policy')" title="Download Document">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Policy 2: Leave & Holiday Policy -->
+                        <div class="policy-card" data-category="attendance" data-title="leave holiday casual sick earned pto policy">
+                            <div class="policy-card-top">
+                                <div class="policy-card-icon blue">
+                                    <i class="bi bi-calendar2-week"></i>
+                                </div>
+                                <span class="policy-category-badge">Leave &amp; Time-Off</span>
+                            </div>
+                            <h3>Annual Leave &amp; Time-Off Policy</h3>
+                            <p>Entitlement rules for Casual Leaves, Sick Leaves, Paid Vacations, public holiday calendars, and approval timelines.</p>
+                            <div class="policy-card-meta">
+                                <span><i class="bi bi-file-earmark-text"></i> PDF Doc</span>
+                                <span><i class="bi bi-calendar3"></i> Updated: Jan 2026</span>
+                            </div>
+                            <div class="policy-card-actions">
+                                <button type="button" class="btn-policy-view" onclick="openPolicyModal('leave-policy')">
+                                    <i class="bi bi-eye"></i> View Policy
+                                </button>
+                                <button type="button" class="btn-policy-download" onclick="downloadPolicyNotice('Annual Leave & Time-Off Policy')" title="Download Document">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Policy 3: Workplace Code of Conduct -->
+                        <div class="policy-card" data-category="conduct" data-title="workplace code of conduct ethics behavior">
+                            <div class="policy-card-top">
+                                <div class="policy-card-icon purple">
+                                    <i class="bi bi-people"></i>
+                                </div>
+                                <span class="policy-category-badge">Workplace</span>
+                            </div>
+                            <h3>Workplace Code of Conduct</h3>
+                            <p>Professional behavior standards, anti-harassment protections, anti-discrimination guidelines, and ethical standards.</p>
+                            <div class="policy-card-meta">
+                                <span><i class="bi bi-file-earmark-text"></i> PDF Doc</span>
+                                <span><i class="bi bi-calendar3"></i> Updated: Jan 2026</span>
+                            </div>
+                            <div class="policy-card-actions">
+                                <button type="button" class="btn-policy-view" onclick="openPolicyModal('conduct-policy')">
+                                    <i class="bi bi-eye"></i> View Policy
+                                </button>
+                                <button type="button" class="btn-policy-download" onclick="downloadPolicyNotice('Workplace Code of Conduct')" title="Download Document">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Policy 4: Payroll & Compensation -->
+                        <div class="policy-card" data-category="compensation" data-title="payroll salary compensation reimbursement bonus">
+                            <div class="policy-card-top">
+                                <div class="policy-card-icon orange">
+                                    <i class="bi bi-cash-coin"></i>
+                                </div>
+                                <span class="policy-category-badge">Compensation</span>
+                            </div>
+                            <h3>Payroll, Salary &amp; Reimbursement Policy</h3>
+                            <p>Information on monthly salary disbursement cycles, tax withholdings, allowance eligibility, overtime, and payslip access.</p>
+                            <div class="policy-card-meta">
+                                <span><i class="bi bi-file-earmark-text"></i> PDF Doc</span>
+                                <span><i class="bi bi-calendar3"></i> Updated: Jan 2026</span>
+                            </div>
+                            <div class="policy-card-actions">
+                                <button type="button" class="btn-policy-view" onclick="openPolicyModal('payroll-policy')">
+                                    <i class="bi bi-eye"></i> View Policy
+                                </button>
+                                <button type="button" class="btn-policy-download" onclick="downloadPolicyNotice('Payroll & Compensation Policy')" title="Download Document">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Policy 5: Data Privacy & Confidentiality -->
+                        <div class="policy-card" data-category="security" data-title="data privacy confidentiality nda security gdpr">
+                            <div class="policy-card-top">
+                                <div class="policy-card-icon red">
+                                    <i class="bi bi-shield-lock"></i>
+                                </div>
+                                <span class="policy-category-badge">Security</span>
+                            </div>
+                            <h3>Data Protection &amp; Confidentiality (NDA)</h3>
+                            <p>Standards for handling proprietary client information, data privacy, password protocols, and device usage terms.</p>
+                            <div class="policy-card-meta">
+                                <span><i class="bi bi-file-earmark-text"></i> PDF Doc</span>
+                                <span><i class="bi bi-calendar3"></i> Updated: Jan 2026</span>
+                            </div>
+                            <div class="policy-card-actions">
+                                <button type="button" class="btn-policy-view" onclick="openPolicyModal('security-policy')">
+                                    <i class="bi bi-eye"></i> View Policy
+                                </button>
+                                <button type="button" class="btn-policy-download" onclick="downloadPolicyNotice('Data Protection & Confidentiality Policy')" title="Download Document">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Policy 6: Remote Work & Hybrid Operations -->
+                        <div class="policy-card" data-category="conduct" data-title="remote work hybrid wfh policy operations">
+                            <div class="policy-card-top">
+                                <div class="policy-card-icon blue">
+                                    <i class="bi bi-laptop"></i>
+                                </div>
+                                <span class="policy-category-badge">Operations</span>
+                            </div>
+                            <h3>Remote &amp; Hybrid Work Policy</h3>
+                            <p>Eligibility criteria for Work-From-Home (WFH), communication availability expectations, home equipment safety, and check-in logs.</p>
+                            <div class="policy-card-meta">
+                                <span><i class="bi bi-file-earmark-text"></i> PDF Doc</span>
+                                <span><i class="bi bi-calendar3"></i> Updated: Jan 2026</span>
+                            </div>
+                            <div class="policy-card-actions">
+                                <button type="button" class="btn-policy-view" onclick="openPolicyModal('remote-policy')">
+                                    <i class="bi bi-eye"></i> View Policy
+                                </button>
+                                <button type="button" class="btn-policy-download" onclick="downloadPolicyNotice('Remote & Hybrid Work Policy')" title="Download Document">
+                                    <i class="bi bi-download"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- POLICY DETAIL MODAL -->
+            <div class="policy-modal-overlay" id="policyModalOverlay" onclick="closePolicyModal(event)">
+                <div class="policy-modal-dialog" onclick="event.stopPropagation()">
+                    <div class="policy-modal-header">
+                        <div>
+                            <span class="policy-category-badge" id="modalPolicyCat">Policy</span>
+                            <h3 id="modalPolicyTitle">Policy Title</h3>
+                        </div>
+                        <button type="button" class="policy-modal-close" onclick="closePolicyModal()">&times;</button>
+                    </div>
+                    <div class="policy-modal-body" id="modalPolicyBody">
+                        <!-- Dynamic policy content -->
+                    </div>
+                    <div class="policy-modal-footer">
+                        <span class="text-muted small"><i class="bi bi-shield-check text-success me-1"></i>Official Governance Document</span>
+                        <button type="button" class="btn btn-secondary px-4" onclick="closePolicyModal()">Close</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA SECTION -->
+            <section class="policies-cta-section">
+                <div class="policies-container">
+                    <div class="policies-cta-card">
+                        <div class="policies-cta-text">
+                            <h2>Questions about company policies?</h2>
+                            <p>Our HR compliance team is available to help clarify guidelines, documentation rules, or policy exceptions.</p>
+                        </div>
+                        <div class="policies-cta-actions">
+                            <a asp-controller="Footer" asp-action="ContactUs" class="btn-cta-policy-white">
+                                Contact HR Department <i class="bi bi-arrow-right"></i>
+                            </a>
+                            <a asp-controller="Footer" asp-action="HrHelp" class="btn-cta-policy-glass">
+                                HR Help Center
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <script>
+            var policyDetails = {
+                'attendance-policy': {
+                    category: 'Attendance & Time',
+                    title: 'Attendance & Punctuality Policy',
+                    body: `
+                        <h5>1. Purpose & Scope</h5>
+                        <p>This policy outlines punctuality standards, daily log-in and log-out obligations, and shift schedules for all employees of the organization.</p>
+                        
+                        <h5>2. Office Hours & Grace Period</h5>
+                        <ul>
+                            <li>Standard operating office hours are <strong>9:00 AM to 6:00 PM</strong> (Monday through Friday).</li>
+                            <li>A grace window of <strong>15 minutes</strong> is allowed for check-in. Arrivals past 9:15 AM without manager notice will be flagged as <em>Late</em>.</li>
+                            <li>Three consecutive unexplained late arrivals may result in half-day deduction.</li>
+                        </ul>
+
+                        <h5>3. Check-In & Check-Out Requirement</h5>
+                        <p>Every employee must record their official punch times via the HR Attendance dashboard. Proxy punch or login credential sharing is strictly prohibited.</p>
+                    `
+                },
+                'leave-policy': {
+                    category: 'Leave & Time-Off',
+                    title: 'Annual Leave & Time-Off Policy',
+                    body: `
+                        <h5>1. Purpose & Entitlements</h5>
+                        <p>To provide healthy work-life balance through paid time off while ensuring continuous business operations.</p>
+                        
+                        <h5>2. Categories of Leave</h5>
+                        <ul>
+                            <li><strong>Casual Leave (CL):</strong> 12 days per calendar year for personal affairs and family occasions.</li>
+                            <li><strong>Sick Leave (SL):</strong> 10 days per year for medical recovery (medical certificate required for > 2 consecutive days).</li>
+                            <li><strong>Annual Vacation (Earned Leave):</strong> Accrued monthly, usable for planned holidays with 2 weeks advance notice.</li>
+                        </ul>
+
+                        <h5>3. Application & Approval Process</h5>
+                        <p>All leaves must be submitted electronically via the HR portal. Reporting managers must review and approve before the commencement of time off.</p>
+                    `
+                },
+                'conduct-policy': {
+                    category: 'Workplace Ethics',
+                    title: 'Workplace Code of Conduct',
+                    body: `
+                        <h5>1. Core Philosophy</h5>
+                        <p>We are committed to maintaining a safe, inclusive, collaborative, and dignified environment for every team member regardless of background.</p>
+                        
+                        <h5>2. Anti-Harassment & Non-Discrimination</h5>
+                        <ul>
+                            <li>Zero tolerance for verbal, physical, or digital harassment or discrimination.</li>
+                            <li>Open-door grievance escalation directly to senior HR leadership with strict anti-retaliation protection.</li>
+                        </ul>
+
+                        <h5>3. Professional Integrity</h5>
+                        <p>Team members must protect company assets, treat colleagues with respect, and avoid conflicts of interest with external contractors.</p>
+                    `
+                },
+                'payroll-policy': {
+                    category: 'Compensation & Benefits',
+                    title: 'Payroll, Salary & Reimbursement Policy',
+                    body: `
+                        <h5>1. Payout Schedule</h5>
+                        <p>Salaries are processed and disbursed on the <strong>last working day of each calendar month</strong> directly via direct bank transfer.</p>
+                        
+                        <h5>2. Salary Components</h5>
+                        <ul>
+                            <li><strong>Basic Pay:</strong> 50% of Total CTC component.</li>
+                            <li><strong>HRA:</strong> 40-50% allowance based on metropolitan residency.</li>
+                            <li><strong>Other Allowances:</strong> Special allowances, conveyance, and performance incentives.</li>
+                            <li><strong>Statutory Deductions:</strong> Applicable tax (TDS) and provident fund contributions.</li>
+                        </ul>
+
+                        <h5>3. Salary Slip Access</h5>
+                        <p>Itemized printable salary slips are generated immediately following payroll authorization and accessible through the user profile.</p>
+                    `
+                },
+                'security-policy': {
+                    category: 'Security & NDA',
+                    title: 'Data Protection & Confidentiality Policy',
+                    body: `
+                        <h5>1. Confidential Company Data</h5>
+                        <p>All source code, financial reports, client databases, and internal communications are strictly classified as proprietary assets.</p>
+                        
+                        <h5>2. Information Security Protocols</h5>
+                        <ul>
+                            <li>Mandatory use of multi-factor authentication (MFA) and strong passwords.</li>
+                            <li>Prohibition of copying client or employee personal data onto unapproved personal drives or third-party servers.</li>
+                            <li>Immediate reporting of lost devices or security breaches to the IT department within 2 hours.</li>
+                        </ul>
+                    `
+                },
+                'remote-policy': {
+                    category: 'Operations',
+                    title: 'Remote & Hybrid Work Policy',
+                    body: `
+                        <h5>1. Eligibility & Core Principles</h5>
+                        <p>Hybrid and remote work arrangements are offered to foster productivity while preserving team connectivity and accountability.</p>
+                        
+                        <h5>2. Operating Guidelines</h5>
+                        <ul>
+                            <li>Remote team members must be available on communication channels (Slack/Email/Phone) during core collaboration hours (10:00 AM - 5:00 PM).</li>
+                            <li>Daily attendance logs (check-in and check-out) must be entered via the HR Attendance dashboard just like on-site work.</li>
+                            <li>High-speed internet connection and quiet working workspace required for client calls.</li>
+                        </ul>
+                    `
+                }
+            };
+
+            function openPolicyModal(key) {
+                var p = policyDetails[key];
+                if (!p) return;
+
+                document.getElementById('modalPolicyCat').innerText = p.category;
+                document.getElementById('modalPolicyTitle').innerText = p.title;
+                document.getElementById('modalPolicyBody').innerHTML = p.body;
+
+                var overlay = document.getElementById('policyModalOverlay');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closePolicyModal(e) {
+                if (e && e.target && e.target !== document.getElementById('policyModalOverlay')) {
+                    return;
+                }
+                var overlay = document.getElementById('policyModalOverlay');
+                overlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            function downloadPolicyNotice(policyName) {
+                alert("Downloading: " + policyName + "\n\nIn a production environment, this triggers a direct PDF download of the signed company governance document.");
+            }
+
+            function filterCategory(cat, btn) {
+                // Update active tab button
+                var btns = document.querySelectorAll('.policy-tab-btn');
+                btns.forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+
+                var cards = document.querySelectorAll('.policy-card');
+                cards.forEach(function(card) {
+                    if (cat === 'all' || card.getAttribute('data-category') === cat) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            function filterPolicies() {
+                var q = document.getElementById('policySearchInput').value.toLowerCase().trim();
+                var cards = document.querySelectorAll('.policy-card');
+
+                cards.forEach(function(card) {
+                    var title = card.getAttribute('data-title') || '';
+                    var text = card.textContent.toLowerCase();
+                    if (title.includes(q) || text.includes(q)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+        </script>
+    }
     else
     {
-
         <!-- =========================================================
              YOUR EXISTING CODE - UNCHANGED
              ========================================================= -->

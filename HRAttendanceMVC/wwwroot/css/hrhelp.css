@@ -1,0 +1,781 @@
+/* =========================================================
+   HR HELP & SUPPORT CENTER - STYLING
+   ========================================================= */
+
+.hrhelp-page {
+    width: 100%;
+    background: #ffffff;
+    color: #241e30;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    overflow-x: hidden;
+}
+
+.hrhelp-page * {
+    box-sizing: border-box;
+}
+
+.hrhelp-container {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+}
+
+/* =========================================================
+   HERO & SEARCH SECTION
+   ========================================================= */
+
+.hrhelp-hero {
+    position: relative;
+    padding: 40px 0 85px;
+    background: radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.16), transparent 28%),
+                radial-gradient(circle at 10% 85%, rgba(255, 255, 255, 0.12), transparent 30%),
+                linear-gradient(135deg, #026b48 0%, #07834b 45%, #0ea462 80%, #2ecc71 100%);
+    color: #ffffff;
+    overflow: hidden;
+    text-align: center;
+}
+
+.hrhelp-hero::before {
+    content: "";
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    top: -160px;
+    right: -120px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+
+.hrhelp-hero::after {
+    content: "";
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    bottom: -170px;
+    left: -100px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+
+.hrhelp-breadcrumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-bottom: 35px;
+}
+
+.hrhelp-breadcrumb a {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    transition: color 0.2s;
+}
+
+.hrhelp-breadcrumb a:hover {
+    color: #ffffff !important;
+}
+
+.hrhelp-breadcrumb i {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.hrhelp-breadcrumb span {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.hrhelp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+    backdrop-filter: blur(4px);
+}
+
+.hrhelp-badge span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fed766;
+    box-shadow: 0 0 10px #fed766;
+}
+
+.hrhelp-hero h1 {
+    font-size: clamp(32px, 4.2vw, 48px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 auto 16px;
+    max-width: 820px;
+}
+
+.hrhelp-hero h1 span {
+    color: #fed766;
+}
+
+.hrhelp-hero p {
+    font-size: 17px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 auto 35px;
+    max-width: 640px;
+}
+
+/* Quick Search Box */
+.hrhelp-search-container {
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.hrhelp-search-box {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 8px 10px 8px 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.hrhelp-search-box:focus-within {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.28);
+}
+
+.hrhelp-search-box i.search-icon {
+    font-size: 20px;
+    color: #07834b;
+    margin-right: 14px;
+}
+
+.hrhelp-search-box input {
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 16px;
+    color: #241e30;
+    background: transparent;
+}
+
+.hrhelp-search-box input::placeholder {
+    color: #928b9b;
+}
+
+.hrhelp-search-box button {
+    background: #07834b;
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+.hrhelp-search-box button:hover {
+    background: #056a3c;
+    transform: scale(1.02);
+}
+
+.hrhelp-tags {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.hrhelp-tags a {
+    color: #ffffff;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.16);
+    padding: 4px 12px;
+    border-radius: 20px;
+    transition: background 0.2s;
+    font-weight: 500;
+}
+
+.hrhelp-tags a:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* =========================================================
+   TOP HELP TOPICS (CATEGORIES)
+   ========================================================= */
+
+.hrhelp-topics-section {
+    padding: 85px 0 60px;
+    background: #ffffff;
+}
+
+.hrhelp-section-header {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 55px;
+}
+
+.hrhelp-badge-label {
+    display: inline-block;
+    color: #07834b;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+}
+
+.hrhelp-section-header h2 {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    color: #1a1523;
+    margin: 0 0 12px;
+}
+
+.hrhelp-section-header p {
+    font-size: 16px;
+    color: #6d6677;
+    margin: 0;
+}
+
+.hrhelp-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 25px;
+}
+
+.hrhelp-card {
+    background: #ffffff;
+    border: 1px solid #e7efe9;
+    border-radius: 20px;
+    padding: 32px 26px;
+    text-align: left;
+    transition: all 0.25s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.03);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.hrhelp-card:hover {
+    transform: translateY(-6px);
+    border-color: #07834b;
+    box-shadow: 0 16px 36px rgba(7, 131, 75, 0.12);
+}
+
+.hrhelp-card-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    margin-bottom: 22px;
+    transition: transform 0.2s;
+}
+
+.hrhelp-card:hover .hrhelp-card-icon {
+    transform: scale(1.08);
+}
+
+.hrhelp-card-icon.icon-green  { background: #e4f7ed; color: #07834b; }
+.hrhelp-card-icon.icon-purple { background: #f4e7fa; color: #8d00b8; }
+.hrhelp-card-icon.icon-blue   { background: #e4f2fb; color: #1266a5; }
+.hrhelp-card-icon.icon-orange { background: #fff0dd; color: #c96a00; }
+
+.hrhelp-card h3 {
+    font-size: 19px;
+    font-weight: 700;
+    color: #1a1523;
+    margin: 0 0 10px;
+}
+
+.hrhelp-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #655e70;
+    margin: 0 0 20px;
+    flex: 1;
+}
+
+.hrhelp-card-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid #f0f4f1;
+    padding-top: 16px;
+}
+
+.hrhelp-card-links li {
+    margin-bottom: 10px;
+}
+
+.hrhelp-card-links li:last-child {
+    margin-bottom: 0;
+}
+
+.hrhelp-card-links a {
+    color: #07834b;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.hrhelp-card-links a:hover {
+    color: #056a3c;
+    transform: translateX(4px);
+}
+
+.hrhelp-card-links a i {
+    font-size: 11px;
+}
+
+/* =========================================================
+   STEP-BY-STEP GUIDES (WORKFLOWS)
+   ========================================================= */
+
+.hrhelp-guides-section {
+    padding: 85px 0;
+    background: #fbfdfc;
+    border-top: 1px solid #eef4f0;
+    border-bottom: 1px solid #eef4f0;
+}
+
+.hrhelp-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+.hrhelp-step-item {
+    background: #ffffff;
+    border: 1px solid #e7efe9;
+    border-radius: 18px;
+    padding: 30px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s;
+}
+
+.hrhelp-step-item:hover {
+    transform: translateY(-4px);
+}
+
+.step-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #07834b;
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 18px;
+}
+
+.hrhelp-step-item h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1523;
+    margin: 0 0 10px;
+}
+
+.hrhelp-step-item p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #655e70;
+    margin: 0;
+}
+
+/* =========================================================
+   FREQUENTLY ASKED QUESTIONS (FAQ)
+   ========================================================= */
+
+.hrhelp-faq-section {
+    padding: 90px 0;
+    background: #ffffff;
+}
+
+.faq-accordion {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+.faq-item {
+    border: 1px solid #e7efe9;
+    border-radius: 14px;
+    margin-bottom: 16px;
+    background: #ffffff;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.faq-item:hover {
+    border-color: #07834b;
+}
+
+.faq-header {
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    background: #ffffff;
+    user-select: none;
+    transition: background 0.2s;
+}
+
+.faq-header:hover {
+    background: #f7faf8;
+}
+
+.faq-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1523;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.faq-header h4 i {
+    color: #07834b;
+    font-size: 18px;
+}
+
+.faq-toggle-icon {
+    font-size: 16px;
+    color: #07834b;
+    transition: transform 0.25s ease;
+}
+
+.faq-body {
+    padding: 0 24px 22px 54px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #5c5666;
+    display: none;
+    border-top: 1px solid #f2f6f3;
+    margin-top: 5px;
+    padding-top: 16px;
+}
+
+.faq-item.active .faq-body {
+    display: block;
+}
+
+.faq-item.active .faq-toggle-icon {
+    transform: rotate(180deg);
+}
+
+.faq-item.active {
+    border-color: #07834b;
+    box-shadow: 0 6px 22px rgba(7, 131, 75, 0.08);
+}
+
+/* =========================================================
+   CONTACT SUPPORT BAR
+   ========================================================= */
+
+.hrhelp-support-section {
+    padding: 80px 0;
+    background: #ffffff;
+}
+
+.hrhelp-support-card {
+    background: linear-gradient(135deg, #056a3c 0%, #07834b 60%, #16a085 100%);
+    border-radius: 24px;
+    padding: 55px 50px;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 20px 45px rgba(7, 131, 75, 0.25);
+}
+
+.hrhelp-support-text h2 {
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 800;
+    margin: 0 0 10px;
+}
+
+.hrhelp-support-text p {
+    font-size: 16px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 600px;
+}
+
+.hrhelp-support-actions {
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.btn-help-primary {
+    padding: 13px 26px;
+    background: #ffffff;
+    color: #07834b !important;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.btn-help-primary:hover {
+    transform: translateY(-3px);
+    color: #034b2a !important;
+}
+
+.btn-help-outline {
+    padding: 13px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s;
+}
+
+.btn-help-outline:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 991px) {
+    .hrhelp-support-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 30px;
+    }
+
+    .hrhelp-support-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .faq-body {
+        padding-left: 24px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hrhelp-hero {
+        padding: 25px 0 60px;
+    }
+
+    .hrhelp-search-box {
+        flex-direction: column;
+        padding: 14px;
+        gap: 12px;
+    }
+
+    .hrhelp-search-box button {
+        width: 100%;
+    }
+
+    .hrhelp-support-card {
+        padding: 30px 20px;
+    }
+}
+
+/* =========================================================
+   IN-PAGE HELP MODAL DIALOG (No page navigation)
+   ========================================================= */
+
+.hrhelp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.hrhelp-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.hrhelp-modal-dialog {
+    background: #ffffff;
+    border-radius: 24px;
+    width: min(650px, 100%);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.28);
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+
+.hrhelp-modal-overlay.show .hrhelp-modal-dialog {
+    transform: translateY(0) scale(1);
+}
+
+.hrhelp-modal-header {
+    padding: 24px 28px;
+    background: #f8fafc;
+    border-bottom: 1px solid #eef2f6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hrhelp-modal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.hrhelp-modal-icon.icon-green  { background: #e4f7ed; color: #07834b; }
+.hrhelp-modal-icon.icon-purple { background: #f4e7fa; color: #8d00b8; }
+.hrhelp-modal-icon.icon-blue   { background: #e4f2fb; color: #1266a5; }
+.hrhelp-modal-icon.icon-orange { background: #fff0dd; color: #c96a00; }
+
+.hrhelp-modal-tag {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #07834b;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.hrhelp-modal-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a1523;
+}
+
+.hrhelp-modal-close {
+    background: transparent;
+    border: none;
+    font-size: 32px;
+    line-height: 1;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s, color 0.2s;
+}
+
+.hrhelp-modal-close:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.hrhelp-modal-body {
+    padding: 28px;
+    overflow-y: auto;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #475569;
+}
+
+.modal-feature-preview h5 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 10px;
+}
+
+.modal-feature-preview p {
+    margin-bottom: 20px;
+    color: #64748b;
+}
+
+.preview-info-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px 24px;
+}
+
+.preview-info-box h6 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.preview-info-box ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.preview-info-box li {
+    margin-bottom: 10px;
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.preview-info-box li:last-child {
+    margin-bottom: 0;
+}
+
+.preview-info-box code {
+    background: #e2e8f0;
+    color: #0f172a;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.hrhelp-modal-footer {
+    padding: 16px 28px;
+    background: #f8fafc;
+    border-top: 1px solid #eef2f6;
+    display: flex;
+    justify-content: flex-end;
+}

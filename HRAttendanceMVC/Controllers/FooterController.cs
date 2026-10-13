@@ -1,4 +1,4 @@
-﻿using HRAttendanceMVC.Application.Interfaces;
+using HRAttendanceMVC.Application.Interfaces;
 using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -99,12 +99,12 @@ namespace HRAttendanceMVC.Controllers
 
         public IActionResult WhatIsHrms()
         {
-            return Page(
-                "What is HRMS?",
-                "Human Resource Management System",
-                "HRMS is a centralized system that helps organizations manage employees, attendance, leave, payroll and HR processes.",
-                 "purple"
-            );
+            ViewBag.Title = "What is HRMS?";
+            ViewBag.Subtitle = "Complete Guide to Human Resource Management Systems";
+            ViewBag.Description = "An HRMS (Human Resource Management System) is an all-in-one software solution that automates employee databases, daily attendance tracking, leave policies, and monthly payroll in one unified platform.";
+            ViewBag.Theme = "purple";
+            ViewBag.PageType = "whatishrms";
+            return View("Page");
         }
 
 
@@ -114,7 +114,7 @@ namespace HRAttendanceMVC.Controllers
                 "Guide to Leave Management",
                 "Manage Employee Leave Efficiently",
                 "Learn how organizations can simplify leave policies, approvals, balances and leave reporting.",
-                 "dark"
+                 "blue"
             );
         }
 
@@ -195,23 +195,23 @@ namespace HRAttendanceMVC.Controllers
 
         public IActionResult HrHelp()
         {
-            return Page(
-                "HR Help",
-                "We're Here to Help",
-                "Find helpful information and support for managing your HR Attendance system.",
-                       "green"
-            );
+            ViewBag.Title = "HR Help & Support Center";
+            ViewBag.Subtitle = "Everything you need to manage attendance, employees, leaves, and payroll";
+            ViewBag.Description = "Find instant answers, step-by-step guides, troubleshooting tips, and connect with our dedicated HR support team.";
+            ViewBag.Theme = "purple";
+            ViewBag.PageType = "hrhelp";
+            return View("Page");
         }
 
 
         public IActionResult Videos()
         {
-            return Page(
-                "Videos",
-                "Learn With HR Videos",
-                "Watch useful videos and tutorials about HR management, attendance and employee management.",
-                     "blue"
-            );
+            ViewBag.Title = "HR Video Tutorials & Demos";
+            ViewBag.Subtitle = "Learn HR Management Systems through Interactive Video Walkthroughs";
+            ViewBag.Description = "Watch comprehensive video guides explaining how Human Resource Management Systems work, streamline daily attendance, approve leaves, and calculate monthly payroll.";
+            ViewBag.Theme = "blue";
+            ViewBag.PageType = "videos";
+            return View("Page");
         }
 
 
@@ -221,12 +221,12 @@ namespace HRAttendanceMVC.Controllers
 
         public IActionResult About()
         {
-            return Page(
-                "About Us",
-                "About HR Attendance",
-                "HR Attendance helps organizations simplify employee management, attendance, leave and HR operations.",
-                        "pink"
-            );
+            ViewBag.Title = "About Us";
+            ViewBag.Subtitle = "Empowering Workplaces Through Intelligent HR Solutions";
+            ViewBag.Description = "HR Attendance is a modern, all-in-one workforce management platform designed to automate attendance tracking, streamline leave operations, and simplify employee management.";
+            ViewBag.Theme = "purple";
+            ViewBag.PageType = "about";
+            return View("Page");
         }
 
 
@@ -260,6 +260,16 @@ namespace HRAttendanceMVC.Controllers
                 "Explore opportunities to work on modern HR technology and build solutions for businesses.",
                 "purple"
             );
+        }
+
+        public IActionResult DocumentsAndPolicies()
+        {
+            ViewBag.Title = "Documents & Company Policies";
+            ViewBag.Subtitle = "Official HR Governance, Compliance & Workplace Guidelines";
+            ViewBag.Description = "Access essential employee documents, workplace codes of conduct, leave & attendance policies, data privacy terms, and standard operating procedures.";
+            ViewBag.Theme = "purple";
+            ViewBag.PageType = "policies";
+            return View("Page");
         }
         public IActionResult Pricing()
         {

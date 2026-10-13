@@ -56,6 +56,7 @@
                                 <li><a class="dropdown-item" asp-controller="Attendance" asp-action="Index">Attendance</a></li>
                                 <li><a class="dropdown-item" asp-controller="LeaveType" asp-action="Index">Leave Types</a></li>
                                 <li><a class="dropdown-item" asp-controller="LeaveRequest" asp-action="Index">Leave Requests</a></li>
+                                <li><a class="dropdown-item" asp-controller="Payroll" asp-action="Index">Payroll</a></li>
                             }
                             else if (User.IsInRole("Employee"))
                             {
@@ -71,7 +72,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle color_pink" href="javascript:void(0);" role="button" aria-expanded="false">
                             <span class="d-none d-xl-inline">Resources</span>
-                            <span class="d-inline d-xl-none">HR & Payroll Administration</span>
+                            <span class="d-inline d-xl-none">Resources</span>
                         </a>  
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" asp-controller="Footer" asp-action="WhatIsHrms">What is HRMS?</a></li>
@@ -112,8 +113,8 @@
                             <li><a class="dropdown-item" asp-controller="Footer" asp-action="About">About</a></li>
                             @* <li><a class="dropdown-item" asp-controller="Footer" asp-action="Customers">Customers</a></li> *@
                             @* <li><a class="dropdown-item" asp-controller="Footer" asp-action="Partners">Partners</a></li> *@
-                            @* <li><a class="dropdown-item" asp-controller="Footer" asp-action="Careers">Careers</a></li> *@
                             <li><a class="dropdown-item" asp-controller="Footer" asp-action="ContactUs">Contact us</a></li>
+                            <li><a class="dropdown-item" asp-controller="Footer" asp-action="DocumentsAndPolicies">Document &amp; Policies</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -140,16 +141,17 @@
         </div>
     </nav>
 
-    <!-- Main Dynamic Content Container -->
-    <main class="container p-4">
+    <!-- Floating Alert Notification Container (Prevents Page Up-Down Layout Shift) -->
+    <div class="toast-notification-wrapper" aria-live="polite" aria-atomic="true">
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show auto-hide-alert"
                  role="alert"
-                 data-auto-hide="3000">
-
-                @TempData["Success"]
-
+                 data-auto-hide="4000">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-circle-check fs-5 me-2 text-success"></i>
+                    <span>@TempData["Success"]</span>
+                </div>
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="alert"
@@ -162,10 +164,11 @@
         {
             <div class="alert alert-danger alert-dismissible fade show auto-hide-alert"
                  role="alert"
-                 data-auto-hide="3000">
-
-                @TempData["Error"]
-
+                 data-auto-hide="4000">
+                <div class="d-flex align-items-center">
+                    <i class="fa-solid fa-triangle-exclamation fs-5 me-2 text-danger"></i>
+                    <span>@TempData["Error"]</span>
+                </div>
                 <button type="button"
                         class="btn-close"
                         data-bs-dismiss="alert"
@@ -173,6 +176,10 @@
                 </button>
             </div>
         }
+    </div>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="container p-4">
         @RenderBody()
 
         <footer class="footer-section">
@@ -207,6 +214,11 @@
                             </a>
                         </li>
 
+                        <li>
+                            <a asp-controller="Payroll" asp-action="Index">
+                                Payroll
+                            </a>
+                        </li>
 
                         <li>
                             <a asp-controller="Footer" asp-action="HrServiceStatus">
@@ -370,6 +382,12 @@
                         </li>
 
                         <li>
+                            <a asp-controller="Footer" asp-action="DocumentsAndPolicies">
+                                Document &amp; Policies
+                            </a>
+                        </li>
+
+                        <li>
                             <a asp-controller="Footer" asp-action="ContactUs">
                                 Contact us
                             </a>
@@ -438,25 +456,22 @@
 
     <script>
 
-            // Auto hide Success / Error messages
-             document.querySelectorAll('.auto-hide-alert').forEach(function (alert) {
+            // Auto hide Success / Error messages smoothly
+            document.querySelectorAll('.auto-hide-alert').forEach(function (alert) {
+                const hideTime = parseInt(alert.getAttribute('data-auto-hide')) || 4000;
 
-              const hideTime = parseInt(
-             alert.getAttribute('data-auto-hide')
-             ) || 3000;
+                setTimeout(function () {
+                    // Bootstrap fade out
+                    alert.classList.remove('show');
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-15px)';
 
-             setTimeout(function () {
-
-             // Bootstrap fade effect
-              alert.classList.remove('show');
-
-             // Completely remove after fade
-             setTimeout(function () {
-             alert.remove();
-          }, 3000);
-
-       }, hideTime);
-    });
+                    // Remove after fade transition finishes (400ms)
+                    setTimeout(function () {
+                        alert.remove();
+                    }, 400);
+                }, hideTime);
+            });
         document.addEventListener('DOMContentLoaded', function () {
             const dropdownToggles = document.querySelectorAll('.navbar-custom .dropdown-toggle');
 

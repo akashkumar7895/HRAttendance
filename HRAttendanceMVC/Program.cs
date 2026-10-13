@@ -1,4 +1,4 @@
-﻿using HRAttendanceMVC.Infrastructure.Interfaces;
+using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using HRAttendanceMVC.Infrastructure.Data;
@@ -40,7 +40,10 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAuthService, AuthService>(); // <--- Fix 2
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
+builder.Services.AddScoped<IPayrollRepository, PayrollRepository>();
+
 builder.Services.AddScoped<IContactService, ContactService>();
+builder.Services.AddScoped<IPayrollService, PayrollService>();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())

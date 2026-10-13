@@ -1,0 +1,188 @@
+@model HRAttendanceMVC.Domain.Enities.Payroll
+
+@{
+    ViewData["Title"] = "Add Payroll";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0"><i class="bi bi-plus-circle me-2 text-success"></i>Add Payroll</h2>
+        <small class="text-muted">Create a new payroll record</small>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">
+        <i class="bi bi-arrow-left me-1"></i>Back to List
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white py-3">
+                <h5 class="mb-0"><i class="bi bi-cash-coin me-2"></i>Payroll Details</h5>
+            </div>
+            <div class="card-body p-4">
+
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" style="display:none"></div>
+                    @if (ViewData.ModelState.ErrorCount > 0)
+                    {
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <!-- Employee -->
+                    <div class="mb-3">
+                        <label asp-for="EmployeeId" class="form-label fw-semibold">
+                            <i class="bi bi-person me-1 text-success"></i>Employee
+                        </label>
+                        <select asp-for="EmployeeId"
+                                asp-items="ViewBag.EmployeeList"
+                                class="form-select">
+                            <option value="">-- Select Employee --</option>
+                        </select>
+                        <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Month & Year -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Month" class="form-label fw-semibold">
+                                <i class="bi bi-calendar me-1 text-success"></i>Month
+                            </label>
+                            <select asp-for="Month"
+                                    asp-items="ViewBag.MonthList"
+                                    class="form-select">
+                            </select>
+                            <span asp-validation-for="Month" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Year" class="form-label fw-semibold">
+                                <i class="bi bi-calendar3 me-1 text-success"></i>Year
+                            </label>
+                            <select asp-for="Year"
+                                    asp-items="ViewBag.YearList"
+                                    class="form-select">
+                            </select>
+                            <span asp-validation-for="Year" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Salary Components -->
+                    <hr class="my-3" />
+                    <h6 class="text-success mb-3"><i class="bi bi-currency-rupee me-1"></i>Salary Components</h6>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="BasicSalary" class="form-label fw-semibold">Basic Salary (₹)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input asp-for="BasicSalary"
+                                       class="form-control"
+                                       type="number"
+                                       step="0.01"
+                                       min="0"
+                                       placeholder="0.00"
+                                       id="basicSalary"
+                                       oninput="calcNet()" />
+                            </div>
+                            <span asp-validation-for="BasicSalary" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="HRA" class="form-label fw-semibold">HRA (₹)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input asp-for="HRA"
+                                       class="form-control"
+                                       type="number"
+                                       step="0.01"
+                                       min="0"
+                                       placeholder="0.00"
+                                       id="hra"
+                                       oninput="calcNet()" />
+                            </div>
+                            <span asp-validation-for="HRA" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="OtherAllowances" class="form-label fw-semibold">Other Allowances (₹)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input asp-for="OtherAllowances"
+                                       class="form-control"
+                                       type="number"
+                                       step="0.01"
+                                       min="0"
+                                       placeholder="0.00"
+                                       id="allowances"
+                                       oninput="calcNet()" />
+                            </div>
+                            <span asp-validation-for="OtherAllowances" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Deductions" class="form-label fw-semibold">Deductions (₹)</label>
+                            <div class="input-group">
+                                <span class="input-group-text text-danger">-₹</span>
+                                <input asp-for="Deductions"
+                                       class="form-control"
+                                       type="number"
+                                       step="0.01"
+                                       min="0"
+                                       placeholder="0.00"
+                                       id="deductions"
+                                       oninput="calcNet()" />
+                            </div>
+                            <span asp-validation-for="Deductions" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <!-- Net Salary Preview -->
+                    <div class="alert alert-success d-flex justify-content-between align-items-center py-2 mb-3">
+                        <span class="fw-semibold"><i class="bi bi-calculator me-1"></i>Net Salary (Preview)</span>
+                        <span class="fs-5 fw-bold" id="netPreview">₹0.00</span>
+                    </div>
+
+                    <!-- Remarks -->
+                    <div class="mb-4">
+                        <label asp-for="Remarks" class="form-label fw-semibold">Remarks</label>
+                        <textarea asp-for="Remarks"
+                                  class="form-control"
+                                  rows="2"
+                                  placeholder="Optional remarks..."></textarea>
+                        <span asp-validation-for="Remarks" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-success px-4">
+                            <i class="bi bi-save me-1"></i>Save Payroll
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function calcNet() {
+        const basic      = parseFloat(document.getElementById('basicSalary').value) || 0;
+        const hra        = parseFloat(document.getElementById('hra').value) || 0;
+        const allowances = parseFloat(document.getElementById('allowances').value) || 0;
+        const deductions = parseFloat(document.getElementById('deductions').value) || 0;
+        const net        = basic + hra + allowances - deductions;
+        document.getElementById('netPreview').textContent = '₹' + net.toLocaleString('en-IN', {minimumFractionDigits: 2});
+    }
+    calcNet();
+</script>
+}

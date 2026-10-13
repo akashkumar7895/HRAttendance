@@ -6,6 +6,7 @@ public interface IUnitOfWork : IDisposable
     IAttendanceRepository Attendances { get; }
     ILeaveRequestRepository LeaveRequests { get; }
     ILeaveTypeRepository LeaveTypes { get; }
+    IPayrollRepository Payrolls { get; }
 
     Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

@@ -56,7 +56,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                     b.HasIndex("EmployeeId", "AttendanceDate")
                         .IsUnique();
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendances", (string)null);
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.ContactMessage", b =>
@@ -95,7 +95,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactMessages");
+                    b.ToTable("ContactMessages", (string)null);
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.Employee", b =>
@@ -131,6 +131,9 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("HrUserId")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -148,10 +151,11 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeCode")
-                        .IsUnique();
+                    b.HasIndex("EmployeeCode");
 
-                    b.ToTable("Employees");
+                    b.HasIndex("HrUserId");
+
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.LeaveRequest", b =>
@@ -192,7 +196,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasIndex("LeaveTypeId");
 
-                    b.ToTable("LeaveRequests");
+                    b.ToTable("LeaveRequests", (string)null);
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.LeaveType", b =>
@@ -202,6 +206,9 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("HrUserId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -213,10 +220,63 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Name")
+                    b.HasIndex("HrUserId");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("LeaveTypes", (string)null);
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.Payroll", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("BasicSalary")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Deductions")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("HRA")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("HrUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("OtherAllowances")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Remarks")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId", "Month", "Year")
                         .IsUnique();
 
-                    b.ToTable("LeaveTypes");
+                    b.ToTable("Payrolls", (string)null);
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Entities.User", b =>
@@ -252,7 +312,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.Attendance", b =>
@@ -283,6 +343,17 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("LeaveType");
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.Payroll", b =>
+                {
+                    b.HasOne("HRAttendanceMVC.Domain.Enities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

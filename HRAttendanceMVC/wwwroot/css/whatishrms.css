@@ -1,0 +1,604 @@
+/* =========================================================
+   WHAT IS HRMS PAGE - MODERN INFORMATIVE STYLING
+   ========================================================= */
+
+.whatishrms-page {
+    width: 100%;
+    background: #ffffff;
+    color: #241e30;
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    overflow-x: hidden;
+}
+
+.whatishrms-page * {
+    box-sizing: border-box;
+}
+
+.hrms-container {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+}
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
+.hrms-hero {
+    position: relative;
+    padding: 40px 0 85px;
+    background: radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.16), transparent 28%),
+                radial-gradient(circle at 10% 85%, rgba(255, 255, 255, 0.12), transparent 30%),
+                linear-gradient(135deg, #5b0282 0%, #7d02a7 45%, #9b00d4 80%, #b825e6 100%);
+    color: #ffffff;
+    overflow: hidden;
+}
+
+.hrms-hero::before {
+    content: "";
+    position: absolute;
+    width: 440px;
+    height: 440px;
+    top: -160px;
+    right: -120px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+}
+
+.hrms-hero::after {
+    content: "";
+    position: absolute;
+    width: 340px;
+    height: 340px;
+    bottom: -170px;
+    left: -100px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+
+.hrms-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-bottom: 35px;
+}
+
+.hrms-breadcrumb a {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: none !important;
+    transition: color 0.2s;
+}
+
+.hrms-breadcrumb a:hover {
+    color: #ffffff !important;
+}
+
+.hrms-breadcrumb i {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.hrms-breadcrumb span {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.hrms-hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 50px;
+    align-items: center;
+}
+
+.hrms-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    backdrop-filter: blur(4px);
+}
+
+.hrms-badge span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00f2aa;
+    box-shadow: 0 0 10px #00f2aa;
+}
+
+.hrms-hero-content h1 {
+    font-size: clamp(32px, 3.8vw, 46px);
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 0 18px;
+}
+
+.hrms-hero-content h1 span {
+    color: #fed766;
+    display: block;
+}
+
+.hrms-hero-content p {
+    font-size: 17px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 32px;
+    max-width: 580px;
+}
+
+.hrms-hero-actions {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-hrms-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 28px;
+    background: #ffffff;
+    color: #7d02a7 !important;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s ease;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-hrms-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+    color: #5b0282 !important;
+}
+
+.btn-hrms-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s;
+    backdrop-filter: blur(4px);
+}
+
+.btn-hrms-outline:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Hero Feature Card */
+.hrms-hero-card {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 20px;
+    padding: 30px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+}
+
+.hrms-hero-card h4 {
+    font-size: 19px;
+    font-weight: 700;
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #ffffff;
+}
+
+.hrms-hero-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.hrms-hero-card li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.hrms-hero-card li:last-child {
+    margin-bottom: 0;
+}
+
+.hrms-hero-card li i {
+    color: #fed766;
+    font-size: 17px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* =========================================================
+   OVERVIEW / DEFINITION SECTION
+   ========================================================= */
+
+.hrms-overview-section {
+    padding: 85px 0 65px;
+    background: #ffffff;
+}
+
+.hrms-overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+
+.hrms-overview-text .hrms-tag {
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #8d00b8;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.hrms-overview-text h2 {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    line-height: 1.25;
+    color: #1a1523;
+    margin: 0 0 18px;
+}
+
+.hrms-overview-text h2 span {
+    color: #8d00b8;
+}
+
+.hrms-overview-text p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #5c5666;
+    margin-bottom: 18px;
+}
+
+.hrms-feature-frame {
+    background: #fbf9fd;
+    border: 1px solid #f0eaf3;
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.hrms-frame-item {
+    background: #ffffff;
+    border: 1px solid #eee7f2;
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.hrms-frame-item:last-child {
+    margin-bottom: 0;
+}
+
+.hrms-frame-item:hover {
+    transform: translateX(6px);
+    border-color: #8d00b8;
+}
+
+.frame-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.frame-icon.purple { background: #f4e7fa; color: #8d00b8; }
+.frame-icon.green  { background: #e4f7ed; color: #07834b; }
+.frame-icon.blue   { background: #e4f2fb; color: #1266a5; }
+.frame-icon.orange { background: #fff0dd; color: #c96a00; }
+
+.frame-details h5 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 3px;
+    color: #1a1523;
+}
+
+.frame-details p {
+    font-size: 13px;
+    color: #6d6677;
+    margin: 0;
+}
+
+/* =========================================================
+   KEY PILLARS SECTION
+   ========================================================= */
+
+.hrms-pillars-section {
+    padding: 85px 0;
+    background: #fbf9fd;
+    border-top: 1px solid #f0eaf3;
+    border-bottom: 1px solid #f0eaf3;
+}
+
+.hrms-section-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 55px;
+}
+
+.hrms-section-header h2 {
+    font-size: clamp(26px, 3.2vw, 36px);
+    font-weight: 800;
+    color: #1a1523;
+    margin: 0 0 12px;
+}
+
+.hrms-section-header p {
+    font-size: 16px;
+    color: #6d6677;
+    margin: 0;
+}
+
+.hrms-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 25px;
+}
+
+.hrms-pillar-card {
+    background: #ffffff;
+    border: 1px solid #ece4f0;
+    border-radius: 18px;
+    padding: 32px 26px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+    transition: all 0.25s ease;
+}
+
+.hrms-pillar-card:hover {
+    transform: translateY(-6px);
+    border-color: #8d00b8;
+    box-shadow: 0 14px 32px rgba(141, 0, 184, 0.08);
+}
+
+.pillar-icon-box {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.hrms-pillar-card h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1523;
+    margin: 0 0 10px;
+}
+
+.hrms-pillar-card p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #655e70;
+    margin: 0;
+}
+
+/* =========================================================
+   BEFORE VS AFTER HRMS COMPARISON
+   ========================================================= */
+
+.hrms-comparison-section {
+    padding: 85px 0;
+    background: #ffffff;
+}
+
+.comparison-table-wrapper {
+    background: #ffffff;
+    border: 1px solid #eee7f2;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+}
+
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th {
+    padding: 20px 24px;
+    font-size: 16px;
+    font-weight: 800;
+    text-align: left;
+}
+
+.comparison-table th.col-feature {
+    width: 30%;
+    background: #fbf9fd;
+    color: #1a1523;
+}
+
+.comparison-table th.col-manual {
+    width: 35%;
+    background: #fff4f4;
+    color: #c0392b;
+}
+
+.comparison-table th.col-hrms {
+    width: 35%;
+    background: #f4fbf7;
+    color: #07834b;
+}
+
+.comparison-table td {
+    padding: 18px 24px;
+    font-size: 14px;
+    line-height: 1.6;
+    border-bottom: 1px solid #f2edf5;
+}
+
+.comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+.comparison-table td.cell-feature {
+    font-weight: 700;
+    color: #241e30;
+    background: #fdfcfe;
+}
+
+.comparison-table td.cell-manual {
+    color: #7f8c8d;
+    background: #fffafa;
+}
+
+.comparison-table td.cell-manual i {
+    color: #e74c3c;
+    margin-right: 8px;
+}
+
+.comparison-table td.cell-hrms {
+    color: #27ae60;
+    font-weight: 600;
+    background: #fafefc;
+}
+
+.comparison-table td.cell-hrms i {
+    color: #2ecc71;
+    margin-right: 8px;
+}
+
+/* =========================================================
+   CTA SECTION
+   ========================================================= */
+
+.hrms-cta-section {
+    padding: 80px 0;
+    background: #ffffff;
+}
+
+.hrms-cta-card {
+    background: linear-gradient(135deg, #7d02a7 0%, #9b00d4 60%, #ba2be0 100%);
+    border-radius: 24px;
+    padding: 55px 50px;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 20px 45px rgba(125, 2, 167, 0.25);
+}
+
+.hrms-cta-text h2 {
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 800;
+    margin: 0 0 10px;
+}
+
+.hrms-cta-text p {
+    font-size: 16px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 600px;
+}
+
+.hrms-cta-actions {
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.btn-cta-white {
+    padding: 13px 26px;
+    background: #ffffff;
+    color: #7d02a7 !important;
+    font-weight: 700;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.btn-cta-white:hover {
+    transform: translateY(-3px);
+    color: #5b0282 !important;
+}
+
+.btn-cta-glass {
+    padding: 13px 24px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none !important;
+    transition: all 0.25s;
+}
+
+.btn-cta-glass:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
+
+@media (max-width: 991px) {
+    .hrms-hero-grid,
+    .hrms-overview-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .hrms-cta-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 40px 30px;
+    }
+
+    .hrms-cta-actions {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .comparison-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .comparison-table {
+        min-width: 650px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hrms-hero {
+        padding: 25px 0 60px;
+    }
+
+    .hrms-cta-card {
+        padding: 30px 20px;
+    }
+}

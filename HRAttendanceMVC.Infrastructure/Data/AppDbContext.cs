@@ -1,4 +1,4 @@
-﻿using HRAttendanceMVC.Domain.Enities;
+using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +17,7 @@ public class AppDbContext : DbContext
     public DbSet<LeaveRequest> LeaveRequests => Set<LeaveRequest>();
     public DbSet<User> Users => Set<User>();
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+    public DbSet<Payroll> Payrolls => Set<Payroll>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Employee>()
@@ -103,6 +104,43 @@ public class AppDbContext : DbContext
                 .IsRequired();
 
             
+        });
+
+        // Payroll configuration
+        modelBuilder.Entity<Payroll>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+
+            entity.HasOne(x => x.Employee)
+                .WithMany()
+                .HasForeignKey(x => x.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(x => new { x.EmployeeId, x.Month, x.Year })
+                .IsUnique();
+
+            entity.Property(x => x.BasicSalary)
+                .HasColumnType("decimal(18,2)");
+
+            entity.Property(x => x.HRA)
+                .HasColumnType("decimal(18,2)");
+
+            entity.Property(x => x.OtherAllowances)
+                .HasColumnType("decimal(18,2)");
+
+            entity.Property(x => x.Deductions)
+                .HasColumnType("decimal(18,2)");
+
+            entity.Property(x => x.Status)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            entity.Property(x => x.Remarks)
+                .HasMaxLength(500);
+
+            // NetSalary and MonthName are computed C# properties – not stored in DB
+            entity.Ignore(x => x.NetSalary);
+            entity.Ignore(x => x.MonthName);
         });
 
     }
