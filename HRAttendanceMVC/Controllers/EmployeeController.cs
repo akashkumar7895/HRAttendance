@@ -1,4 +1,4 @@
-﻿using HRAttendanceMVC.Application.Interfaces;
+using HRAttendanceMVC.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using HRAttendanceMVC.Domain.Enities;
@@ -21,7 +21,7 @@ public class EmployeeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var employees = await _employeeService.GetAllEmployeesAsync(CurrentHrUserId);
+        var employees = await _employeeService.GetAllEmployeesAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
         return View(employees);
     }
 
@@ -30,7 +30,7 @@ public class EmployeeController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Employee employee)
     {
-        employee.HrUserId = CurrentHrUserId;
+        employee.HrUserId = CurrentHrUserId > 0 ? CurrentHrUserId : 1;
 
         if (!ModelState.IsValid) return View(employee);
 
@@ -55,7 +55,8 @@ public class EmployeeController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var employee = await _employeeService.GetEmployeeByIdAsync(id);
-        if (employee == null || employee.HrUserId != CurrentHrUserId) return NotFound();
+        if (employee == null) return NotFound();
+        if (CurrentHrUserId > 0 && employee.HrUserId != CurrentHrUserId) return NotFound();
         return View(employee);
     }
 
@@ -63,7 +64,10 @@ public class EmployeeController : Controller
     public async Task<IActionResult> Edit(int id, Employee employee)
     {
         if (id != employee.Id) return BadRequest();
-        employee.HrUserId = CurrentHrUserId;
+        var existing = await _employeeService.GetEmployeeByIdAsync(id);
+        if (existing == null) return NotFound();
+        if (CurrentHrUserId > 0 && existing.HrUserId != CurrentHrUserId) return NotFound();
+        employee.HrUserId = existing.HrUserId;
         if (!ModelState.IsValid) return View(employee);
 
         var result = await _employeeService.UpdateEmployeeAsync(id, employee);
@@ -88,7 +92,8 @@ public class EmployeeController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var employee = await _employeeService.GetEmployeeByIdAsync(id);
-        if (employee == null || employee.HrUserId != CurrentHrUserId) return NotFound();
+        if (employee == null) return NotFound();
+        if (CurrentHrUserId > 0 && employee.HrUserId != CurrentHrUserId) return NotFound();
 
         var result = await _employeeService.DeleteEmployeeAsync(id);
         if (!result.Success)

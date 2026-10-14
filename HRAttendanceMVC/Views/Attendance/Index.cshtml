@@ -205,7 +205,7 @@
                 }
             </h5>
             <span class="badge bg-primary rounded-pill px-3 py-2" id="visibleRowCountBadge">
-                @Model.Count() records
+                @(Model?.Count() ?? 0) records
             </span>
         </div>
 

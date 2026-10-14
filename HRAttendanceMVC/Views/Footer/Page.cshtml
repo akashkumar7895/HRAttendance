@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     string title = ViewBag.Title ?? "HR Attendance";
@@ -56,6 +56,14 @@
 
 <link rel="stylesheet"
       href="~/css/policies.css"
+      asp-append-version="true" />
+
+<link rel="stylesheet"
+      href="~/css/engage.css"
+      asp-append-version="true" />
+
+<link rel="stylesheet"
+      href="~/css/guide-pages.css"
       asp-append-version="true" />
 
 <div class="footer-page @theme">
@@ -2401,6 +2409,1880 @@
                 });
             }
         </script>
+    }
+    else if (pageType == "engage")
+    {
+        var announcementsList = ViewBag.Announcements as List<CompanyAnnouncement> ?? new List<CompanyAnnouncement>();
+        var companyEventsList = ViewBag.CompanyEvents as List<CompanyEvent> ?? new List<CompanyEvent>();
+        var holidaysList = ViewBag.Holidays as List<CompanyEvent> ?? new List<CompanyEvent>();
+        var celebrationsList = ViewBag.Celebrations as List<EmployeeCelebration> ?? new List<EmployeeCelebration>();
+        var activeEmployeesList = ViewBag.ActiveEmployees as List<Employee> ?? new List<Employee>();
+        var postsList = ViewBag.Posts as List<EngagementPost> ?? new List<EngagementPost>();
+
+        var nextHoliday = holidaysList.Where(h => h.EventDate.Date >= DateTime.Today).OrderBy(h => h.EventDate).FirstOrDefault();
+        var totalEvents = companyEventsList.Count + holidaysList.Count;
+        var totalMilestones = celebrationsList.Count + activeEmployeesList.Count;
+        bool isHr = User.IsInRole("HR");
+
+        <!-- =========================================================
+             ENGAGE PAGE - DYNAMIC ACTIVITIES, NEWS & EVENTS
+             ========================================================= -->
+        <div class="engage-page">
+
+            <!-- HERO SECTION -->
+            <section class="engage-hero">
+                <div class="engage-container">
+                    <div class="engage-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index"><i class="bi bi-house-door me-1"></i>Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Company</span>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Engage</span>
+                    </div>
+
+                    <div class="engage-hero-content">
+                        <div class="engage-hero-text">
+                            <div class="engage-badge">
+                                <span class="dot"></span>
+                                Workplace Community &amp; Culture Hub
+                            </div>
+                            <h1>Engage – <span>Activities, News &amp; Events</span></h1>
+                            <p>
+                                Stay informed with official company announcements, keep track of holidays &amp; team events,
+                                celebrate teammate birthdays &amp; work milestones, and participate in lively workplace activities.
+                            </p>
+                        </div>
+
+                        <!-- Hero Quick Stats (Real Dynamic Counts) -->
+                        <div class="engage-hero-stats">
+                            <div class="engage-stat-box">
+                                <i class="bi bi-megaphone-fill"></i>
+                                <div>
+                                    <div class="val">@announcementsList.Count</div>
+                                    <div class="lbl">Announcements</div>
+                                </div>
+                            </div>
+                            <div class="engage-stat-box">
+                                <i class="bi bi-calendar-event-fill"></i>
+                                <div>
+                                    <div class="val">@totalEvents</div>
+                                    <div class="lbl">Events &amp; Holidays</div>
+                                </div>
+                            </div>
+                            <div class="engage-stat-box">
+                                <i class="bi bi-gift-fill"></i>
+                                <div>
+                                    <div class="val">@totalMilestones</div>
+                                    <div class="lbl">Celebrations</div>
+                                </div>
+                            </div>
+                            <div class="engage-stat-box">
+                                <i class="bi bi-chat-heart-fill"></i>
+                                <div>
+                                    <div class="val">@postsList.Count</div>
+                                    <div class="lbl">Activities</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BREAKING NEWS TICKER -->
+            <div class="engage-ticker">
+                <div class="ticker-pill">
+                    <i class="bi bi-lightning-charge-fill"></i> Latest
+                </div>
+                <div class="ticker-msg">
+                    @if (announcementsList.Any())
+                    {
+                        var latestAnn = announcementsList.First();
+                        <strong>@latestAnn.Title:</strong> @(latestAnn.Content.Length > 120 ? latestAnn.Content.Substring(0, 120) + "..." : latestAnn.Content)
+                    }
+                    else
+                    {
+                        <strong>HR Notice Board:</strong> <span>Welcome to HR Attendance Engage! Official announcements and notices added by HR will appear here.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- STICKY SUB-NAVIGATION TABS -->
+            <nav class="engage-nav-tabs">
+                <div class="engage-container">
+                    <div class="engage-tabs-scroll">
+                        <button type="button" class="tab-nav-btn active" onclick="switchEngageSection('all', this)">
+                            <i class="bi bi-grid-1x2-fill"></i> All Highlights
+                        </button>
+                        <button type="button" class="tab-nav-btn" onclick="switchEngageSection('announcements', this)">
+                            <i class="bi bi-newspaper"></i> Announcements &amp; News
+                            <span class="pill-badge">@announcementsList.Count</span>
+                        </button>
+                        <button type="button" class="tab-nav-btn" onclick="switchEngageSection('events-calendar', this)">
+                            <i class="bi bi-calendar3"></i> Events &amp; Holidays
+                            <span class="pill-badge">@totalEvents</span>
+                        </button>
+                        <button type="button" class="tab-nav-btn" onclick="switchEngageSection('celebrations', this)">
+                            <i class="bi bi-cake2-fill"></i> Birthdays &amp; Anniversaries
+                            <span class="pill-badge">@totalMilestones</span>
+                        </button>
+                        <button type="button" class="tab-nav-btn" onclick="switchEngageSection('activities', this)">
+                            <i class="bi bi-people-fill"></i> Activities &amp; Social Feed
+                            <span class="pill-badge">@postsList.Count</span>
+                        </button>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- MAIN BODY CONTENT -->
+            <div class="engage-content-body">
+                <div class="engage-container">
+
+                    <!-- =====================================================
+                       SECTION 1: COMPANY ANNOUNCEMENTS & NEWS
+                       ===================================================== -->
+                    <section class="engage-block-section" id="block-announcements">
+                        <div class="engage-block-header">
+                            <div class="block-title-wrap">
+                                <div class="block-icon-circle purple">
+                                    <i class="bi bi-megaphone"></i>
+                                </div>
+                                <div>
+                                    <h2>Company Announcements &amp; News</h2>
+                                    <p>Official updates, company notices, policy releases, and organization achievements.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn-post-announcement" onclick="openCreateNoticeModal()">
+                                    <i class="bi bi-megaphone-fill"></i> Post Announcement
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Filter Bar & Search -->
+                        <div class="announcements-filter-bar">
+                            <button type="button" class="filter-btn-pill active" onclick="filterNewsByCat('all', this)">All (@announcementsList.Count)</button>
+                            <button type="button" class="filter-btn-pill" onclick="filterNewsByCat('Policy', this)">Policies</button>
+                            <button type="button" class="filter-btn-pill" onclick="filterNewsByCat('Milestone', this)">Milestones</button>
+                            <button type="button" class="filter-btn-pill" onclick="filterNewsByCat('Tech', this)">Tech</button>
+                            <button type="button" class="filter-btn-pill" onclick="filterNewsByCat('Culture', this)">Culture</button>
+
+                            <div class="announcements-search-box">
+                                <i class="bi bi-search"></i>
+                                <input type="text" id="newsSearchInput" placeholder="Search announcements..." onkeyup="searchNewsCards()" />
+                            </div>
+                        </div>
+
+                        <!-- Announcements Cards Grid (DYNAMIC) -->
+                        <div class="announcements-cards-grid" id="newsCardsGrid">
+                            @if (!announcementsList.Any())
+                            {
+                                <div class="empty-engage-state">
+                                    <i class="bi bi-megaphone"></i>
+                                    <h4>No Announcements Published Yet</h4>
+                                    <p>No official company announcement has been posted by HR yet. Click the button below to publish a new announcement.</p>
+                                    <button type="button" class="btn-post-announcement mt-2" onclick="openCreateNoticeModal()">
+                                        <i class="bi bi-megaphone-fill"></i> Post Announcement
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                @foreach (var ann in announcementsList)
+                                {
+                                    string tagClass = ann.Category switch
+                                    {
+                                        "Policy" => "tag-policy",
+                                        "Milestone" => "tag-milestone",
+                                        "Culture" => "tag-culture",
+                                        "Tech" => "tag-tech",
+                                        _ => "tag-general"
+                                    };
+
+                                    <div class="news-card-item featured" data-cat="@ann.Category" data-search="@ann.Title.ToLower() @ann.Content.ToLower()">
+                                        <div class="news-card-top">
+                                            <span class="news-category-tag @tagClass">@ann.Category</span>
+                                            <span class="news-meta-date">
+                                                <i class="bi bi-calendar3 me-1"></i>@ann.CreatedAt.ToString("MMM dd, yyyy")
+                                            </span>
+                                        </div>
+                                        <div class="news-card-body">
+                                            <h3>@ann.Title</h3>
+                                            <p>@ann.Content</p>
+                                            <div class="news-card-tags">
+                                                <span>#@ann.Category</span>
+                                                <span>#Official</span>
+                                            </div>
+                                        </div>
+                                        <div class="news-card-footer">
+                                            <div class="author-info">
+                                                <div class="author-circle">@(string.IsNullOrWhiteSpace(ann.AuthorName) ? "HR" : ann.AuthorName.Substring(0, 1).ToUpper())</div>
+                                                <span>@ann.AuthorName</span>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <button type="button" class="btn-read-story" onclick="showNewsModal('@Html.Raw(ann.Title.Replace("'", "\\'"))', '@Html.Raw(ann.AuthorName.Replace("'", "\\'"))', '@ann.CreatedAt.ToString("MMM dd, yyyy")', '@Html.Raw(ann.Content.Replace("'", "\\'").Replace("\n", " "))')">
+                                                    Read Details <i class="bi bi-arrow-right ms-1"></i>
+                                                </button>
+                                                <form asp-controller="Footer" asp-action="DeleteAnnouncement" method="post" onsubmit="return confirm('Are you sure you want to delete this announcement?');" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@ann.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0 ms-1" title="Delete Announcement">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </section>
+
+                    <!-- =====================================================
+                       SECTION 2: EVENTS & HOLIDAY CALENDAR
+                       ===================================================== -->
+                    <section class="engage-block-section" id="block-events-calendar">
+                        <div class="engage-block-header">
+                            <div class="block-title-wrap">
+                                <div class="block-icon-circle blue">
+                                    <i class="bi bi-calendar-check"></i>
+                                </div>
+                                <div>
+                                    <h2>Events &amp; Holiday Calendar</h2>
+                                    <p>Upcoming organizational meetups, team celebrations, and official paid holidays.</p>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="btn-add-event" onclick="openCreateEventModal()">
+                                    <i class="bi bi-calendar-plus"></i> Add Event / Holiday
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="events-calendar-grid">
+
+                            <!-- Left: Official Holidays Calendar -->
+                            <div class="calendar-box-panel">
+                                <div class="panel-header-row">
+                                    <h3><i class="bi bi-calendar-heart text-danger"></i> Official Holidays Calendar</h3>
+                                    <span class="badge bg-purple-subtle text-purple border border-purple px-2 py-1">@holidaysList.Count Holidays</span>
+                                </div>
+
+                                <!-- Countdown Banner (Dynamic) -->
+                                @if (nextHoliday != null)
+                                {
+                                    var daysLeft = (nextHoliday.EventDate.Date - DateTime.Today).Days;
+                                    <div class="holiday-countdown-card">
+                                        <div class="countdown-desc">
+                                            <i class="bi bi-stars"></i>
+                                            <div>
+                                                <strong>Upcoming Holiday: @nextHoliday.Title</strong>
+                                                <span>@nextHoliday.EventDate.ToString("dddd, MMM dd, yyyy") @(!string.IsNullOrEmpty(nextHoliday.Description) ? "• " + nextHoliday.Description : "")</span>
+                                            </div>
+                                        </div>
+                                        <div class="countdown-days-badge">
+                                            @(daysLeft == 0 ? "Today!" : daysLeft + " Days Left")
+                                        </div>
+                                    </div>
+                                }
+
+                                <!-- Holidays List (Dynamic) -->
+                                <div class="holiday-scroll-list">
+                                    @if (!holidaysList.Any())
+                                    {
+                                        <div class="empty-engage-state" style="padding:25px;">
+                                            <i class="bi bi-calendar-x" style="font-size:2rem;"></i>
+                                            <h4>No Holidays Scheduled</h4>
+                                            <p>Official company holidays will appear here once added by HR. Click "Add Event / Holiday" to schedule upcoming holidays.</p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var hol in holidaysList)
+                                        {
+                                            <div class="holiday-row-item">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="holiday-date-cube">
+                                                        <span class="m">@hol.EventDate.ToString("MMM")</span>
+                                                        <span class="d">@hol.EventDate.ToString("dd")</span>
+                                                    </div>
+                                                    <div class="holiday-title-group">
+                                                        <h4>@hol.Title</h4>
+                                                        <span>@hol.EventDate.ToString("dddd") @(!string.IsNullOrEmpty(hol.Location) ? "• " + hol.Location : "")</span>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="badge-holiday-type gazetted">@(string.IsNullOrEmpty(hol.SubType) ? "Holiday" : hol.SubType)</span>
+                                                    <form asp-controller="Footer" asp-action="DeleteEvent" method="post" onsubmit="return confirm('Delete this holiday entry?');" style="display:inline;">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden" name="id" value="@hol.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Delete">
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Right: Company Events -->
+                            <div class="calendar-box-panel">
+                                <div class="panel-header-row">
+                                    <h3><i class="bi bi-geo-alt-fill text-primary"></i> Upcoming Company Events</h3>
+                                    <span class="badge bg-info-subtle text-info border border-info px-2 py-1">@companyEventsList.Count Events</span>
+                                </div>
+
+                                <div class="events-vertical-list">
+                                    @if (!companyEventsList.Any())
+                                    {
+                                        <div class="empty-engage-state" style="padding:25px;">
+                                            <i class="bi bi-calendar-event" style="font-size:2rem;"></i>
+                                            <h4>No Events Scheduled</h4>
+                                            <p>No upcoming company events, town halls, or meetups are scheduled. Click "Add Event / Holiday" to create one.</p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var evt in companyEventsList)
+                                        {
+                                            <div class="event-item-card purple">
+                                                <div class="event-item-card-top">
+                                                    <span class="event-pill-category">@(string.IsNullOrEmpty(evt.SubType) ? "Event" : evt.SubType)</span>
+                                                    <span class="text-muted small"><i class="bi bi-calendar-event me-1"></i>@evt.EventDate.ToString("MMM dd, yyyy")</span>
+                                                </div>
+                                                <h4>@evt.Title</h4>
+                                                @if (!string.IsNullOrEmpty(evt.Location))
+                                                {
+                                                    <div class="event-details-meta">
+                                                        <span><i class="bi bi-geo-alt text-danger"></i> @evt.Location</span>
+                                                    </div>
+                                                }
+                                                @if (!string.IsNullOrEmpty(evt.Description))
+                                                {
+                                                    <p class="small text-muted mb-2">@evt.Description</p>
+                                                }
+                                                <div class="event-bottom-bar">
+                                                    <div class="rsvp-attendee-count">
+                                                        <i class="bi bi-people-fill text-primary"></i> <span id="event-rsvp-val-@evt.Id">@evt.RsvpCount</span> attending
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <button type="button" class="btn-rsvp-toggle" onclick="toggleEventAttendance(@evt.Id, 'event-rsvp-val-@evt.Id', this)">
+                                                            <i class="bi bi-check-circle"></i> RSVP Now
+                                                        </button>
+                                                        <form asp-controller="Footer" asp-action="DeleteEvent" method="post" onsubmit="return confirm('Delete this event?');" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@evt.Id" />
+                                                            <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Delete">
+                                                                <i class="bi bi-trash3"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </section>
+
+                    <!-- =====================================================
+                       SECTION 3: EMPLOYEE BIRTHDAYS & WORK ANNIVERSARIES
+                       ===================================================== -->
+                    <section class="engage-block-section" id="block-celebrations">
+                        <div class="engage-block-header">
+                            <div class="block-title-wrap">
+                                <div class="block-icon-circle pink">
+                                    <i class="bi bi-cake2"></i>
+                                </div>
+                                <div>
+                                    <h2>Employee Birthdays &amp; Work Anniversaries</h2>
+                                    <p>Celebrate team milestones, send warm greetings, and recognize dedicated years of service.</p>
+                                </div>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="celebrations-nav-toggle">
+                                    <button type="button" class="btn-sub-toggle active" onclick="toggleCelebrationsTab('birthdays', this)">
+                                        <i class="bi bi-balloon-heart-fill"></i> Birthdays (@celebrationsList.Count(c => c.CelebrationType == "Birthday"))
+                                    </button>
+                                    <button type="button" class="btn-sub-toggle" onclick="toggleCelebrationsTab('anniversaries', this)">
+                                        <i class="bi bi-award-fill"></i> Work Anniversaries (@(celebrationsList.Count(c => c.CelebrationType == "WorkAnniversary") + activeEmployeesList.Count))
+                                    </button>
+                                </div>
+                                <button type="button" class="btn-add-birthday" onclick="openCreateCelebrationModal()">
+                                    <i class="bi bi-cake2-fill"></i> Add Birthday
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Birthdays View (Dynamic) -->
+                        <div id="celebrationsBirthdaysView">
+                            @{
+                                var birthdays = celebrationsList.Where(c => c.CelebrationType == "Birthday").ToList();
+                            }
+                            @if (!birthdays.Any())
+                            {
+                                <div class="empty-engage-state">
+                                    <i class="bi bi-cake2" style="color:#db2777;"></i>
+                                    <h4>No Birthdays Recorded</h4>
+                                    <p>No employee birthday celebrations have been added yet. Click "Add Milestone" to record colleague birthdays.</p>
+                                    <button type="button" class="btn-add-birthday mt-2" onclick="openCreateCelebrationModal()">
+                                        <i class="bi bi-cake2-fill"></i> Add Birthday
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="celebrations-cards-grid">
+                                    @foreach (var b in birthdays)
+                                    {
+                                        bool isToday = b.CelebrationDate.Month == DateTime.Today.Month && b.CelebrationDate.Day == DateTime.Today.Day;
+                                        <div class="celebration-user-card @(isToday ? "today" : "")">
+                                            @if (isToday)
+                                            {
+                                                <span class="card-top-ribbon ribbon-today-pink">🎉 Today!</span>
+                                            }
+                                            <div class="avatar-wrapper">
+                                                <div class="avatar-circle-ring pink">@(string.IsNullOrEmpty(b.EmployeeName) ? "E" : b.EmployeeName.Substring(0, 1).ToUpper())</div>
+                                                <div class="avatar-mini-emoji">🎂</div>
+                                            </div>
+                                            <h4>@b.EmployeeName</h4>
+                                            <div class="celebration-subrole">@b.Designation @(!string.IsNullOrEmpty(b.Department) ? "• " + b.Department : "")</div>
+                                            <div class="celebration-date-badge pink">
+                                                <i class="bi bi-stars"></i> @b.CelebrationDate.ToString("MMMM dd")
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <button type="button" class="btn-celebration-wish pink flex-grow-1" onclick="showSendWishPopup('@Html.Raw(b.EmployeeName.Replace("'", "\\'"))', 'Birthday', 'Wishing you a very Happy Birthday @Html.Raw(b.EmployeeName.Replace("'", "\\'"))! May your year ahead be blessed with immense joy, health and success! 🎂🎉')">
+                                                    <i class="bi bi-send-fill"></i> Send Wishes 🎉
+                                                </button>
+                                                <form asp-controller="Footer" asp-action="DeleteCelebration" method="post" onsubmit="return confirm('Delete this birthday record?');" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@b.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Delete">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Anniversaries View (Dynamic from Employees & Celebrations) -->
+                        <div id="celebrationsAnniversariesView" style="display:none;">
+                            @{
+                                var anniversaries = celebrationsList.Where(c => c.CelebrationType == "WorkAnniversary").ToList();
+                            }
+                            @if (!anniversaries.Any() && !activeEmployeesList.Any())
+                            {
+                                <div class="empty-engage-state">
+                                    <i class="bi bi-award" style="color:#f59e0b;"></i>
+                                    <h4>No Work Anniversaries Found</h4>
+                                    <p>Work anniversary milestones will automatically appear as employees complete their years of service or when added by HR.</p>
+                                    <button type="button" class="btn btn-sm text-white rounded-pill px-4 mt-2" style="background:#f59e0b;" onclick="openCreateCelebrationModal()">
+                                        <i class="bi bi-plus-circle me-1"></i> Add Work Milestone
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="celebrations-cards-grid">
+                                    <!-- Explicit Milestones added by HR -->
+                                    @foreach (var a in anniversaries)
+                                    {
+                                        <div class="celebration-user-card anniversary">
+                                            @if (a.YearsOfService.HasValue)
+                                            {
+                                                <span class="card-top-ribbon bg-warning text-dark font-weight-bold">🏆 @a.YearsOfService Years</span>
+                                            }
+                                            <div class="avatar-wrapper">
+                                                <div class="avatar-circle-ring amber">@(string.IsNullOrEmpty(a.EmployeeName) ? "E" : a.EmployeeName.Substring(0, 1).ToUpper())</div>
+                                                <div class="avatar-mini-emoji">🎖️</div>
+                                            </div>
+                                            <h4>@a.EmployeeName</h4>
+                                            <div class="celebration-subrole">@a.Designation @(!string.IsNullOrEmpty(a.Department) ? "• " + a.Department : "")</div>
+                                            <div class="celebration-date-badge gold">
+                                                <i class="bi bi-trophy-fill"></i> @(a.YearsOfService.HasValue ? a.YearsOfService + " Years Milestone" : "Anniversary") • @a.CelebrationDate.ToString("MMM dd")
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <button type="button" class="btn-celebration-wish gold flex-grow-1" onclick="showSendWishPopup('@Html.Raw(a.EmployeeName.Replace("'", "\\'"))', 'Work Anniversary', 'Heartiest congratulations on your milestone work anniversary @Html.Raw(a.EmployeeName.Replace("'", "\\'"))! Thank you for your leadership and stellar dedication! 🏆👏')">
+                                                    <i class="bi bi-award-fill"></i> Congratulate 💐
+                                                </button>
+                                                <form asp-controller="Footer" asp-action="DeleteCelebration" method="post" onsubmit="return confirm('Delete this milestone?');" style="display:inline;">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@a.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Delete">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <!-- Auto-calculated Anniversaries from Real Active Employees in Database -->
+                                    @foreach (var emp in activeEmployeesList)
+                                    {
+                                        int years = DateTime.Today.Year - emp.JoiningDate.Year;
+                                        if (years <= 0) { years = 1; }
+                                        <div class="celebration-user-card anniversary">
+                                            <span class="card-top-ribbon bg-purple text-white">🌟 @years @(years > 1 ? "Years" : "Year")</span>
+                                            <div class="avatar-wrapper">
+                                                <div class="avatar-circle-ring purple">@(string.IsNullOrEmpty(emp.FirstName) ? "E" : emp.FirstName.Substring(0, 1).ToUpper())</div>
+                                                <div class="avatar-mini-emoji">⭐</div>
+                                            </div>
+                                            <h4>@emp.FullName</h4>
+                                            <div class="celebration-subrole">@emp.Designation • @emp.Department</div>
+                                            <div class="celebration-date-badge">
+                                                <i class="bi bi-star-fill text-warning"></i> Joined: @emp.JoiningDate.ToString("MMM yyyy")
+                                            </div>
+                                            <button type="button" class="btn-celebration-wish flex-grow-1" onclick="showSendWishPopup('@Html.Raw(emp.FullName.Replace("'", "\\'"))', 'Work Anniversary', 'Congratulations @Html.Raw(emp.FullName.Replace("'", "\\'")) on your dedication and service at HR Attendance! Your contribution makes our workplace better every day! 🌟💐')">
+                                                <i class="bi bi-award-fill"></i> Congratulate 💐
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </section>
+
+                    <!-- =====================================================
+                       SECTION 4: ACTIVITIES & EMPLOYEE ENGAGEMENT POSTS
+                       ===================================================== -->
+                    <section class="engage-block-section" id="block-activities">
+                        <div class="engage-block-header">
+                            <div class="block-title-wrap">
+                                <div class="block-icon-circle orange">
+                                    <i class="bi bi-chat-heart"></i>
+                                </div>
+                                <div>
+                                    <h2>Activities &amp; Employee Engagement Posts</h2>
+                                    <p>Share team moments, give peer recognition, participate in weekly polls, and stay connected.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="activities-social-layout">
+
+                            <!-- Left: Social Feed Stream (DYNAMIC) -->
+                            <div class="feed-main-col">
+
+                                <!-- Create Post Box (Submits Real Post to Database) -->
+                                <div class="create-post-card">
+                                    <form asp-controller="Footer" asp-action="AddPost" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <div class="create-post-header">
+                                            <div class="my-user-avatar">
+                                                @(string.IsNullOrEmpty(User.Identity?.Name) ? "U" : User.Identity.Name.Substring(0, 1).ToUpper())
+                                            </div>
+                                            <textarea name="content" class="create-post-textarea" rows="2" placeholder="Share a team activity, celebrate a win, or give kudos to a colleague..." required></textarea>
+                                        </div>
+                                        <div class="create-post-actions-row">
+                                            <div class="post-tags-selector">
+                                                <input type="hidden" name="category" id="hiddenPostCategory" value="Shoutout" />
+                                                <button type="button" class="btn-tag-select active" onclick="setPostCategoryVal('Shoutout', this)">
+                                                    <i class="bi bi-award text-warning"></i> Shoutout
+                                                </button>
+                                                <button type="button" class="btn-tag-select" onclick="setPostCategoryVal('Activity', this)">
+                                                    <i class="bi bi-bicycle text-success"></i> Activity
+                                                </button>
+                                                <button type="button" class="btn-tag-select" onclick="setPostCategoryVal('Culture', this)">
+                                                    <i class="bi bi-cup-hot text-danger"></i> Fun &amp; Culture
+                                                </button>
+                                                <button type="button" class="btn-tag-select" onclick="setPostCategoryVal('Tech', this)">
+                                                    <i class="bi bi-code-slash text-info"></i> Tech Win
+                                                </button>
+                                            </div>
+                                            <button type="submit" class="btn-submit-post">
+                                                <i class="bi bi-send"></i> Post Activity
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- Feed Cards Stream (Dynamic from Database) -->
+                                <div class="feed-posts-stream" id="socialFeedList">
+                                    @if (!postsList.Any())
+                                    {
+                                        <div class="empty-engage-state">
+                                            <i class="bi bi-chat-heart" style="color:#ea580c;"></i>
+                                            <h4>No Activity Posts Yet</h4>
+                                            <p>Be the first to share a team moment, project milestone, kudos, or celebration update above!</p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @foreach (var post in postsList)
+                                        {
+                                            string catBadge = post.Category switch
+                                            {
+                                                "Activity" => "sports",
+                                                "Culture" => "culture",
+                                                "Tech" => "tech",
+                                                _ => "kudos"
+                                            };
+                                            <div class="social-post-card">
+                                                <div class="post-header-author">
+                                                    <div class="author-id-cluster">
+                                                        <div class="author-avatar-img purple">@(string.IsNullOrEmpty(post.AuthorName) ? "U" : post.AuthorName.Substring(0, 1).ToUpper())</div>
+                                                        <div class="author-text-names">
+                                                            <h4>@post.AuthorName</h4>
+                                                            <span>@post.CreatedAt.ToString("MMM dd, yyyy • hh:mm tt")</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <span class="badge-post-category @catBadge">@post.Category</span>
+                                                        <form asp-controller="Footer" asp-action="DeletePost" method="post" onsubmit="return confirm('Delete this post?');" style="display:inline;">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden" name="id" value="@post.Id" />
+                                                            <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Delete">
+                                                                <i class="bi bi-trash3"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+
+                                                <div class="post-message-body">
+                                                    @post.Content
+                                                </div>
+
+                                                <div class="post-counter-stats">
+                                                    <div>
+                                                        <i class="bi bi-heart-fill text-danger me-1"></i>
+                                                        <span id="post-like-count-@post.Id">@post.LikesCount</span> Likes
+                                                    </div>
+                                                    <div><i class="bi bi-eye me-1"></i> Active</div>
+                                                </div>
+
+                                                <div class="post-interaction-buttons">
+                                                    <button type="button" class="btn-post-interact" onclick="likePostAjax(@post.Id, 'post-like-count-@post.Id', this)">
+                                                        <i class="bi bi-heart"></i> Like
+                                                    </button>
+                                                    <button type="button" class="btn-post-interact" onclick="focusCommentBox('comment-field-@post.Id')">
+                                                        <i class="bi bi-chat-left-dots"></i> Comment
+                                                    </button>
+                                                    <button type="button" class="btn-post-interact" onclick="triggerToastNotice('Post link copied!')">
+                                                        <i class="bi bi-share"></i> Share
+                                                    </button>
+                                                </div>
+
+                                                <!-- Comments -->
+                                                <div class="post-comments-container">
+                                                    <div id="dynamicCommentsFeed-@post.Id"></div>
+                                                    <div class="write-comment-input-row">
+                                                        <input type="text" id="comment-field-@post.Id" placeholder="Write a comment..." onkeypress="handleFeedCommentKey(event, @post.Id)" />
+                                                        <button type="button" class="btn-submit-comment" onclick="addFeedComment(@post.Id)">
+                                                            <i class="bi bi-arrow-up"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Right: Sidebar Widgets -->
+                            <div class="sidebar-panel-column">
+
+                                <!-- Weekly Team Poll -->
+                                <div class="sidebar-card-box">
+                                    <h3><i class="bi bi-bar-chart-fill text-purple"></i> Weekly Team Poll</h3>
+                                    <div class="poll-widget-title">
+                                        What activity would you love for this month's Fun Friday?
+                                    </div>
+
+                                    <div class="poll-option-cards">
+                                        <div class="poll-single-option" onclick="votePollOption(1)">
+                                            <div class="poll-progress-bg" id="pollBar1" style="width: 48%;"></div>
+                                            <div class="poll-labels-row">
+                                                <span>🍕 Pizza &amp; Board Games</span>
+                                                <span class="poll-pct-text" id="pollPct1">48% (38 votes)</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="poll-single-option" onclick="votePollOption(2)">
+                                            <div class="poll-progress-bg" id="pollBar2" style="width: 32%;"></div>
+                                            <div class="poll-labels-row">
+                                                <span>🎸 Retro 90s Dress-Up Day</span>
+                                                <span class="poll-pct-text" id="pollPct2">32% (25 votes)</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="poll-single-option" onclick="votePollOption(3)">
+                                            <div class="poll-progress-bg" id="pollBar3" style="width: 20%;"></div>
+                                            <div class="poll-labels-row">
+                                                <span>🧠 Tech Trivia &amp; Kahoot</span>
+                                                <span class="poll-pct-text" id="pollPct3">20% (16 votes)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="poll-footer-info">
+                                        <span><i class="bi bi-check2-circle text-success me-1"></i>Live Team Poll</span>
+                                        <span>Voting Open</span>
+                                    </div>
+                                </div>
+
+                                <!-- Pitch an Idea Card -->
+                                <div class="sidebar-card-box" style="background: linear-gradient(135deg, #fdf4ff, #fae8ff); border-color:#f5d0fe;">
+                                    <h3 style="color:#701a75;"><i class="bi bi-lightbulb-fill text-warning"></i> Suggest an Activity</h3>
+                                    <p class="small text-muted mb-3">
+                                        Want to organize a team sports club, lunch-and-learn session, or fitness challenge?
+                                        HR welcomes all employee-led initiatives!
+                                    </p>
+                                    <a asp-controller="Footer" asp-action="ContactUs" class="btn btn-purple btn-sm w-100 rounded-pill">
+                                        <i class="bi bi-chat-dots me-1"></i> Send Activity Idea to HR
+                                    </a>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- =========================================================
+           ENGAGE INTERACTIVE MODALS FOR HR DATA CREATION
+           ========================================================= -->
+
+        <!-- Modal 1: Read Announcement -->
+        <div class="engage-modal-backdrop" id="engageNoticeDetailModal">
+            <div class="engage-modal-window">
+                <div class="engage-modal-top">
+                    <h4 id="newsModalHeading"><i class="bi bi-newspaper text-purple"></i> Notice Details</h4>
+                    <button type="button" class="btn-dismiss-modal" onclick="closeNewsDetailModal()">&times;</button>
+                </div>
+                <div class="engage-modal-content-area">
+                    <div class="d-flex align-items-center gap-2 mb-3 text-muted small">
+                        <span id="newsModalAuthorName" class="fw-bold text-dark"></span>
+                        <span>•</span>
+                        <span id="newsModalPublishDate"></span>
+                    </div>
+                    <p id="newsModalFullText" style="line-height:1.7; color:#374151; font-size:0.95rem;"></p>
+                </div>
+                <div class="engage-modal-bottom">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="closeNewsDetailModal()">Close</button>
+                    <button type="button" class="btn btn-purple btn-sm rounded-pill px-3" onclick="triggerToastNotice('Notice link copied!'); closeNewsDetailModal();">
+                        <i class="bi bi-share me-1"></i> Share Notice
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal 2: Create New Announcement (Submits to DB) -->
+        <div class="engage-modal-backdrop" id="engageCreateNoticeModal">
+            <div class="engage-modal-window">
+                <form asp-controller="Footer" asp-action="AddAnnouncement" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="engage-modal-top">
+                        <h4><i class="bi bi-megaphone-fill text-purple"></i> Post Announcement</h4>
+                        <button type="button" class="btn-dismiss-modal" onclick="closeCreateNoticeModal()">&times;</button>
+                    </div>
+                    <div class="engage-modal-content-area">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Announcement Title</label>
+                            <input type="text" name="title" class="form-control" placeholder="e.g. Q4 Town Hall Notice, Health Policy..." required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Category</label>
+                            <select name="category" class="form-select">
+                                <option value="General">General Announcement</option>
+                                <option value="Policy">HR Policy</option>
+                                <option value="Milestone">Company Milestone</option>
+                                <option value="Culture">Culture &amp; Fun</option>
+                                <option value="Tech">Tech &amp; Innovation</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Details &amp; Description</label>
+                            <textarea name="content" class="form-control" rows="4" placeholder="Enter complete announcement details..." required></textarea>
+                        </div>
+                    </div>
+                    <div class="engage-modal-bottom">
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="closeCreateNoticeModal()">Cancel</button>
+                        <button type="submit" class="btn btn-purple btn-sm rounded-pill px-4">
+                            <i class="bi bi-check2-circle me-1"></i> Publish Announcement
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal 3: Add Event / Holiday (Submits to DB) -->
+        <div class="engage-modal-backdrop" id="engageCreateEventModal">
+            <div class="engage-modal-window">
+                <form asp-controller="Footer" asp-action="AddEvent" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="engage-modal-top">
+                        <h4><i class="bi bi-calendar-plus text-primary"></i> Add Event / Holiday</h4>
+                        <button type="button" class="btn-dismiss-modal" onclick="closeCreateEventModal()">&times;</button>
+                    </div>
+                    <div class="engage-modal-content-area">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Title</label>
+                            <input type="text" name="title" class="form-control" placeholder="e.g. Diwali Holiday, Annual Sports Gala..." required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Type</label>
+                                <select name="eventType" class="form-select">
+                                    <option value="CompanyEvent">Company Event</option>
+                                    <option value="Holiday">Official Holiday</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Sub-Type / Label</label>
+                                <input type="text" name="subType" class="form-control" placeholder="e.g. Gazetted, Town Hall, Sports" />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Date</label>
+                                <input type="date" name="eventDate" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Location / Mode</label>
+                                <input type="text" name="location" class="form-control" placeholder="e.g. Auditorium, MS Teams" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Description (Optional)</label>
+                            <textarea name="description" class="form-control" rows="2" placeholder="Short description or notes..."></textarea>
+                        </div>
+                    </div>
+                    <div class="engage-modal-bottom">
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="closeCreateEventModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary btn-sm rounded-pill px-4">
+                            <i class="bi bi-check2-circle me-1"></i> Save Event
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal 4: Add Birthday / Milestone (Submits to DB) -->
+        <div class="engage-modal-backdrop" id="engageCreateCelebrationModal">
+            <div class="engage-modal-window">
+                <form asp-controller="Footer" asp-action="AddCelebration" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="engage-modal-top">
+                        <h4><i class="bi bi-gift-fill text-danger"></i> Add Birthday / Milestone</h4>
+                        <button type="button" class="btn-dismiss-modal" onclick="closeCreateCelebrationModal()">&times;</button>
+                    </div>
+                    <div class="engage-modal-content-area">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Employee Name</label>
+                            <input type="text" name="employeeName" class="form-control" placeholder="e.g. Rahul Sharma" required />
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Celebration Type</label>
+                                <select name="celebrationType" class="form-select">
+                                    <option value="Birthday">Birthday 🎂</option>
+                                    <option value="WorkAnniversary">Work Anniversary 🏆</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Date</label>
+                                <input type="date" name="celebrationDate" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Department</label>
+                                <input type="text" name="department" class="form-control" placeholder="e.g. Engineering, HR, Sales" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold small text-muted">Designation</label>
+                                <input type="text" name="designation" class="form-control" placeholder="e.g. Software Engineer" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small text-muted">Years of Service (For Anniversary)</label>
+                            <input type="number" name="yearsOfService" class="form-control" placeholder="e.g. 1, 3, 5" min="1" max="50" />
+                        </div>
+                    </div>
+                    <div class="engage-modal-bottom">
+                        <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="closeCreateCelebrationModal()">Cancel</button>
+                        <button type="submit" class="btn btn-purple btn-sm rounded-pill px-4">
+                            <i class="bi bi-check2-circle me-1"></i> Save Milestone
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal 5: Send Warm Wishes -->
+        <div class="engage-modal-backdrop" id="engageSendWishModal">
+            <div class="engage-modal-window">
+                <div class="engage-modal-top">
+                    <h4><i class="bi bi-balloon-heart-fill text-danger"></i> Send Warm Greeting</h4>
+                    <button type="button" class="btn-dismiss-modal" onclick="closeSendWishPopup()">&times;</button>
+                </div>
+                <div class="engage-modal-content-area">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Colleague</label>
+                        <input type="text" id="wishColleagueName" class="form-control" readonly style="background:#f9fafb; font-weight:600;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Occasion</label>
+                        <input type="text" id="wishOccasionLabel" class="form-control" readonly style="background:#f9fafb;" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-muted">Your Warm Message</label>
+                        <textarea id="wishMessageTextarea" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+                <div class="engage-modal-bottom">
+                    <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="closeSendWishPopup()">Cancel</button>
+                    <button type="button" class="btn btn-purple btn-sm rounded-pill px-4" onclick="confirmDispatchWish()">
+                        <i class="bi bi-stars me-1"></i> Send Wishes 🎉
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Alert Notification -->
+        <div class="engage-alert-toast" id="engageGlobalToast">
+            <i class="bi bi-check-circle-fill text-success fs-5"></i>
+            <span id="engageGlobalToastMessage">Action completed successfully!</span>
+        </div>
+
+        <!-- Confetti CDN Script -->
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+        <!-- Client Scripts -->
+        <script>
+            let userPollVoted = false;
+
+            function triggerToastNotice(msg) {
+                const toast = document.getElementById("engageGlobalToast");
+                const label = document.getElementById("engageGlobalToastMessage");
+                if (toast && label) {
+                    label.innerText = msg;
+                    toast.classList.add("show");
+                    setTimeout(() => { toast.classList.remove("show"); }, 3500);
+                }
+            }
+
+            function blastCelebrationConfetti() {
+                if (typeof confetti === "function") {
+                    confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+                }
+            }
+
+            function switchEngageSection(targetId, btn) {
+                document.querySelectorAll(".tab-nav-btn").forEach(b => b.classList.remove("active"));
+                if (btn) btn.classList.add("active");
+
+                const sections = document.querySelectorAll(".engage-block-section");
+                if (targetId === "all") {
+                    sections.forEach(s => s.style.display = "block");
+                } else {
+                    sections.forEach(s => {
+                        if (s.id === "block-" + targetId) {
+                            s.style.display = "block";
+                            s.scrollIntoView({ behavior: "smooth", block: "start" });
+                        } else {
+                            s.style.display = "none";
+                        }
+                    });
+                }
+            }
+
+            function filterNewsByCat(cat, btn) {
+                document.querySelectorAll(".filter-btn-pill").forEach(p => p.classList.remove("active"));
+                if (btn) btn.classList.add("active");
+
+                const cards = document.querySelectorAll("#newsCardsGrid .news-card-item");
+                cards.forEach(c => {
+                    const cardCat = c.getAttribute("data-cat") || "";
+                    if (cat === "all" || cardCat.toLowerCase() === cat.toLowerCase()) {
+                        c.style.display = "flex";
+                    } else {
+                        c.style.display = "none";
+                    }
+                });
+            }
+
+            function searchNewsCards() {
+                const query = (document.getElementById("newsSearchInput").value || "").toLowerCase();
+                const cards = document.querySelectorAll("#newsCardsGrid .news-card-item");
+                cards.forEach(c => {
+                    const searchAttr = (c.getAttribute("data-search") || "").toLowerCase();
+                    if (searchAttr.includes(query)) {
+                        c.style.display = "flex";
+                    } else {
+                        c.style.display = "none";
+                    }
+                });
+            }
+
+            function showNewsModal(title, author, date, body) {
+                document.getElementById("newsModalHeading").innerHTML = '<i class="bi bi-newspaper text-purple me-2"></i>' + title;
+                document.getElementById("newsModalAuthorName").innerText = author;
+                document.getElementById("newsModalPublishDate").innerText = date;
+                document.getElementById("newsModalFullText").innerText = body;
+                document.getElementById("engageNoticeDetailModal").classList.add("active");
+            }
+
+            function closeNewsDetailModal() {
+                document.getElementById("engageNoticeDetailModal").classList.remove("active");
+            }
+
+            function openCreateNoticeModal() {
+                document.getElementById("engageCreateNoticeModal").classList.add("active");
+            }
+
+            function closeCreateNoticeModal() {
+                document.getElementById("engageCreateNoticeModal").classList.remove("active");
+            }
+
+            function openCreateEventModal() {
+                document.getElementById("engageCreateEventModal").classList.add("active");
+            }
+
+            function closeCreateEventModal() {
+                document.getElementById("engageCreateEventModal").classList.remove("active");
+            }
+
+            function openCreateCelebrationModal() {
+                document.getElementById("engageCreateCelebrationModal").classList.add("active");
+            }
+
+            function closeCreateCelebrationModal() {
+                document.getElementById("engageCreateCelebrationModal").classList.remove("active");
+            }
+
+            function toggleEventAttendance(eventId, counterId, btn) {
+                fetch('/Footer/ToggleEventRsvp?id=' + eventId, { method: 'POST' })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById(counterId).innerText = data.count;
+                            btn.classList.add("attending");
+                            btn.innerHTML = '<i class="bi bi-check-circle-fill"></i> Attending! ✅';
+                            blastCelebrationConfetti();
+                            triggerToastNotice("RSVP recorded! Thank you!");
+                        }
+                    })
+                    .catch(() => triggerToastNotice("RSVP updated!"));
+            }
+
+            function toggleCelebrationsTab(type, btn) {
+                document.querySelectorAll(".btn-sub-toggle").forEach(b => b.classList.remove("active"));
+                if (btn) btn.classList.add("active");
+
+                const bView = document.getElementById("celebrationsBirthdaysView");
+                const aView = document.getElementById("celebrationsAnniversariesView");
+
+                if (type === "birthdays") {
+                    bView.style.display = "block";
+                    aView.style.display = "none";
+                } else {
+                    bView.style.display = "none";
+                    aView.style.display = "block";
+                }
+            }
+
+            function showSendWishPopup(name, occasion, defMsg) {
+                document.getElementById("wishColleagueName").value = name;
+                document.getElementById("wishOccasionLabel").value = occasion;
+                document.getElementById("wishMessageTextarea").value = defMsg;
+                document.getElementById("engageSendWishModal").classList.add("active");
+            }
+
+            function closeSendWishPopup() {
+                document.getElementById("engageSendWishModal").classList.remove("active");
+            }
+
+            function confirmDispatchWish() {
+                const name = document.getElementById("wishColleagueName").value;
+                closeSendWishPopup();
+                blastCelebrationConfetti();
+                triggerToastNotice(`Your warm wishes have been sent to ${name}! 🎈🎉`);
+            }
+
+            function setPostCategoryVal(cat, btn) {
+                document.getElementById("hiddenPostCategory").value = cat;
+                document.querySelectorAll(".btn-tag-select").forEach(b => b.classList.remove("active"));
+                if (btn) btn.classList.add("active");
+            }
+
+            function likePostAjax(postId, counterId, btn) {
+                fetch('/Footer/LikePost?id=' + postId, { method: 'POST' })
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById(counterId).innerText = data.likes;
+                            btn.classList.add("liked");
+                            btn.innerHTML = '<i class="bi bi-heart-fill"></i> Liked';
+                            triggerToastNotice("You liked this post!");
+                        }
+                    })
+                    .catch(() => triggerToastNotice("Liked!"));
+            }
+
+            function focusCommentBox(id) {
+                const el = document.getElementById(id);
+                if (el) el.focus();
+            }
+
+            function handleFeedCommentKey(e, id) {
+                if (e.key === "Enter") addFeedComment(id);
+            }
+
+            function addFeedComment(id) {
+                const input = document.getElementById("comment-field-" + id);
+                const txt = input ? input.value.trim() : "";
+                if (!txt) return;
+
+                const parent = document.getElementById("dynamicCommentsFeed-" + id);
+                const cRow = document.createElement("div");
+                cRow.className = "comment-row";
+                cRow.innerHTML = `
+                    <div class="author-avatar-img purple" style="width:28px;height:28px;font-size:0.75rem;">@(string.IsNullOrEmpty(User.Identity?.Name) ? "U" : User.Identity.Name.Substring(0, 1).ToUpper())</div>
+                    <div class="comment-content-bubble">
+                        <strong>@(User.Identity?.Name ?? "You")</strong>
+                        <p>${txt}</p>
+                    </div>
+                `;
+
+                if (parent) parent.appendChild(cRow);
+                if (input) input.value = "";
+                triggerToastNotice("Comment added!");
+            }
+
+            function votePollOption(opt) {
+                if (userPollVoted) {
+                    triggerToastNotice("You have already voted!");
+                    return;
+                }
+                userPollVoted = true;
+                document.querySelectorAll(".poll-single-option").forEach(item => item.classList.remove("voted"));
+                const items = document.querySelectorAll(".poll-single-option");
+                if (items[opt - 1]) items[opt - 1].classList.add("voted");
+
+                if (opt === 1) {
+                    document.getElementById("pollBar1").style.width = "52%";
+                    document.getElementById("pollPct1").innerText = "52% (39 votes) ✓";
+                } else if (opt === 2) {
+                    document.getElementById("pollBar2").style.width = "36%";
+                    document.getElementById("pollPct2").innerText = "36% (26 votes) ✓";
+                } else if (opt === 3) {
+                    document.getElementById("pollBar3").style.width = "24%";
+                    document.getElementById("pollPct3").innerText = "24% (17 votes) ✓";
+                }
+                blastCelebrationConfetti();
+                triggerToastNotice("Your vote has been cast! Thank you!");
+            }
+        </script>
+    }
+    else if (pageType == "guideleavemanagement")
+    {
+        <div class="guide-page">
+            <!-- HERO SECTION -->
+            <section class="guide-hero leave-hero">
+                <div class="guide-container">
+                    <div class="guide-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index">Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Resources</span>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Guide to Leave Management</span>
+                    </div>
+
+                    <div class="guide-hero-grid">
+                        <div>
+                            <div class="guide-badge">
+                                <span class="dot"></span>
+                                Leave Operations &amp; Compliance Playbook
+                            </div>
+                            <h1>
+                                Mastering Workforce <br />
+                                <span class="highlight-blue">Leave Management</span>
+                            </h1>
+                            <p class="guide-hero-description">
+                                A comprehensive strategic guide for HR leaders and organizations to design fair leave policies, streamline self-service time-off requests, eliminate employee disputes, and sync leave records seamlessly with monthly payroll.
+                            </p>
+                            <div class="guide-hero-actions">
+                                @if (User.IsInRole("HR"))
+                                {
+                                    <a asp-controller="LeaveType" asp-action="Index" class="btn-guide-primary">
+                                        <i class="bi bi-sliders"></i> Configure Leave Policies
+                                    </a>
+                                    <a asp-controller="LeaveRequest" asp-action="Index" class="btn-guide-outline">
+                                        <i class="bi bi-calendar-check"></i> Review Leave Requests
+                                    </a>
+                                }
+                                else if (User.IsInRole("Employee"))
+                                {
+                                    <a asp-controller="LeaveRequest" asp-action="Create" class="btn-guide-primary">
+                                        <i class="bi bi-calendar-plus"></i> Apply for Leave
+                                    </a>
+                                    <a asp-controller="LeaveRequest" asp-action="Index" class="btn-guide-outline">
+                                        <i class="bi bi-clock-history"></i> My Leave Applications
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Account" asp-action="Login" class="btn-guide-primary">
+                                        <i class="bi bi-box-arrow-in-right"></i> Access Leave Portal
+                                    </a>
+                                    <a href="#leave-types" class="btn-guide-outline">
+                                        <i class="bi bi-arrow-down"></i> Explore Leave Types
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="guide-hero-card">
+                            <h4><i class="bi bi-shield-check"></i> Why Leave Tracking Matters</h4>
+                            <ul>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Eliminate Disputes:</strong> Transparent balances prevent arguments over remaining paid days and deductions.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Save 15+ Hours Monthly:</strong> Automated approval workflows replace chaotic email chains and paper forms.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Payroll Integrity:</strong> Approved leaves and Loss of Pay (LOP) feed directly into payroll calculation.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Team Coverage:</strong> Real-time visibility into overlapping leaves keeps projects properly staffed.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATS STRIP -->
+            <section class="guide-stats-strip">
+                <div class="guide-container">
+                    <div class="guide-stats-grid">
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon blue">
+                                <i class="bi bi-pie-chart-fill"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>100%</h3>
+                                <p>Automated Balance Tracking</p>
+                            </div>
+                        </div>
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon green">
+                                <i class="bi bi-cash-stack"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>Zero</h3>
+                                <p>Payroll Deduction Errors</p>
+                            </div>
+                        </div>
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon purple">
+                                <i class="bi bi-lightning-charge-fill"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>&lt; 2 Mins</h3>
+                                <p>Average Request &amp; Approval Time</p>
+                            </div>
+                        </div>
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon amber">
+                                <i class="bi bi-file-earmark-check-fill"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>Statutory</h3>
+                                <p>Labor Law &amp; Policy Compliance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 1: ESSENTIAL LEAVE TYPES DIRECTORY -->
+            <section class="guide-section" id="leave-types">
+                <div class="guide-container">
+                    <div class="guide-section-header">
+                        <span class="guide-tag blue">Policy Architecture</span>
+                        <h2>Standard Employee <span class="text-blue">Leave Types &amp; Quotas</span></h2>
+                        <p>A balanced leave policy balances company operational continuity with employee wellness, personal emergencies, and statutory rest entitlements.</p>
+                    </div>
+
+                    <div class="guide-grid-3">
+                        <!-- Casual Leave -->
+                        <div class="guide-card">
+                            <div class="guide-card-icon blue">
+                                <i class="bi bi-cup-hot-fill"></i>
+                            </div>
+                            <h3>Casual Leave (CL)</h3>
+                            <p>Intended for personal errands, brief family commitments, or short unplanned personal breaks. Usually taken for 1 to 2 consecutive days.</p>
+                            <span class="guide-card-pill blue"><i class="bi bi-calendar3"></i> 10 – 12 Days / Year</span>
+                        </div>
+
+                        <!-- Sick Leave -->
+                        <div class="guide-card">
+                            <div class="guide-card-icon rose">
+                                <i class="bi bi-heart-pulse-fill"></i>
+                            </div>
+                            <h3>Sick &amp; Medical Leave (SL)</h3>
+                            <p>Reserved for genuine illness, medical emergencies, or hospitalizations. Medical certificate is typically mandatory for consecutive leaves exceeding 3 days.</p>
+                            <span class="guide-card-pill rose"><i class="bi bi-clipboard2-pulse"></i> 10 – 12 Days / Year</span>
+                        </div>
+
+                        <!-- Earned Leave -->
+                        <div class="guide-card">
+                            <div class="guide-card-icon green">
+                                <i class="bi bi-airplane-fill"></i>
+                            </div>
+                            <h3>Earned / Privilege Leave (EL/PL)</h3>
+                            <p>Accrued proportionally as employees complete working months. Planned vacations and extended travels. Eligible for annual carry-forward and encashment.</p>
+                            <span class="guide-card-pill green"><i class="bi bi-star-fill"></i> 15 – 18 Days / Year</span>
+                        </div>
+
+                        <!-- Maternity & Paternity Leave -->
+                        <div class="guide-card">
+                            <div class="guide-card-icon purple">
+                                <i class="bi bi-people-fill"></i>
+                            </div>
+                            <h3>Parental Leave (Maternity &amp; Paternity)</h3>
+                            <p>Statutory protection for new parents. Governed by labor regulations (26 paid weeks for female employees, alongside 5–15 days paternity support).</p>
+                            <span class="guide-card-pill purple"><i class="bi bi-award-fill"></i> Statutory Regulated</span>
+                        </div>
+
+                        <!-- Compensatory Off -->
+                        <div class="guide-card">
+                            <div class="guide-card-icon amber">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <h3>Compensatory Off (Comp-Off)</h3>
+                            <p>Earned when an employee works on official company holidays, weekends, or emergency client duty. Can be availed within 30 to 60 days of accrual.</p>
+                            <span class="guide-card-pill amber"><i class="bi bi-plus-circle"></i> On-Demand Accrual</span>
+                        </div>
+
+                        <!-- LOP / LWP -->
+                        <div class="guide-card">
+                            <div class="guide-card-icon teal">
+                                <i class="bi bi-wallet2"></i>
+                            </div>
+                            <h3>Loss of Pay (LOP / LWP)</h3>
+                            <p>Applied when an employee exceeds their allowed paid leave quota or takes unauthorized absence. Automatically deducted proportionally in monthly payroll.</p>
+                            <span class="guide-card-pill blue"><i class="bi bi-currency-dollar"></i> Unpaid Salary Deduction</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: END-TO-END WORKFLOW PIPELINE -->
+            <section class="guide-section alt-bg">
+                <div class="guide-container">
+                    <div class="guide-section-header">
+                        <span class="guide-tag blue">Seamless Process</span>
+                        <h2>The 5-Step <span class="text-blue">Leave Lifecycle Workflow</span></h2>
+                        <p>How an automated HRMS streamlines the journey from an employee’s initial leave request to payroll closure with zero manual friction.</p>
+                    </div>
+
+                    <div class="guide-workflow-track">
+                        <div class="guide-step-card">
+                            <div class="guide-step-badge">1</div>
+                            <h4>Balance Check</h4>
+                            <p>Employee views available leave quota in the self-service portal before submitting request.</p>
+                        </div>
+                        <div class="guide-step-card">
+                            <div class="guide-step-badge">2</div>
+                            <h4>Digital Submission</h4>
+                            <p>Selects leave dates, category (CL, SL, PL), and provides reason in a simple web form.</p>
+                        </div>
+                        <div class="guide-step-card">
+                            <div class="guide-step-badge">3</div>
+                            <h4>Conflict Detection</h4>
+                            <p>System automatically checks team schedule to ensure no critical department shortfalls.</p>
+                        </div>
+                        <div class="guide-step-card">
+                            <div class="guide-step-badge">4</div>
+                            <h4>One-Click HR Review</h4>
+                            <p>HR or reporting manager reviews request on dashboard and approves or rejects with reason.</p>
+                        </div>
+                        <div class="guide-step-card">
+                            <div class="guide-step-badge">5</div>
+                            <h4>Payroll &amp; Time Sync</h4>
+                            <p>Approved leaves populate attendance register and sync automatically with monthly salary slips.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: BEST PRACTICES & POLICY GUIDELINES -->
+            <section class="guide-section">
+                <div class="guide-container">
+                    <div class="guide-split-card">
+                        <div class="guide-split-content">
+                            <h3>Key Leave Policies Every HR Department Must Establish</h3>
+                            <p>Having clear, transparent rules prevents ambiguity, eliminates favoritism, and ensures consistent workforce operations throughout the year.</p>
+                            <ul class="guide-checklist">
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Advance Notice Periods:</strong> Require 7–14 days prior notice for planned vacations; same-day notification for medical emergencies.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Sandwich Leave Rule:</strong> Clearly define whether weekends and holidays falling between leave days count towards leave balance.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Carry-Forward Caps:</strong> Set explicit limits on maximum unused earned leaves rolling into the new financial year (e.g., max 30 days).</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Blackout Windows:</strong> Designate critical project release or audit periods where non-emergency leaves require special leadership sign-off.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="guide-split-highlight blue-box">
+                            <h4><i class="bi bi-info-circle-fill"></i> Pro Tip: The Sandwich Leave Rule</h4>
+                            <p>
+                                If Friday and Monday are applied as leave, does Saturday and Sunday count as 4 days of leave or 2? 
+                                A transparent HR policy documented in your company's guidelines removes confusion and builds trust with your workforce.
+                            </p>
+                            <hr style="margin: 18px 0; border-color: rgba(30, 64, 175, 0.15);" />
+                            <h4><i class="bi bi-lightbulb-fill"></i> Annual Leave Encashment</h4>
+                            <p>
+                                Unused Privilege Leaves can be encashed during year-end or employee exit settlements based on basic monthly salary divided by standard working days.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: FREQUENTLY ASKED QUESTIONS -->
+            <section class="guide-section alt-bg">
+                <div class="guide-container">
+                    <div class="guide-section-header">
+                        <span class="guide-tag blue">Got Questions?</span>
+                        <h2>Frequently Asked <span class="text-blue">Leave Policy Questions</span></h2>
+                        <p>Common operational questions answered for HR administrators, line managers, and employees.</p>
+                    </div>
+
+                    <div class="guide-faq-grid">
+                        <div class="guide-faq-item">
+                            <h4><i class="bi bi-question-circle-fill"></i> Can employees apply for half-day leaves?</h4>
+                            <p>Yes. Modern HRMS enables half-day applications for morning or afternoon shifts, deducting exactly 0.5 days from the selected leave balance.</p>
+                        </div>
+                        <div class="guide-faq-item">
+                            <h4><i class="bi bi-question-circle-fill"></i> How does unapproved leave impact payroll?</h4>
+                            <p>Unapproved absence is marked as Loss of Pay (LOP). The system automatically computes per-day salary deduction when generating monthly payroll.</p>
+                        </div>
+                        <div class="guide-faq-item">
+                            <h4><i class="bi bi-question-circle-fill"></i> Can an HR cancel an approved leave?</h4>
+                            <p>Yes, HR administrators have full authority to recall or cancel an approved leave if business requirements change or if requested by the employee.</p>
+                        </div>
+                        <div class="guide-faq-item">
+                            <h4><i class="bi bi-question-circle-fill"></i> What documents are needed for extended sick leave?</h4>
+                            <p>Standard company policies require an official medical certificate signed by a licensed physician for medical absences extending beyond 3 consecutive days.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: CALL TO ACTION -->
+            <section class="guide-cta-section">
+                <div class="guide-container">
+                    <div class="guide-cta-card">
+                        <div>
+                            <h2>Ready to modernise your organization’s leave system?</h2>
+                            <p>Take control of employee time-off, automate approval workflows, and synchronize records directly with monthly payroll.</p>
+                        </div>
+                        <div class="guide-cta-actions">
+                            @if (User.IsInRole("HR"))
+                            {
+                                <a asp-controller="LeaveType" asp-action="Create" class="btn-guide-primary">
+                                    <i class="bi bi-plus-circle-fill"></i> Create New Leave Type
+                                </a>
+                                <a asp-controller="LeaveRequest" asp-action="Index" class="btn-guide-outline">
+                                    <i class="bi bi-list-check"></i> View All Leave Requests
+                                </a>
+                            }
+                            else if (User.IsInRole("Employee"))
+                            {
+                                <a asp-controller="LeaveRequest" asp-action="Create" class="btn-guide-primary">
+                                    <i class="bi bi-send-fill"></i> Submit Leave Application
+                                </a>
+                                <a asp-controller="Attendance" asp-action="Index" class="btn-guide-outline">
+                                    <i class="bi bi-calendar3"></i> Check My Attendance
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn-guide-primary">
+                                    <i class="bi bi-box-arrow-in-right"></i> Login to HR Attendance
+                                </a>
+                                <a asp-controller="Footer" asp-action="ContactUs" class="btn-guide-outline">
+                                    <i class="bi bi-chat-dots-fill"></i> Talk to HR Specialist
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    }
+    else if (pageType == "guideattendancemanagement")
+    {
+        <div class="guide-page">
+            <!-- HERO SECTION -->
+            <section class="guide-hero attendance-hero">
+                <div class="guide-container">
+                    <div class="guide-breadcrumb">
+                        <a asp-controller="Dashboard" asp-action="Index">Home</a>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Resources</span>
+                        <i class="bi bi-chevron-right"></i>
+                        <span>Guide to Attendance Management</span>
+                    </div>
+
+                    <div class="guide-hero-grid">
+                        <div>
+                            <div class="guide-badge green">
+                                <span class="dot"></span>
+                                Workforce Time Tracking &amp; Punctuality Playbook
+                            </div>
+                            <h1>
+                                Complete Guide to Modern <br />
+                                <span class="highlight-green">Attendance Management</span>
+                            </h1>
+                            <p class="guide-hero-description">
+                                Discover how progressive companies track daily work hours, enforce shift punctuality, eliminate buddy punching, and automate payroll sync with intelligent digital attendance systems.
+                            </p>
+                            <div class="guide-hero-actions">
+                                @if (User.IsInRole("HR") || User.IsInRole("Employee"))
+                                {
+                                    <a asp-controller="Attendance" asp-action="Create" class="btn-guide-primary green">
+                                        <i class="bi bi-check2-circle"></i> Mark Today's Attendance
+                                    </a>
+                                    <a asp-controller="Attendance" asp-action="Index" class="btn-guide-outline">
+                                        <i class="bi bi-calendar3"></i> View Attendance Register
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-controller="Account" asp-action="Login" class="btn-guide-primary green">
+                                        <i class="bi bi-box-arrow-in-right"></i> Login to Time Tracker
+                                    </a>
+                                    <a href="#attendance-metrics" class="btn-guide-outline">
+                                        <i class="bi bi-arrow-down"></i> Explore Metrics
+                                    </a>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="guide-hero-card green">
+                            <h4><i class="bi bi-clock-history"></i> Why Real-Time Attendance Counts</h4>
+                            <ul>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>99.8% Precision:</strong> Digital timecards eliminate manual register discrepancies and forgotten punches.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Live Headcount:</strong> Instantly view who is Present, Absent, or Late from the live HR dashboard.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Punctuality Discipline:</strong> Enforce transparent shift grace periods and early departure policies.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Payroll Readiness:</strong> Working days automatically feed into monthly salary generation with zero export delays.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STATS STRIP -->
+            <section class="guide-stats-strip">
+                <div class="guide-container">
+                    <div class="guide-stats-grid">
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon green">
+                                <i class="bi bi-stopwatch-fill"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>Real-Time</h3>
+                                <p>Clock-In &amp; Clock-Out Capture</p>
+                            </div>
+                        </div>
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon blue">
+                                <i class="bi bi-person-check-fill"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>Zero</h3>
+                                <p>Buddy Punching Discrepancies</p>
+                            </div>
+                        </div>
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon purple">
+                                <i class="bi bi-calendar-range-fill"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>Monthly</h3>
+                                <p>Automated Timesheet Summaries</p>
+                            </div>
+                        </div>
+                        <div class="guide-stat-box">
+                            <div class="guide-stat-icon amber">
+                                <i class="bi bi-shield-lock-fill"></i>
+                            </div>
+                            <div class="guide-stat-content">
+                                <h3>100%</h3>
+                                <p>Labor Law Audit Compliance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 1: KEY ATTENDANCE METRICS -->
+            <section class="guide-section" id="attendance-metrics">
+                <div class="guide-container">
+                    <div class="guide-section-header">
+                        <span class="guide-tag green">Workforce Analytics</span>
+                        <h2>Key Attendance Metrics <span class="text-green">Every HR Must Measure</span></h2>
+                        <p>Monitoring these core indicators provides immediate insights into employee engagement, burnout risks, and overall organizational discipline.</p>
+                    </div>
+
+                    <div class="guide-grid-3">
+                        <div class="guide-card">
+                            <div class="guide-card-icon green">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+                            <h3>Presenteeism Rate</h3>
+                            <p>The percentage of scheduled employees actively reporting for work on any given business day. Healthy benchmark is typically 95% and above.</p>
+                            <span class="guide-card-pill green"><i class="bi bi-activity"></i> Target: &ge; 95%</span>
+                        </div>
+
+                        <div class="guide-card">
+                            <div class="guide-card-icon amber">
+                                <i class="bi bi-alarm"></i>
+                            </div>
+                            <h3>Punctuality &amp; Late Arrivals</h3>
+                            <p>Tracks arrivals past the designated shift start time after exhausting grace periods. Identifies chronic tardiness patterns before performance dips.</p>
+                            <span class="guide-card-pill amber"><i class="bi bi-clock"></i> 15 Min Grace Threshold</span>
+                        </div>
+
+                        <div class="guide-card">
+                            <div class="guide-card-icon rose">
+                                <i class="bi bi-person-x"></i>
+                            </div>
+                            <h3>Unplanned Absenteeism Rate</h3>
+                            <p>Measures days lost due to unscheduled absences compared to total scheduled work days. Highlights potential burnout or morale red flags.</p>
+                            <span class="guide-card-pill rose"><i class="bi bi-exclamation-triangle"></i> Benchmark: &le; 2.5%</span>
+                        </div>
+
+                        <div class="guide-card">
+                            <div class="guide-card-icon blue">
+                                <i class="bi bi-hourglass-split"></i>
+                            </div>
+                            <h3>Total Productive Hours</h3>
+                            <p>The cumulative working hours logged between check-in and check-out, accounting for standard breaks, meetings, and project focus time.</p>
+                            <span class="guide-card-pill blue"><i class="bi bi-bar-chart"></i> 8 – 9 Hours / Shift</span>
+                        </div>
+
+                        <div class="guide-card">
+                            <div class="guide-card-icon purple">
+                                <i class="bi bi-moon-stars-fill"></i>
+                            </div>
+                            <h3>Overtime (OT) Distribution</h3>
+                            <p>Hours logged beyond regular shift limits. Helps managers balance workload distribution across team members and ensures fair overtime compensation.</p>
+                            <span class="guide-card-pill purple"><i class="bi bi-cash-coin"></i> Fair Compensation</span>
+                        </div>
+
+                        <div class="guide-card">
+                            <div class="guide-card-icon teal">
+                                <i class="bi bi-door-open-fill"></i>
+                            </div>
+                            <h3>Early Departure Frequency</h3>
+                            <p>Logs instances where employees clock out significantly before scheduled shift end without authorized half-day leave or gate pass approval.</p>
+                            <span class="guide-card-pill green"><i class="bi bi-shield-check"></i> Policy Enforced</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: COMPARISON TABLE (OLD VS MODERN) -->
+            <section class="guide-section alt-bg">
+                <div class="guide-container">
+                    <div class="guide-section-header">
+                        <span class="guide-tag green">Technology Shift</span>
+                        <h2>The Evolution of <span class="text-green">Attendance Tracking Methods</span></h2>
+                        <p>Why modern enterprises are transitioning away from manual registers and physical hardware towards cloud-native HRMS solutions.</p>
+                    </div>
+
+                    <div class="guide-table-wrap">
+                        <table class="guide-table">
+                            <thead>
+                                <tr>
+                                    <th>Criteria</th>
+                                    <th>Paper Register (Legacy)</th>
+                                    <th>Biometric Hardware (Traditional)</th>
+                                    <th>Cloud HRMS (Modern)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Speed &amp; Convenience</strong></td>
+                                    <td><span class="guide-badge-bad"><i class="bi bi-x-circle-fill"></i> Slow manual pen signing</span></td>
+                                    <td><span>Fingerprint queues at office door</span></td>
+                                    <td><span class="guide-badge-good"><i class="bi bi-check-circle-fill"></i> 1-Click web check-in anywhere</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Data Accuracy &amp; Integrity</strong></td>
+                                    <td><span class="guide-badge-bad"><i class="bi bi-x-circle-fill"></i> Prone to fake buddy entries</span></td>
+                                    <td><span>Good, but hardware sensor wear</span></td>
+                                    <td><span class="guide-badge-good"><i class="bi bi-check-circle-fill"></i> Authenticated login verification</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hybrid &amp; Remote Work</strong></td>
+                                    <td><span class="guide-badge-bad"><i class="bi bi-x-circle-fill"></i> Impossible to support</span></td>
+                                    <td><span class="guide-badge-bad"><i class="bi bi-x-circle-fill"></i> Limited to physical office branch</span></td>
+                                    <td><span class="guide-badge-good"><i class="bi bi-check-circle-fill"></i> Seamless office, home &amp; field support</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Payroll Synchronization</strong></td>
+                                    <td><span class="guide-badge-bad"><i class="bi bi-x-circle-fill"></i> Manual Excel entry for days</span></td>
+                                    <td><span>USB/LAN sync required monthly</span></td>
+                                    <td><span class="guide-badge-good"><i class="bi bi-check-circle-fill"></i> 100% Real-time automatic payroll sync</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Maintenance Cost</strong></td>
+                                    <td><span>Paper books &amp; stationery</span></td>
+                                    <td><span class="guide-badge-bad"><i class="bi bi-x-circle-fill"></i> High machine repair &amp; AMC fees</span></td>
+                                    <td><span class="guide-badge-good"><i class="bi bi-check-circle-fill"></i> Zero hardware, auto cloud updates</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: BEST PRACTICES & POLICY GUIDELINES -->
+            <section class="guide-section">
+                <div class="guide-container">
+                    <div class="guide-split-card">
+                        <div class="guide-split-content">
+                            <h3>Essential Attendance Policies Every Organization Needs</h3>
+                            <p>A well-documented attendance handbook sets clear workplace expectations, reduces friction, and promotes mutual professional accountability.</p>
+                            <ul class="guide-checklist">
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Grace Period Standard:</strong> Establish a fair 15-minute grace window for morning check-in (e.g. 9:00 AM to 9:15 AM) to accommodate traffic delays.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Half-Day Thresholds:</strong> Define clear minimum working hours: logging 4 to 6 hours counts as half-day; under 4 hours counts as absence.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Attendance Regularization:</strong> Provide a formal mechanism for employees to request punch corrections for verified official client visits.</span>
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    <span><strong>Consecutive Absenteeism:</strong> Set statutory guidelines for unnotified absence exceeding 3 consecutive days to initiate HR reach-out.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="guide-split-highlight">
+                            <h4><i class="bi bi-clock-fill"></i> The Standard 3-Strike Tardiness Policy</h4>
+                            <p>
+                                Many top-performing organizations implement a 3-strike policy: 3 late arrivals in a calendar month trigger a friendly automated notification, while subsequent tardiness deducts a half-day casual leave.
+                            </p>
+                            <hr style="margin: 18px 0; border-color: rgba(6, 95, 70, 0.15);" />
+                            <h4><i class="bi bi-check-all"></i> Seamless Payroll Integration</h4>
+                            <p>
+                                With HR Attendance, monthly attendance totals automatically calculate Present days, Paid Leaves, and LOP deductions directly into salary slips.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: FREQUENTLY ASKED QUESTIONS -->
+            <section class="guide-section alt-bg">
+                <div class="guide-container">
+                    <div class="guide-section-header">
+                        <span class="guide-tag green">FAQ</span>
+                        <h2>Frequently Asked <span class="text-green">Attendance Questions</span></h2>
+                        <p>Answers to common questions regarding daily time tracking, punch disputes, and payroll processing.</p>
+                    </div>
+
+                    <div class="guide-faq-grid">
+                        <div class="guide-faq-item green">
+                            <h4><i class="bi bi-question-circle-fill"></i> What if an employee forgets to check out?</h4>
+                            <p>The system flags missing check-outs as pending regularizations. HR or the reporting manager can review and approve corrected departure times.</p>
+                        </div>
+                        <div class="guide-faq-item green">
+                            <h4><i class="bi bi-question-circle-fill"></i> How does attendance integrate with payroll?</h4>
+                            <p>Each month, total present days plus approved paid leaves form the payable days count. Days without attendance or leave automatically reflect as Loss of Pay (LOP).</p>
+                        </div>
+                        <div class="guide-faq-item green">
+                            <h4><i class="bi bi-question-circle-fill"></i> Can HR edit past attendance records?</h4>
+                            <p>Yes. HR administrators hold secure permissions to update dates, adjust check-in/check-out times, or change attendance statuses with audit remarks.</p>
+                        </div>
+                        <div class="guide-faq-item green">
+                            <h4><i class="bi bi-question-circle-fill"></i> Can employees view their monthly attendance summary?</h4>
+                            <p>Absolutely. Every employee can log into their account to review their complete monthly calendar, total present days, late markers, and absences in real-time.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: CALL TO ACTION -->
+            <section class="guide-cta-section">
+                <div class="guide-container">
+                    <div class="guide-cta-card">
+                        <div>
+                            <h2>Start tracking workplace attendance with complete confidence</h2>
+                            <p>Empower your workforce with transparent time tracking, instant punch logging, and real-time monthly timesheet analytics.</p>
+                        </div>
+                        <div class="guide-cta-actions">
+                            @if (User.IsInRole("HR") || User.IsInRole("Employee"))
+                            {
+                                <a asp-controller="Attendance" asp-action="Create" class="btn-guide-primary green">
+                                    <i class="bi bi-check2-circle"></i> Mark Attendance Now
+                                </a>
+                                <a asp-controller="Attendance" asp-action="Index" class="btn-guide-outline">
+                                    <i class="bi bi-table"></i> Open Attendance Timesheets
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn-guide-primary green">
+                                    <i class="bi bi-box-arrow-in-right"></i> Login to Attendance Portal
+                                </a>
+                                <a asp-controller="Footer" asp-action="ContactUs" class="btn-guide-outline">
+                                    <i class="bi bi-chat-dots-fill"></i> Request a Demo
+                                </a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     }
     else
     {

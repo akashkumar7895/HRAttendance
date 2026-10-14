@@ -1,0 +1,829 @@
+@using HRAttendanceMVC.Domain.Enities
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Onboarding & Offboarding - HR Attendance";
+
+    var onboardingsList = ViewBag.Onboardings as List<OnboardingRecord> ?? new List<OnboardingRecord>();
+    var offboardingsList = ViewBag.Offboardings as List<OffboardingRecord> ?? new List<OffboardingRecord>();
+    var activeEmployeesList = ViewBag.ActiveEmployees as List<Employee> ?? new List<Employee>();
+
+    int activeOnbCount = ViewBag.ActiveOnboardingsCount ?? onboardingsList.Count(o => o.Status != "Completed");
+    int activeOffbCount = ViewBag.ActiveOffboardingsCount ?? offboardingsList.Count(o => o.Status != "Completed");
+    int completedOnbCount = ViewBag.CompletedOnboardingsCount ?? onboardingsList.Count(o => o.Status == "Completed");
+    int completedOffbCount = ViewBag.CompletedOffboardingsCount ?? offboardingsList.Count(o => o.Status == "Completed");
+}
+
+<link rel="stylesheet" href="~/css/onboarding-offboarding.css" asp-append-version="true" />
+
+<div class="onb-page">
+
+    <!-- HERO SECTION -->
+    <section class="onb-hero">
+        <div class="onb-container">
+            <div class="onb-breadcrumb">
+                <a asp-controller="Dashboard" asp-action="Index"><i class="bi bi-house-door me-1"></i>Home</a>
+                <i class="bi bi-chevron-right"></i>
+                <span>Customers</span>
+                <i class="bi bi-chevron-right"></i>
+                <span>Onboarding &amp; Offboarding</span>
+            </div>
+
+            <div class="onb-hero-badge">
+                <span class="dot"></span>
+                Employee Lifecycle &amp; Transition Automation
+            </div>
+
+            <div class="onb-hero-header-row">
+                <div class="onb-hero-text">
+                    <h1>Employee <span>Onboarding &amp; Offboarding</span></h1>
+                    <p>
+                        Track candidate joining checklists, automate IT asset &amp; email provisioning, monitor department clearances, 
+                        and streamline full &amp; final settlements with zero compliance gaps.
+                    </p>
+                </div>
+                <div class="onb-hero-cta-group">
+                    <button type="button" class="btn-initiate-onboarding" onclick="openOnboardingModal()">
+                        <i class="bi bi-person-plus-fill"></i> Initiate Onboarding
+                    </button>
+                    <button type="button" class="btn-initiate-offboarding" onclick="openOffboardingModal()">
+                        <i class="bi bi-box-arrow-right"></i> Initiate Offboarding
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hero KPI Metric Stats (Real Dynamic Database Counts) -->
+            <div class="onb-stats-grid">
+                <div class="onb-stat-card">
+                    <div class="onb-stat-icon purple">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </div>
+                    <div>
+                        <div class="onb-stat-val">@activeOnbCount</div>
+                        <div class="onb-stat-lbl">Active Onboardings</div>
+                    </div>
+                </div>
+
+                <div class="onb-stat-card">
+                    <div class="onb-stat-icon blue">
+                        <i class="bi bi-door-open-fill"></i>
+                    </div>
+                    <div>
+                        <div class="onb-stat-val">@activeOffbCount</div>
+                        <div class="onb-stat-lbl">In-Progress Exits</div>
+                    </div>
+                </div>
+
+                <div class="onb-stat-card">
+                    <div class="onb-stat-icon green">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+                    <div>
+                        <div class="onb-stat-val">@completedOnbCount</div>
+                        <div class="onb-stat-lbl">Completed Joiners</div>
+                    </div>
+                </div>
+
+                <div class="onb-stat-card">
+                    <div class="onb-stat-icon amber">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
+                    <div>
+                        <div class="onb-stat-val">@completedOffbCount</div>
+                        <div class="onb-stat-lbl">Finalized Exits</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- STICKY SUB-NAVIGATION TABS -->
+    <nav class="onb-nav-tabs-wrapper">
+        <div class="onb-container">
+            <div class="onb-tabs-scroll">
+                <button type="button" class="onb-tab-btn active" onclick="switchSection('all', this)">
+                    <i class="bi bi-grid-fill"></i> All Workflows
+                </button>
+                <button type="button" class="onb-tab-btn" onclick="switchSection('onboarding', this)">
+                    <i class="bi bi-person-plus"></i> New Hire Onboarding
+                    <span class="pill-badge">@onboardingsList.Count</span>
+                </button>
+                <button type="button" class="onb-tab-btn" onclick="switchSection('offboarding', this)">
+                    <i class="bi bi-box-arrow-right"></i> Employee Offboarding &amp; Exits
+                    <span class="pill-badge">@offboardingsList.Count</span>
+                </button>
+                <button type="button" class="onb-tab-btn" onclick="switchSection('guidelines', this)">
+                    <i class="bi bi-shield-check"></i> Checklist &amp; Compliance Policy
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN BODY CONTENT -->
+    <div class="onb-content-body">
+        <div class="onb-container">
+
+            <!-- =========================================================
+                 SECTION 1: NEW HIRE ONBOARDING WORKFLOW
+                 ========================================================= -->
+            <section class="onb-section-box" id="section-onboarding">
+                <div class="onb-section-header">
+                    <div class="onb-title-cluster">
+                        <div class="onb-icon-circle purple">
+                            <i class="bi bi-person-vcard-fill"></i>
+                        </div>
+                        <div>
+                            <h2>New Hire Onboarding Pipeline</h2>
+                            <p>Track prospective candidates, document submissions, asset delivery, and day-one orientation.</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-initiate-onboarding" onclick="openOnboardingModal()">
+                        <i class="bi bi-person-plus-fill"></i> Initiate Onboarding
+                    </button>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="onb-filter-bar">
+                    <div class="filter-pills-row">
+                        <button type="button" class="onb-pill-btn active" onclick="filterOnboardingStatus('all', this)">All (@onboardingsList.Count)</button>
+                        <button type="button" class="onb-pill-btn" onclick="filterOnboardingStatus('Pending', this)">Pending (@onboardingsList.Count(o => o.Status == "Pending"))</button>
+                        <button type="button" class="onb-pill-btn" onclick="filterOnboardingStatus('In Progress', this)">In Progress (@onboardingsList.Count(o => o.Status == "In Progress"))</button>
+                        <button type="button" class="onb-pill-btn" onclick="filterOnboardingStatus('Completed', this)">Completed (@onboardingsList.Count(o => o.Status == "Completed"))</button>
+                    </div>
+                    <div class="onb-search-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="onbSearchInput" placeholder="Search candidate or dept..." onkeyup="searchOnboardingCards()" />
+                    </div>
+                </div>
+
+                <!-- Cards Grid (DYNAMIC FROM DATABASE) -->
+                <div class="onb-cards-grid" id="onbCardsGrid">
+                    @if (!onboardingsList.Any())
+                    {
+                        <div class="empty-onb-state">
+                            <i class="bi bi-person-x"></i>
+                            <h4>No Onboarding Records Found</h4>
+                            <p>No new hire onboarding has been initiated yet. Click the button below to initiate onboarding for a new candidate or joinee.</p>
+                            <button type="button" class="btn-initiate-onboarding" onclick="openOnboardingModal()">
+                                <i class="bi bi-person-plus-fill"></i> Initiate Onboarding
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var item in onboardingsList)
+                        {
+                            string statusClass = item.Status switch
+                            {
+                                "Completed" => "completed",
+                                "In Progress" => "inprogress",
+                                _ => "pending"
+                            };
+
+                            <div class="onb-card" data-status="@item.Status" data-search="@item.CandidateName.ToLower() @item.Department.ToLower() @item.Designation.ToLower()">
+                                <div>
+                                    <div class="onb-card-top-row">
+                                        <span class="status-tag @statusClass" id="onb-status-tag-@item.Id">@item.Status</span>
+                                        <span class="date-meta-chip">
+                                            <i class="bi bi-calendar3"></i> Join: @item.JoiningDate.ToString("MMM dd, yyyy")
+                                        </span>
+                                    </div>
+
+                                    <div class="onb-card-header">
+                                        <div class="candidate-avatar">
+                                            @(string.IsNullOrWhiteSpace(item.CandidateName) ? "C" : item.CandidateName.Substring(0, 1).ToUpper())
+                                        </div>
+                                        <div class="candidate-info">
+                                            <h3>@item.CandidateName</h3>
+                                            <div class="candidate-role">@item.Designation</div>
+                                            <span class="candidate-dept">@item.Department</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress Tracker Bar -->
+                                    <div class="onb-progress-wrap">
+                                        <div class="onb-progress-label-row">
+                                            <span>Checklist Completion</span>
+                                            <span class="pct" id="onb-progress-pct-@item.Id">@item.ProgressPercentage%</span>
+                                        </div>
+                                        <div class="onb-progress-bar-track">
+                                            <div class="onb-progress-bar-fill" id="onb-progress-bar-@item.Id" style="width: @item.ProgressPercentage%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Interactive Checklist Items (Click to toggle via AJAX) -->
+                                    <div class="checklist-tasks-list">
+                                        <div class="task-item-toggle @(item.HasDocumentsSubmitted ? "checked" : "")" id="onb-task-docs-@item.Id" onclick="toggleOnboardingTaskAjax(@item.Id, 'docs')">
+                                            <i class="bi @(item.HasDocumentsSubmitted ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>Document Verification (ID &amp; Address Proof)</span>
+                                        </div>
+                                        <div class="task-item-toggle @(item.HasAssetAssigned ? "checked" : "")" id="onb-task-asset-@item.Id" onclick="toggleOnboardingTaskAjax(@item.Id, 'asset')">
+                                            <i class="bi @(item.HasAssetAssigned ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>Asset Provisioning (Laptop &amp; Access Card)</span>
+                                        </div>
+                                        <div class="task-item-toggle @(item.HasEmailCreated ? "checked" : "")" id="onb-task-email-@item.Id" onclick="toggleOnboardingTaskAjax(@item.Id, 'email')">
+                                            <i class="bi @(item.HasEmailCreated ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>IT &amp; Email Account Setup</span>
+                                        </div>
+                                        <div class="task-item-toggle @(item.HasOrientationDone ? "checked" : "")" id="onb-task-orientation-@item.Id" onclick="toggleOnboardingTaskAjax(@item.Id, 'orientation')">
+                                            <i class="bi @(item.HasOrientationDone ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>HR Welcome &amp; Orientation Session</span>
+                                        </div>
+                                        <div class="task-item-toggle @(item.HasBankDetailsVerified ? "checked" : "")" id="onb-task-bank-@item.Id" onclick="toggleOnboardingTaskAjax(@item.Id, 'bank')">
+                                            <i class="bi @(item.HasBankDetailsVerified ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>Bank Account &amp; Payroll Setup</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card Footer Actions -->
+                                <div class="onb-card-footer">
+                                    @if (item.Status != "Completed")
+                                    {
+                                        <form asp-controller="Footer" asp-action="CompleteOnboarding" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@item.Id" />
+                                            <input type="hidden" name="createEmployeeRecord" value="true" />
+                                            <button type="submit" class="btn-complete-lifecycle" title="Complete onboarding and add to Employees workforce table">
+                                                <i class="bi bi-check2-all"></i> Complete &amp; Add to Workforce
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-success small fw-bold">
+                                            <i class="bi bi-patch-check-fill me-1"></i> Joined &amp; Active
+                                        </span>
+                                    }
+
+                                    <form asp-controller="Footer" asp-action="DeleteOnboarding" method="post" onsubmit="return confirm('Are you sure you want to delete this onboarding record?');" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn-delete-card" title="Delete record">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 SECTION 2: EMPLOYEE OFFBOARDING & EXIT WORKFLOW
+                 ========================================================= -->
+            <section class="onb-section-box" id="section-offboarding">
+                <div class="onb-section-header">
+                    <div class="onb-title-cluster">
+                        <div class="onb-icon-circle sky">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </div>
+                        <div>
+                            <h2>Employee Offboarding &amp; Exit Clearances</h2>
+                            <p>Manage resignation workflows, asset surrender, departmental clearances, and final FNF settlements.</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-initiate-offboarding" onclick="openOffboardingModal()">
+                        <i class="bi bi-box-arrow-right"></i> Initiate Offboarding
+                    </button>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="onb-filter-bar">
+                    <div class="filter-pills-row">
+                        <button type="button" class="onb-pill-btn active" onclick="filterOffboardingStatus('all', this)">All (@offboardingsList.Count)</button>
+                        <button type="button" class="onb-pill-btn" onclick="filterOffboardingStatus('Initiated', this)">Initiated (@offboardingsList.Count(o => o.Status == "Initiated"))</button>
+                        <button type="button" class="onb-pill-btn" onclick="filterOffboardingStatus('Clearance In Progress', this)">Clearance In Progress (@offboardingsList.Count(o => o.Status == "Clearance In Progress"))</button>
+                        <button type="button" class="onb-pill-btn" onclick="filterOffboardingStatus('Completed', this)">Completed (@offboardingsList.Count(o => o.Status == "Completed"))</button>
+                    </div>
+                    <div class="onb-search-wrap">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="offbSearchInput" placeholder="Search exiting employee..." onkeyup="searchOffboardingCards()" />
+                    </div>
+                </div>
+
+                <!-- Offboarding Cards Grid (DYNAMIC FROM DATABASE) -->
+                <div class="onb-cards-grid" id="offbCardsGrid">
+                    @if (!offboardingsList.Any())
+                    {
+                        <div class="empty-onb-state">
+                            <i class="bi bi-door-closed" style="color:#0284c7;"></i>
+                            <h4>No Offboarding Records Found</h4>
+                            <p>No employee exit clearance process has been initiated yet. Click the button below to start the offboarding workflow for a resigning employee.</p>
+                            <button type="button" class="btn-initiate-offboarding" onclick="openOffboardingModal()">
+                                <i class="bi bi-box-arrow-right"></i> Initiate Offboarding
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        @foreach (var exit in offboardingsList)
+                        {
+                            string statusClass = exit.Status switch
+                            {
+                                "Completed" => "completed",
+                                "Clearance In Progress" => "inprogress",
+                                _ => "initiated"
+                            };
+
+                            <div class="onb-card" data-status="@exit.Status" data-search="@exit.EmployeeName.ToLower() @exit.Department.ToLower() @exit.Designation.ToLower()">
+                                <div>
+                                    <div class="onb-card-top-row">
+                                        <span class="status-tag @statusClass" id="offb-status-tag-@exit.Id">@exit.Status</span>
+                                        <span class="date-meta-chip">
+                                            <i class="bi bi-clock-history"></i> LWD: @exit.LastWorkingDay.ToString("MMM dd, yyyy")
+                                        </span>
+                                    </div>
+
+                                    <div class="onb-card-header">
+                                        <div class="candidate-avatar offb">
+                                            @(string.IsNullOrWhiteSpace(exit.EmployeeName) ? "E" : exit.EmployeeName.Substring(0, 1).ToUpper())
+                                        </div>
+                                        <div class="candidate-info">
+                                            <h3>@exit.EmployeeName</h3>
+                                            <div class="candidate-role">@exit.Designation</div>
+                                            <div class="d-flex align-items-center gap-2 mt-1">
+                                                <span class="candidate-dept">@exit.Department</span>
+                                                <span class="badge bg-secondary-subtle text-secondary small">@exit.ExitType</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Progress Tracker Bar -->
+                                    <div class="onb-progress-wrap">
+                                        <div class="onb-progress-label-row">
+                                            <span>Clearances Completed</span>
+                                            <span class="pct" id="offb-progress-pct-@exit.Id">@exit.ProgressPercentage%</span>
+                                        </div>
+                                        <div class="onb-progress-bar-track">
+                                            <div class="onb-progress-bar-fill" id="offb-progress-bar-@exit.Id" style="width: @exit.ProgressPercentage%; background: linear-gradient(90deg, #0284c7 0%, #10b981 100%);"></div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Interactive Clearance Items (Click to toggle via AJAX) -->
+                                    <div class="checklist-tasks-list">
+                                        <div class="task-item-toggle @(exit.IsManagerHandoverDone ? "checked" : "")" id="offb-task-handover-@exit.Id" onclick="toggleOffboardingTaskAjax(@exit.Id, 'handover')">
+                                            <i class="bi @(exit.IsManagerHandoverDone ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>Department &amp; Project Knowledge Handover</span>
+                                        </div>
+                                        <div class="task-item-toggle @(exit.IsItCleared ? "checked" : "")" id="offb-task-it-@exit.Id" onclick="toggleOffboardingTaskAjax(@exit.Id, 'it')">
+                                            <i class="bi @(exit.IsItCleared ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>IT Asset Clearance (Laptop, Access Card returned)</span>
+                                        </div>
+                                        <div class="task-item-toggle @(exit.IsFinanceCleared ? "checked" : "")" id="offb-task-finance-@exit.Id" onclick="toggleOffboardingTaskAjax(@exit.Id, 'finance')">
+                                            <i class="bi @(exit.IsFinanceCleared ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>Finance &amp; Travel Claims Clearance</span>
+                                        </div>
+                                        <div class="task-item-toggle @(exit.IsExitInterviewDone ? "checked" : "")" id="offb-task-exitinterview-@exit.Id" onclick="toggleOffboardingTaskAjax(@exit.Id, 'exitinterview')">
+                                            <i class="bi @(exit.IsExitInterviewDone ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>HR Exit Interview &amp; Relieving Letter Prep</span>
+                                        </div>
+                                        <div class="task-item-toggle @(exit.IsFnfCompleted ? "checked" : "")" id="offb-task-fnf-@exit.Id" onclick="toggleOffboardingTaskAjax(@exit.Id, 'fnf')">
+                                            <i class="bi @(exit.IsFnfCompleted ? "bi-check-circle-fill" : "bi-circle")"></i>
+                                            <span>Full &amp; Final Settlement (FNF) Disbursed</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card Footer Actions -->
+                                <div class="onb-card-footer">
+                                    @if (exit.Status != "Completed")
+                                    {
+                                        <form asp-controller="Footer" asp-action="CompleteOffboarding" method="post" style="display:inline;">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@exit.Id" />
+                                            <input type="hidden" name="deactivateEmployee" value="true" />
+                                            <button type="submit" class="btn-complete-lifecycle" style="background:#0284c7;" title="Finalize exit and relieve employee">
+                                                <i class="bi bi-shield-check"></i> Finalize Exit &amp; Relieve
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-secondary small fw-bold">
+                                            <i class="bi bi-check-circle-fill text-success me-1"></i> Relieved &amp; Archived
+                                        </span>
+                                    }
+
+                                    <form asp-controller="Footer" asp-action="DeleteOffboarding" method="post" onsubmit="return confirm('Are you sure you want to delete this offboarding record?');" style="display:inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@exit.Id" />
+                                        <button type="submit" class="btn-delete-card" title="Delete record">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </section>
+
+            <!-- =========================================================
+                 SECTION 3: CHECKLIST & COMPLIANCE GUIDELINES
+                 ========================================================= -->
+            <section class="onb-section-box" id="section-guidelines">
+                <div class="onb-section-header">
+                    <div class="onb-title-cluster">
+                        <div class="onb-icon-circle amber">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <div>
+                            <h2>Standard HR Checklists &amp; Policy Guidelines</h2>
+                            <p>Official company framework for 30-60-90 day employee onboarding and statutory exit clearances.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guidelines-grid">
+                    <div class="guideline-card">
+                        <h4><i class="bi bi-1-circle-fill text-primary"></i> Day 1 to Day 7: Induction</h4>
+                        <ul class="guideline-step-list">
+                            <li><i class="bi bi-check2"></i> Identity document verification &amp; NDA signing.</li>
+                            <li><i class="bi bi-check2"></i> Laptop, email, Slack, and HRMS credentials setup.</li>
+                            <li><i class="bi bi-check2"></i> Team introduction meeting and peer buddy assignment.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guideline-card">
+                        <h4><i class="bi bi-2-circle-fill text-success"></i> Day 30 to Day 90: Ramp-up</h4>
+                        <ul class="guideline-step-list">
+                            <li><i class="bi bi-check2"></i> 30-day feedback check-in with reporting manager.</li>
+                            <li><i class="bi bi-check2"></i> Department goal alignment and project milestones.</li>
+                            <li><i class="bi bi-check2"></i> 90-day confirmation review and probation evaluation.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guideline-card">
+                        <h4><i class="bi bi-3-circle-fill text-danger"></i> Exit Clearance Protocol</h4>
+                        <ul class="guideline-step-list">
+                            <li><i class="bi bi-check2"></i> Formal acceptance of resignation letter and notice calculation.</li>
+                            <li><i class="bi bi-check2"></i> Surrender of all company physical and digital assets.</li>
+                            <li><i class="bi bi-check2"></i> FNF calculation within 30 days of last working day.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================================================
+     INTERACTIVE MODALS FOR HR DATA CREATION
+     ========================================================= -->
+
+<!-- Modal 1: Initiate Onboarding (Submits to DB) -->
+<div class="onb-modal-backdrop" id="onbCreateModal">
+    <div class="onb-modal-window">
+        <form asp-controller="Footer" asp-action="AddOnboarding" method="post">
+            @Html.AntiForgeryToken()
+            <div class="onb-modal-top">
+                <h4><i class="bi bi-person-plus-fill text-purple"></i> Initiate New Hire Onboarding</h4>
+                <button type="button" class="btn-dismiss-modal" onclick="closeOnboardingModal()">&times;</button>
+            </div>
+            <div class="onb-modal-content-area">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Candidate Full Name</label>
+                        <input type="text" name="CandidateName" class="form-control" placeholder="e.g. Aman Gupta" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Email Address</label>
+                        <input type="email" name="Email" class="form-control" placeholder="e.g. aman.gupta@example.com" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Phone Number</label>
+                        <input type="tel" name="Phone" class="form-control" placeholder="e.g. 9876543210" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Joining Date</label>
+                        <input type="date" name="JoiningDate" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Department</label>
+                        <input type="text" name="Department" class="form-control" placeholder="e.g. Engineering, Sales, HR" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Designation</label>
+                        <input type="text" name="Designation" class="form-control" placeholder="e.g. Senior Software Engineer" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">Reporting Manager / Mentor (Optional)</label>
+                    <input type="text" name="ReportingManager" class="form-control" placeholder="e.g. Rajesh Kumar" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">Additional Notes</label>
+                    <textarea name="Notes" class="form-control" rows="2" placeholder="e.g. Requires MacBook M2, dual monitor setup..."></textarea>
+                </div>
+            </div>
+            <div class="onb-modal-bottom">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="closeOnboardingModal()">Cancel</button>
+                <button type="submit" class="btn btn-purple btn-sm rounded-pill px-4 text-white" style="background:#7c3aed;">
+                    <i class="bi bi-check2-circle me-1"></i> Save &amp; Initiate Onboarding
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal 2: Initiate Offboarding (Submits to DB) -->
+<div class="onb-modal-backdrop" id="offbCreateModal">
+    <div class="onb-modal-window">
+        <form asp-controller="Footer" asp-action="AddOffboarding" method="post">
+            @Html.AntiForgeryToken()
+            <div class="onb-modal-top">
+                <h4><i class="bi bi-box-arrow-right text-info"></i> Initiate Employee Offboarding</h4>
+                <button type="button" class="btn-dismiss-modal" onclick="closeOffboardingModal()">&times;</button>
+            </div>
+            <div class="onb-modal-content-area">
+                <!-- Select existing active employee from database -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">Select Active Employee (Database)</label>
+                    <select name="EmployeeId" id="selectExistingEmployee" class="form-select" onchange="autoFillEmployeeDetails(this)">
+                        <option value="">-- Choose Existing Employee or Enter Manually --</option>
+                        @foreach (var emp in activeEmployeesList)
+                        {
+                            <option value="@emp.Id" data-name="@emp.FullName" data-dept="@emp.Department" data-role="@emp.Designation">
+                                @emp.FullName (@emp.EmployeeCode) - @emp.Department
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Employee Name</label>
+                        <input type="text" name="EmployeeName" id="offbEmpNameInput" class="form-control" placeholder="e.g. Rohit Sharma" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Exit Type</label>
+                        <select name="ExitType" class="form-select">
+                            <option value="Resignation">Voluntary Resignation</option>
+                            <option value="Retirement">Retirement</option>
+                            <option value="Contract End">End of Contract</option>
+                            <option value="Termination">Involuntary Separation</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Department</label>
+                        <input type="text" name="Department" id="offbDeptInput" class="form-control" placeholder="e.g. Sales" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Designation</label>
+                        <input type="text" name="Designation" id="offbRoleInput" class="form-control" placeholder="e.g. Account Manager" required />
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Resignation Date</label>
+                        <input type="date" name="ResignationDate" class="form-control" value="@DateTime.Today.ToString("yyyy-MM-dd")" required />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold small text-muted">Last Working Day (LWD)</label>
+                        <input type="date" name="LastWorkingDay" class="form-control" value="@DateTime.Today.AddDays(30).ToString("yyyy-MM-dd")" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-muted">Reason / Handover Summary</label>
+                    <textarea name="Reason" class="form-control" rows="2" placeholder="e.g. Higher studies, career growth..."></textarea>
+                </div>
+            </div>
+            <div class="onb-modal-bottom">
+                <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill px-3" onclick="closeOffboardingModal()">Cancel</button>
+                <button type="submit" class="btn btn-info btn-sm rounded-pill px-4 text-white" style="background:#0284c7;">
+                    <i class="bi bi-check2-circle me-1"></i> Save &amp; Initiate Exit
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Toast Alert Notification -->
+<div class="onb-alert-toast" id="onbGlobalToast">
+    <i class="bi bi-check-circle-fill text-success fs-5"></i>
+    <span id="onbGlobalToastMsg">Updated successfully!</span>
+</div>
+
+<!-- Confetti CDN Script -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+<!-- Client Scripts -->
+<script>
+    function triggerOnbToast(msg) {
+        const toast = document.getElementById("onbGlobalToast");
+        const lbl = document.getElementById("onbGlobalToastMsg");
+        if (toast && lbl) {
+            lbl.innerText = msg;
+            toast.classList.add("show");
+            setTimeout(() => { toast.classList.remove("show"); }, 3500);
+        }
+    }
+
+    function fireConfetti() {
+        if (typeof confetti === "function") {
+            confetti({ particleCount: 80, spread: 65, origin: { y: 0.6 } });
+        }
+    }
+
+    function switchSection(target, btn) {
+        document.querySelectorAll(".onb-tab-btn").forEach(b => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        const sections = document.querySelectorAll(".onb-section-box");
+        if (target === "all") {
+            sections.forEach(s => s.style.display = "block");
+        } else {
+            sections.forEach(s => {
+                if (s.id === "section-" + target) {
+                    s.style.display = "block";
+                    s.scrollIntoView({ behavior: "smooth", block: "start" });
+                } else {
+                    s.style.display = "none";
+                }
+            });
+        }
+    }
+
+    function openOnboardingModal() {
+        document.getElementById("onbCreateModal").classList.add("active");
+    }
+
+    function closeOnboardingModal() {
+        document.getElementById("onbCreateModal").classList.remove("active");
+    }
+
+    function openOffboardingModal() {
+        document.getElementById("offbCreateModal").classList.add("active");
+    }
+
+    function closeOffboardingModal() {
+        document.getElementById("offbCreateModal").classList.remove("active");
+    }
+
+    function autoFillEmployeeDetails(select) {
+        const opt = select.options[select.selectedIndex];
+        if (opt && opt.value) {
+            document.getElementById("offbEmpNameInput").value = opt.getAttribute("data-name") || "";
+            document.getElementById("offbDeptInput").value = opt.getAttribute("data-dept") || "";
+            document.getElementById("offbRoleInput").value = opt.getAttribute("data-role") || "";
+        }
+    }
+
+    // Filter Onboarding by Status
+    function filterOnboardingStatus(status, btn) {
+        document.querySelectorAll("#section-onboarding .onb-pill-btn").forEach(p => p.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        const cards = document.querySelectorAll("#onbCardsGrid .onb-card");
+        cards.forEach(c => {
+            const cardStatus = c.getAttribute("data-status") || "";
+            if (status === "all" || cardStatus.toLowerCase() === status.toLowerCase()) {
+                c.style.display = "flex";
+            } else {
+                c.style.display = "none";
+            }
+        });
+    }
+
+    // Search Onboarding
+    function searchOnboardingCards() {
+        const query = (document.getElementById("onbSearchInput").value || "").toLowerCase();
+        const cards = document.querySelectorAll("#onbCardsGrid .onb-card");
+        cards.forEach(c => {
+            const searchAttr = (c.getAttribute("data-search") || "").toLowerCase();
+            if (searchAttr.includes(query)) {
+                c.style.display = "flex";
+            } else {
+                c.style.display = "none";
+            }
+        });
+    }
+
+    // Filter Offboarding by Status
+    function filterOffboardingStatus(status, btn) {
+        document.querySelectorAll("#section-offboarding .onb-pill-btn").forEach(p => p.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        const cards = document.querySelectorAll("#offbCardsGrid .onb-card");
+        cards.forEach(c => {
+            const cardStatus = c.getAttribute("data-status") || "";
+            if (status === "all" || cardStatus.toLowerCase() === status.toLowerCase()) {
+                c.style.display = "flex";
+            } else {
+                c.style.display = "none";
+            }
+        });
+    }
+
+    // Search Offboarding
+    function searchOffboardingCards() {
+        const query = (document.getElementById("offbSearchInput").value || "").toLowerCase();
+        const cards = document.querySelectorAll("#offbCardsGrid .onb-card");
+        cards.forEach(c => {
+            const searchAttr = (c.getAttribute("data-search") || "").toLowerCase();
+            if (searchAttr.includes(query)) {
+                c.style.display = "flex";
+            } else {
+                c.style.display = "none";
+            }
+        });
+    }
+
+    // AJAX Toggle Onboarding Task
+    function toggleOnboardingTaskAjax(id, taskKey) {
+        fetch(`/Footer/ToggleOnboardingTask?id=${id}&taskKey=${taskKey}`, { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.getElementById(`onb-task-${taskKey}-${id}`);
+                    if (row) {
+                        const isChecked = data[taskKey];
+                        if (isChecked) {
+                            row.classList.add("checked");
+                            row.querySelector("i").className = "bi bi-check-circle-fill";
+                        } else {
+                            row.classList.remove("checked");
+                            row.querySelector("i").className = "bi bi-circle";
+                        }
+                    }
+
+                    // Update progress bar
+                    const bar = document.getElementById(`onb-progress-bar-${id}`);
+                    const pct = document.getElementById(`onb-progress-pct-${id}`);
+                    const tag = document.getElementById(`onb-status-tag-${id}`);
+
+                    if (bar) bar.style.width = data.progress + "%";
+                    if (pct) pct.innerText = data.progress + "%";
+                    if (tag) {
+                        tag.innerText = data.status;
+                        tag.className = "status-tag " + (data.status === "Completed" ? "completed" : (data.status === "In Progress" ? "inprogress" : "pending"));
+                    }
+
+                    if (data.progress === 100) {
+                        fireConfetti();
+                        triggerOnbToast("All onboarding tasks completed! 🎉");
+                    } else {
+                        triggerOnbToast("Task updated!");
+                    }
+                }
+            })
+            .catch(() => triggerOnbToast("Task saved."));
+    }
+
+    // AJAX Toggle Offboarding Milestone
+    function toggleOffboardingTaskAjax(id, clearanceKey) {
+        fetch(`/Footer/ToggleOffboardingClearance?id=${id}&clearanceKey=${clearanceKey}`, { method: 'POST' })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const row = document.getElementById(`offb-task-${clearanceKey.toLowerCase()}-${id}`);
+                    if (row) {
+                        const isChecked = data[clearanceKey];
+                        if (isChecked) {
+                            row.classList.add("checked");
+                            row.querySelector("i").className = "bi bi-check-circle-fill";
+                        } else {
+                            row.classList.remove("checked");
+                            row.querySelector("i").className = "bi bi-circle";
+                        }
+                    }
+
+                    // Update progress bar
+                    const bar = document.getElementById(`offb-progress-bar-${id}`);
+                    const pct = document.getElementById(`offb-progress-pct-${id}`);
+                    const tag = document.getElementById(`offb-status-tag-${id}`);
+
+                    if (bar) bar.style.width = data.progress + "%";
+                    if (pct) pct.innerText = data.progress + "%";
+                    if (tag) {
+                        tag.innerText = data.status;
+                        tag.className = "status-tag " + (data.status === "Completed" ? "completed" : (data.status === "Clearance In Progress" ? "inprogress" : "initiated"));
+                    }
+
+                    if (data.progress === 100) {
+                        fireConfetti();
+                        triggerOnbToast("All clearance milestones verified! 🏆");
+                    } else {
+                        triggerOnbToast("Clearance milestone updated!");
+                    }
+                }
+            })
+            .catch(() => triggerOnbToast("Clearance updated."));
+    }
+</script>

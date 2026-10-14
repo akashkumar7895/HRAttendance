@@ -16,7 +16,7 @@ public class PayrollRepository : Repository<Payroll>, IPayrollRepository
         var query = DbSet.Include(p => p.Employee).AsQueryable();
 
         if (hrUserId.HasValue)
-            query = query.Where(p => p.HrUserId == hrUserId.Value);
+            query = query.Where(p => p.HrUserId == hrUserId.Value || (p.Employee != null && p.Employee.HrUserId == hrUserId.Value));
 
         return await query
             .OrderByDescending(p => p.Year)

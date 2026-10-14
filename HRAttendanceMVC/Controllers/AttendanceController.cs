@@ -23,10 +23,10 @@ public class AttendanceController : Controller
         _db = db;                                   
     }
 
-    // ---------- NEW: helpers ----------
+    // ---------- helpers ----------
     private bool IsEmployeeRole => User.IsInRole("Employee");
+    private int CurrentHrUserId => int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
 
-   
     private async Task<int?> GetMyEmployeeIdAsync()
     {
         var email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
@@ -34,7 +34,6 @@ public class AttendanceController : Controller
         return emp?.Id;
     }
 
-  
     private async Task LoadEmployeesAsync()
     {
         if (IsEmployeeRole)
@@ -46,7 +45,7 @@ public class AttendanceController : Controller
         }
         else
         {
-            ViewBag.Employees = await _employeeService.GetActiveEmployeesAsync();
+            ViewBag.Employees = await _employeeService.GetActiveEmployeesAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
         }
     }
     // ----------------------------------
@@ -61,7 +60,6 @@ public class AttendanceController : Controller
             .Include(x => x.Employee)
             .AsNoTracking();
 
-        
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
@@ -79,16 +77,9 @@ public class AttendanceController : Controller
             }
             query = query.Where(x => x.EmployeeId == myId.Value);
         }
-        else if (User.IsInRole("HR"))
+        else if (User.IsInRole("HR") && CurrentHrUserId > 0)
         {
-            if (int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var hrId) && hrId > 0)
-            {
-                bool hasHrEmployees = await _db.Employees.AnyAsync(e => e.HrUserId == hrId);
-                if (hasHrEmployees)
-                {
-                    query = query.Where(x => x.Employee != null && x.Employee.HrUserId == hrId);
-                }
-            }
+            query = query.Where(x => x.Employee != null && x.Employee.HrUserId == CurrentHrUserId);
         }
 
       
@@ -172,6 +163,14 @@ public class AttendanceController : Controller
             attendance.EmployeeId = myId.Value;
             ModelState.Remove(nameof(Attendance.EmployeeId));
         }
+        else if (CurrentHrUserId > 0)
+        {
+            var emp = await _employeeService.GetEmployeeByIdAsync(attendance.EmployeeId);
+            if (emp == null || emp.HrUserId != CurrentHrUserId)
+            {
+                ModelState.AddModelError(nameof(Attendance.EmployeeId), "Selected employee is not assigned to your account.");
+            }
+        }
 
         if (!ModelState.IsValid)
         {
@@ -204,11 +203,15 @@ public class AttendanceController : Controller
         var attendance = await _attendanceService.GetAttendanceByIdAsync(id);
         if (attendance == null) return NotFound();
 
-        
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
             if (!myId.HasValue || attendance.EmployeeId != myId.Value) return NotFound();
+        }
+        else if (CurrentHrUserId > 0)
+        {
+            var emp = await _employeeService.GetEmployeeByIdAsync(attendance.EmployeeId);
+            if (emp == null || emp.HrUserId != CurrentHrUserId) return NotFound();
         }
 
         await LoadEmployeesAsync();                
@@ -220,7 +223,7 @@ public class AttendanceController : Controller
     {
         if (id != attendance.Id) return BadRequest();
 
-        // NEW: ownership check + EmployeeId force
+        // Ownership check + EmployeeId force
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
@@ -229,6 +232,13 @@ public class AttendanceController : Controller
 
             attendance.EmployeeId = myId.Value;
             ModelState.Remove(nameof(Attendance.EmployeeId));
+        }
+        else if (CurrentHrUserId > 0)
+        {
+            var existing = await _attendanceService.GetAttendanceByIdAsync(id);
+            if (existing == null) return NotFound();
+            var emp = await _employeeService.GetEmployeeByIdAsync(existing.EmployeeId);
+            if (emp == null || emp.HrUserId != CurrentHrUserId) return NotFound();
         }
 
         if (!ModelState.IsValid)
@@ -263,11 +273,15 @@ public class AttendanceController : Controller
         var item = await _attendanceService.GetAttendanceByIdAsync(id);
         if (item == null) return NotFound();
 
-        
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
             if (!myId.HasValue || item.EmployeeId != myId.Value) return NotFound();
+        }
+        else if (CurrentHrUserId > 0)
+        {
+            var emp = await _employeeService.GetEmployeeByIdAsync(item.EmployeeId);
+            if (emp == null || emp.HrUserId != CurrentHrUserId) return NotFound();
         }
 
         var result = await _attendanceService.DeleteAttendanceAsync(id);

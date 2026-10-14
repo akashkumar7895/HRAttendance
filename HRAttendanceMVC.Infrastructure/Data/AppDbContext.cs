@@ -18,6 +18,12 @@ public class AppDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
     public DbSet<Payroll> Payrolls => Set<Payroll>();
+    public DbSet<CompanyAnnouncement> CompanyAnnouncements => Set<CompanyAnnouncement>();
+    public DbSet<CompanyEvent> CompanyEvents => Set<CompanyEvent>();
+    public DbSet<EngagementPost> EngagementPosts => Set<EngagementPost>();
+    public DbSet<EmployeeCelebration> EmployeeCelebrations => Set<EmployeeCelebration>();
+    public DbSet<OnboardingRecord> OnboardingRecords => Set<OnboardingRecord>();
+    public DbSet<OffboardingRecord> OffboardingRecords => Set<OffboardingRecord>();
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Employee>()

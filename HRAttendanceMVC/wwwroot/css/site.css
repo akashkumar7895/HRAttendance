@@ -191,4 +191,179 @@ label { font-weight: 600; margin-bottom: 5px; }
     }
 }
 
+/* =========================================================
+   EMBOSSED & CENTERED ACTION BUTTONS (UBHAR & HOVER EFFECT)
+   1. Initiate Onboarding
+   2. Initiate Offboarding
+   3. Post Announcement
+   4. Add Birthday
+   ========================================================= */
+
+.btn-initiate-onboarding,
+.btn-initiate-offboarding,
+.btn-post-announcement,
+.btn-add-birthday,
+.btn-add-event {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    gap: 8px !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    line-height: 1.4 !important;
+    white-space: nowrap !important;
+    position: relative !important;
+    user-select: none !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.btn-initiate-onboarding i,
+.btn-initiate-offboarding i,
+.btn-post-announcement i,
+.btn-add-birthday i,
+.btn-add-event i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.05em !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    transition: transform 0.2s ease !important;
+}
+
+/* 1. Initiate Onboarding (Purple Theme) */
+.btn-initiate-onboarding {
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    padding: 10px 24px !important;
+    font-size: 0.95rem !important;
+    /* Ubhar: 3D raised elevation & multi-layer shadow */
+    box-shadow: 0 5px 16px rgba(124, 58, 237, 0.45), 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+}
+
+.btn-initiate-onboarding:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 10px 26px rgba(124, 58, 237, 0.65), 0 4px 8px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+.btn-initiate-onboarding:hover i {
+    transform: scale(1.15) !important;
+}
+
+.btn-initiate-onboarding:active {
+    transform: translateY(0) scale(0.99) !important;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.4) !important;
+}
+
+/* 2. Initiate Offboarding (Sky Blue / Cyan Theme) */
+.btn-initiate-offboarding {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    padding: 10px 24px !important;
+    font-size: 0.95rem !important;
+    /* Ubhar: 3D raised elevation & multi-layer shadow */
+    box-shadow: 0 5px 16px rgba(2, 132, 199, 0.45), 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+}
+
+.btn-initiate-offboarding:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 10px 26px rgba(2, 132, 199, 0.65), 0 4px 8px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+.btn-initiate-offboarding:hover i {
+    transform: scale(1.15) !important;
+}
+
+.btn-initiate-offboarding:active {
+    transform: translateY(0) scale(0.99) !important;
+    box-shadow: 0 3px 10px rgba(2, 132, 199, 0.4) !important;
+}
+
+/* 3. Post Announcement (Deep Purple / Magenta Theme) */
+.btn-post-announcement {
+    background: linear-gradient(135deg, #a855f7 0%, #9602cb 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    padding: 9px 24px !important;
+    font-size: 0.92rem !important;
+    /* Ubhar: 3D raised elevation & multi-layer shadow */
+    box-shadow: 0 5px 16px rgba(150, 2, 203, 0.45), 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+}
+
+.btn-post-announcement:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 10px 26px rgba(150, 2, 203, 0.65), 0 4px 8px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+.btn-post-announcement:hover i {
+    transform: scale(1.15) !important;
+}
+
+.btn-post-announcement:active {
+    transform: translateY(0) scale(0.99) !important;
+    box-shadow: 0 3px 10px rgba(150, 2, 203, 0.4) !important;
+}
+
+/* 4. Add Birthday (Rose / Pink Theme) */
+.btn-add-birthday {
+    background: linear-gradient(135deg, #f43f5e 0%, #db2777 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    padding: 9px 24px !important;
+    font-size: 0.92rem !important;
+    /* Ubhar: 3D raised elevation & multi-layer shadow */
+    box-shadow: 0 5px 16px rgba(219, 39, 119, 0.45), 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+}
+
+.btn-add-birthday:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 10px 26px rgba(219, 39, 119, 0.65), 0 4px 8px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+.btn-add-birthday:hover i {
+    transform: scale(1.15) !important;
+}
+
+.btn-add-birthday:active {
+    transform: translateY(0) scale(0.99) !important;
+    box-shadow: 0 3px 10px rgba(219, 39, 119, 0.4) !important;
+}
+
+/* 5. Add Event / Holiday (Blue Theme) */
+.btn-add-event {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.35) !important;
+    padding: 9px 24px !important;
+    font-size: 0.92rem !important;
+    /* Ubhar: 3D raised elevation & multi-layer shadow */
+    box-shadow: 0 5px 16px rgba(37, 99, 235, 0.45), 0 2px 4px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
+}
+
+.btn-add-event:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 10px 26px rgba(37, 99, 235, 0.65), 0 4px 8px rgba(0, 0, 0, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+.btn-add-event:hover i {
+    transform: scale(1.15) !important;
+}
+
+.btn-add-event:active {
+    transform: translateY(0) scale(0.99) !important;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4) !important;
+}
+
+
 

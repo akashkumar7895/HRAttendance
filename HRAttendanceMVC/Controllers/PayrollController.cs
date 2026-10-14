@@ -28,7 +28,7 @@ public class PayrollController : Controller
     // ================================================================
     public async Task<IActionResult> Index()
     {
-        var payrolls = await _payrollService.GetAllPayrollsAsync(CurrentHrUserId);
+        var payrolls = await _payrollService.GetAllPayrollsAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
         return View(payrolls);
     }
 
@@ -56,7 +56,7 @@ public class PayrollController : Controller
         ModelState.Remove(nameof(Payroll.NetSalary));
         ModelState.Remove(nameof(Payroll.MonthName));
 
-        payroll.HrUserId = CurrentHrUserId;
+        payroll.HrUserId = CurrentHrUserId > 0 ? CurrentHrUserId : 1;
 
         if (!ModelState.IsValid)
         {
@@ -82,7 +82,10 @@ public class PayrollController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var payroll = await _payrollService.GetPayrollByIdAsync(id);
-        if (payroll == null || payroll.HrUserId != CurrentHrUserId)
+        if (payroll == null)
+            return NotFound();
+
+        if (CurrentHrUserId > 0 && payroll.HrUserId != CurrentHrUserId)
             return NotFound();
 
         await PopulateDropdownsAsync(payroll.EmployeeId);
@@ -101,7 +104,10 @@ public class PayrollController : Controller
         ModelState.Remove(nameof(Payroll.NetSalary));
         ModelState.Remove(nameof(Payroll.MonthName));
 
-        payroll.HrUserId = CurrentHrUserId;
+        var existing = await _payrollService.GetPayrollByIdAsync(id);
+        if (existing == null) return NotFound();
+        if (CurrentHrUserId > 0 && existing.HrUserId != CurrentHrUserId) return NotFound();
+        payroll.HrUserId = existing.HrUserId;
 
         if (!ModelState.IsValid)
         {
@@ -128,7 +134,10 @@ public class PayrollController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var payroll = await _payrollService.GetPayrollByIdAsync(id);
-        if (payroll == null || payroll.HrUserId != CurrentHrUserId)
+        if (payroll == null)
+            return NotFound();
+
+        if (CurrentHrUserId > 0 && payroll.HrUserId != CurrentHrUserId)
             return NotFound();
 
         var result = await _payrollService.DeletePayrollAsync(id);
@@ -144,7 +153,10 @@ public class PayrollController : Controller
     public async Task<IActionResult> MarkAsPaid(int id)
     {
         var payroll = await _payrollService.GetPayrollByIdAsync(id);
-        if (payroll == null || payroll.HrUserId != CurrentHrUserId)
+        if (payroll == null)
+            return NotFound();
+
+        if (CurrentHrUserId > 0 && payroll.HrUserId != CurrentHrUserId)
             return NotFound();
 
         var result = await _payrollService.MarkAsPaidAsync(id);
@@ -159,7 +171,10 @@ public class PayrollController : Controller
     public async Task<IActionResult> Details(int id)
     {
         var payroll = await _payrollService.GetPayrollByIdAsync(id);
-        if (payroll == null || payroll.HrUserId != CurrentHrUserId)
+        if (payroll == null)
+            return NotFound();
+
+        if (CurrentHrUserId > 0 && payroll.HrUserId != CurrentHrUserId)
             return NotFound();
 
         return View(payroll);
@@ -170,7 +185,7 @@ public class PayrollController : Controller
     // ================================================================
     private async Task PopulateDropdownsAsync(int? selectedEmployeeId = null)
     {
-        var employees = await _employeeService.GetAllEmployeesAsync(CurrentHrUserId);
+        var employees = await _employeeService.GetAllEmployeesAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
         ViewBag.EmployeeList = new SelectList(
             employees.Select(e => new { e.Id, Name = e.FullName + " (" + e.EmployeeCode + ")" }),
             "Id", "Name",

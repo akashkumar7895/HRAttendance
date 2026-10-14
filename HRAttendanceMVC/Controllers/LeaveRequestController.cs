@@ -28,10 +28,10 @@ public class LeaveRequestController : Controller
         _db = db;                                   
     }
 
-    // ---------- NEW: helpers ----------
+    // ---------- helpers ----------
     private bool IsEmployeeRole => User.IsInRole("Employee");
+    private int CurrentHrUserId => int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
 
-    
     private async Task<int?> GetMyEmployeeIdAsync()
     {
         var email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
@@ -42,9 +42,8 @@ public class LeaveRequestController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var data = await _leaveRequestService.GetAllLeaveRequestsAsync();
+        var data = await _leaveRequestService.GetAllLeaveRequestsAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
 
-        
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
@@ -52,6 +51,11 @@ public class LeaveRequestController : Controller
                 ? data.Where(x => x.EmployeeId == myId.Value).ToList()
                 : new List<LeaveRequest>();
             return View(mine);
+        }
+
+        if (CurrentHrUserId > 0)
+        {
+            data = data.Where(x => x.Employee != null && x.Employee.HrUserId == CurrentHrUserId).ToList();
         }
 
         return View(data);
@@ -63,7 +67,6 @@ public class LeaveRequestController : Controller
 
         var model = new LeaveRequest { FromDate = DateTime.Today, ToDate = DateTime.Today };
 
-        
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
@@ -76,13 +79,20 @@ public class LeaveRequestController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(LeaveRequest model)
     {
-       
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
             if (!myId.HasValue) return NotFound();
             model.EmployeeId = myId.Value;
             ModelState.Remove(nameof(LeaveRequest.EmployeeId));
+        }
+        else if (CurrentHrUserId > 0)
+        {
+            var emp = await _employeeService.GetEmployeeByIdAsync(model.EmployeeId);
+            if (emp == null || emp.HrUserId != CurrentHrUserId)
+            {
+                ModelState.AddModelError(nameof(LeaveRequest.EmployeeId), "Selected employee is not assigned to your account.");
+            }
         }
 
         if (!ModelState.IsValid)
@@ -111,11 +121,21 @@ public class LeaveRequestController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    
     [Authorize(Roles = "HR")]
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateStatus(int id, string status)
     {
+        if (CurrentHrUserId > 0)
+        {
+            var req = await _leaveRequestService.GetLeaveRequestByIdAsync(id);
+            if (req == null) return NotFound();
+            if (req.Employee != null && req.Employee.HrUserId != CurrentHrUserId)
+            {
+                TempData["Error"] = "Unauthorized to update this leave request.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
         var result = await _leaveRequestService.UpdateStatusAsync(id, status);
         if (!result.Success)
         {
@@ -129,21 +149,19 @@ public class LeaveRequestController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-   
     private async Task LoadLists()
     {
         if (IsEmployeeRole)
         {
-            var myId = await GetMyEmployeeIdAsync();
-            ViewBag.Employees = await _db.Employees.AsNoTracking()
-                .Where(e => e.IsActive && e.Id == myId)
-                .ToListAsync();
+            var email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
+            var myEmp = await _db.Employees.AsNoTracking().FirstOrDefaultAsync(e => e.Email == email);
+            ViewBag.Employees = myEmp != null ? new List<Employee> { myEmp } : new List<Employee>();
+            ViewBag.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync(myEmp?.HrUserId);
         }
         else
         {
-            ViewBag.Employees = await _employeeService.GetActiveEmployeesAsync();
+            ViewBag.Employees = await _employeeService.GetActiveEmployeesAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
+            ViewBag.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
         }
-
-        ViewBag.LeaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync();
     }
 }

@@ -56,7 +56,93 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                     b.HasIndex("EmployeeId", "AttendanceDate")
                         .IsUnique();
 
-                    b.ToTable("Attendances", (string)null);
+                    b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.CompanyAnnouncement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("HrUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanyAnnouncements");
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.CompanyEvent", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("EventDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("HrUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Location")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<int>("RsvpCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SubType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CompanyEvents");
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.ContactMessage", b =>
@@ -95,7 +181,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactMessages", (string)null);
+                    b.ToTable("ContactMessages");
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.Employee", b =>
@@ -155,7 +241,87 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasIndex("HrUserId");
 
-                    b.ToTable("Employees", (string)null);
+                    b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.EmployeeCelebration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CelebrationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CelebrationType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Department")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Designation")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("HrUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("YearsOfService")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmployeeCelebrations");
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.EngagementPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("HrUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LikesCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EngagementPosts");
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.LeaveRequest", b =>
@@ -196,7 +362,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasIndex("LeaveTypeId");
 
-                    b.ToTable("LeaveRequests", (string)null);
+                    b.ToTable("LeaveRequests");
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.LeaveType", b =>
@@ -224,7 +390,159 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("LeaveTypes", (string)null);
+                    b.ToTable("LeaveTypes");
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.OffboardingRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<int?>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EmployeeName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ExitType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("HrUserId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsExitInterviewDone")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFinanceCleared")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFnfCompleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsItCleared")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsManagerHandoverDone")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("LastWorkingDay")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProgressPercentage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime>("ResignationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OffboardingRecords");
+                });
+
+            modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.OnboardingRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CandidateName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Department")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Designation")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<bool>("HasAssetAssigned")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasBankDetailsVerified")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasDocumentsSubmitted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasEmailCreated")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasOrientationDone")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("HrUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("JoiningDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("ProgressPercentage")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReportingManager")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OnboardingRecords");
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.Payroll", b =>
@@ -276,7 +594,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                     b.HasIndex("EmployeeId", "Month", "Year")
                         .IsUnique();
 
-                    b.ToTable("Payrolls", (string)null);
+                    b.ToTable("Payrolls");
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Entities.User", b =>
@@ -312,7 +630,7 @@ namespace HRAttendanceMVC.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("HRAttendanceMVC.Domain.Enities.Attendance", b =>

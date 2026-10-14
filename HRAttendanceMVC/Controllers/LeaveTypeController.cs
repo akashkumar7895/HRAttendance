@@ -1,4 +1,4 @@
-﻿using HRAttendanceMVC.Application.Interfaces;
+using HRAttendanceMVC.Application.Interfaces;
 using HRAttendanceMVC.Domain.Enities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +21,7 @@ public class LeaveTypeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var leaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync(CurrentHrUserId);
+        var leaveTypes = await _leaveTypeService.GetAllLeaveTypesAsync(CurrentHrUserId > 0 ? CurrentHrUserId : null);
         return View(leaveTypes);
     }
 
@@ -30,7 +30,7 @@ public class LeaveTypeController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(LeaveType model)
     {
-        model.HrUserId = CurrentHrUserId;
+        model.HrUserId = CurrentHrUserId > 0 ? CurrentHrUserId : 1;
 
         if (!ModelState.IsValid) return View(model);
 
@@ -55,7 +55,8 @@ public class LeaveTypeController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var item = await _leaveTypeService.GetLeaveTypeByIdAsync(id);
-        if (item == null || item.HrUserId != CurrentHrUserId) return NotFound();
+        if (item == null) return NotFound();
+        if (CurrentHrUserId > 0 && item.HrUserId != CurrentHrUserId) return NotFound();
         return View(item);
     }
 
@@ -63,7 +64,10 @@ public class LeaveTypeController : Controller
     public async Task<IActionResult> Edit(int id, LeaveType model)
     {
         if (id != model.Id) return BadRequest();
-        model.HrUserId = CurrentHrUserId;
+        var existing = await _leaveTypeService.GetLeaveTypeByIdAsync(id);
+        if (existing == null) return NotFound();
+        if (CurrentHrUserId > 0 && existing.HrUserId != CurrentHrUserId) return NotFound();
+        model.HrUserId = existing.HrUserId;
         if (!ModelState.IsValid) return View(model);
 
         var result = await _leaveTypeService.UpdateLeaveTypeAsync(id, model);
@@ -88,7 +92,8 @@ public class LeaveTypeController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         var item = await _leaveTypeService.GetLeaveTypeByIdAsync(id);
-        if (item == null || item.HrUserId != CurrentHrUserId) return NotFound();
+        if (item == null) return NotFound();
+        if (CurrentHrUserId > 0 && item.HrUserId != CurrentHrUserId) return NotFound();
 
         var result = await _leaveTypeService.DeleteLeaveTypeAsync(id);
         if (!result.Success)
