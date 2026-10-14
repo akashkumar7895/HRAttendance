@@ -11,6 +11,14 @@
 *.sln.docstates
 *.env
 
+# Deploy artifacts
+clean_publish/
+HRAttendance_DeployPackage/
+*.zip
+*.sql
+deploy.bat
+deploy.ps1
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
