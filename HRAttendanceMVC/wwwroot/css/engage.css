@@ -170,7 +170,7 @@
 }
 
 .engage-stat-box .val {
-    font-size: 1.35rem;
+    font-size: 1.35rem;  
     font-weight: 800;
     line-height: 1.1;
 }
@@ -208,7 +208,7 @@
     align-items: center;
     gap: 5px;
     white-space: nowrap;
-}
+}        
 
 .ticker-msg {
     flex: 1;
@@ -1745,4 +1745,18 @@
     transform: translateY(0) scale(0.99) !important;
     box-shadow: 0 3px 10px rgba(37, 99, 235, 0.4) !important;
 }
+
+/* Purple utility classes */
+.text-purple {
+    color: #9333ea !important;
+}
+
+.bg-purple-subtle {
+    background-color: #f3e8ff !important;
+}
+
+.border-purple {
+    border-color: #d8b4fe !important;
+}
+
 
