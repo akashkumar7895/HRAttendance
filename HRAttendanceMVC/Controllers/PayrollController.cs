@@ -166,9 +166,9 @@ public class PayrollController : Controller
     }
 
     // ================================================================
-    // DETAILS (GET) - Employee payroll slip
+    // DETAILS (GET) - Employee payroll slip / Download PDF
     // ================================================================
-    public async Task<IActionResult> Details(int id)
+    public async Task<IActionResult> Details(int id, bool download = false)
     {
         var payroll = await _payrollService.GetPayrollByIdAsync(id);
         if (payroll == null)
@@ -177,6 +177,7 @@ public class PayrollController : Controller
         if (CurrentHrUserId > 0 && payroll.HrUserId != CurrentHrUserId)
             return NotFound();
 
+        ViewBag.AutoDownload = download;
         return View(payroll);
     }
 

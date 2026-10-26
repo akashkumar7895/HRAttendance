@@ -120,6 +120,13 @@ else
                                        title="View Slip">
                                         <i class="bi bi-eye"></i>
                                     </a>
+                                    <a class="btn btn-sm btn-outline-danger"
+                                       asp-action="Details"
+                                       asp-route-id="@p.Id"
+                                       asp-route-download="true"
+                                       title="Download Payslip as PDF">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </a>
                                     <a class="btn btn-sm btn-outline-primary"
                                        asp-action="Edit"
                                        asp-route-id="@p.Id"

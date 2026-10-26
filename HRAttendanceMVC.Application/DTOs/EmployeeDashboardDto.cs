@@ -9,6 +9,13 @@ public class EmployeeDashboardDto
     public string TodayAttendanceStatus { get; set; } = "Not Marked";
     public string? TodayCheckIn { get; set; }
     public string? TodayCheckOut { get; set; }
+    public TimeSpan? TodayCheckInTime { get; set; }
+    public TimeSpan? TodayCheckOutTime { get; set; }
+    public bool IsPunchedIn => TodayCheckInTime.HasValue;
+    public bool IsPunchedOut => TodayCheckOutTime.HasValue;
+    public string? FormattedWorkingDuration { get; set; }
+    public int? TodayAttendanceId { get; set; }
+    public string? Remarks { get; set; }
     public int TotalPresentDays { get; set; }
     public int PendingLeavesCount { get; set; }
     public int ApprovedLeavesCount { get; set; }

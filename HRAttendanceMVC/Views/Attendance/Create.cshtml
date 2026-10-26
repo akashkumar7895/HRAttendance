@@ -2,30 +2,391 @@
 @{
     ViewData["Title"] = "Mark Attendance";
     var employees = ViewBag.Employees as IEnumerable<Employee> ?? Enumerable.Empty<Employee>();
+    bool isEmployee = User.IsInRole("Employee");
+    bool isExisting = (ViewBag.IsExistingRecord == true) || (Model.Id > 0);
+    bool isPunchedIn = Model.CheckIn.HasValue;
+    bool isPunchedOut = Model.CheckOut.HasValue;
+    string checkInDisplay = Model.CheckIn.HasValue ? DateTime.Today.Add(Model.CheckIn.Value).ToString("hh:mm tt") : "--:--";
+    string checkOutDisplay = Model.CheckOut.HasValue ? DateTime.Today.Add(Model.CheckOut.Value).ToString("hh:mm tt") : "--:--";
 }
-<h2>Mark Attendance</h2>
-<form asp-action="Create" method="post" class="card p-4 mt-3">
-    @Html.AntiForgeryToken()<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="mb-3">
-        <label asp-for="EmployeeId">Employee</label>
-        <select asp-for="EmployeeId" class="form-select">
-            <option value="">-- Select Employee --</option>
-            @foreach (var e in employees)
-            { 
-                <option value="@e.Id">@e.EmployeeCode - @e.FullName</option>
+
+<div class="container py-3" style="max-width: 1000px;">
+    <!-- Page Header -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <div>
+            <h2 class="mb-0 fw-bold">
+                <i class="fa-solid fa-calendar-check text-purple me-2"></i>Mark Attendance
+            </h2>
+            
+        </div>
+        <div>
+            <a class="btn btn-outline-secondary" asp-action="Index">
+                <i class="fa-solid fa-arrow-left me-1"></i> Attendance History
+            </a>
+            <a class="btn btn-outline-primary ms-1" asp-controller="Dashboard" asp-action="Index">
+                <i class="fa-solid fa-gauge me-1"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         1-CLICK PUNCH IN / OUT WIDGET (SAME AS DASHBOARD)
+    ============================================================== -->
+    <div class="punch-card shadow-sm border-0 mb-4" id="punchWidgetStation" 
+         data-punched-in="@(isPunchedIn ? "true" : "false")" 
+         data-punched-out="@(isPunchedOut ? "true" : "false")" 
+         data-checkin-raw="@(Model.CheckIn?.ToString(@"hh\:mm\:ss") ?? "")" 
+         data-checkout-raw="@(Model.CheckOut?.ToString(@"hh\:mm\:ss") ?? "")">
+        
+        <div class="punch-card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <div class="avatar-circle">
+                    <i class="fa-solid fa-fingerprint fs-4 text-purple"></i>
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-bold">Quick Punch Station</h5>
+                    <span class="text-muted small">Live synchronized with your dashboard &amp; attendance records</span>
+                </div>
+            </div>
+
+            <div class="header-clock-pill d-flex align-items-center gap-2">
+                <i class="fa-regular fa-calendar-check text-purple"></i>
+                <span id="liveCurrentDate" class="fw-semibold text-secondary">--</span>
+                <span class="clock-divider">|</span>
+                <i class="fa-regular fa-clock text-purple"></i>
+                <span id="liveDigitalClock" class="fw-bold fs-6 text-dark font-monospace">--:--:--</span>
+            </div>
+        </div>
+
+        <div class="punch-card-body p-3 p-md-4">
+            <div class="row g-3 align-items-center">
+                <!-- Punch In -->
+                <div class="col-sm-4">
+                    <div class="punch-stat-tile punch-stat-in">
+                        <div class="tile-icon">
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        </div>
+                        <div class="tile-content">
+                            <span class="tile-label">Check In</span>
+                            <h4 id="punchInDisplay" class="tile-value mb-0">@checkInDisplay</h4>
+                            <span class="tile-sub text-muted">Arrival Time</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Stopwatch -->
+                <div class="col-sm-4">
+                    <div class="punch-stat-tile punch-stat-timer @(isPunchedIn && !isPunchedOut ? "active-glow" : "")" id="punchTimerTile">
+                        <div class="tile-icon">
+                            <i class="fa-solid fa-stopwatch @(isPunchedIn && !isPunchedOut ? "fa-spin" : "")" id="stopwatchIcon"></i>
+                        </div>
+                        <div class="tile-content">
+                            <span class="tile-label">Live Work Timer</span>
+                            <h4 id="punchLiveTimerDisplay" class="tile-value mb-0 font-monospace text-primary">00h 00m 00s</h4>
+                            <span id="punchTimerSub" class="tile-sub text-muted">
+                                @(isPunchedOut ? "Shift Completed" : (isPunchedIn ? "Active Working" : "Not Started"))
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Punch Out -->
+                <div class="col-sm-4">
+                    <div class="punch-stat-tile punch-stat-out">
+                        <div class="tile-icon">
+                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                        </div>
+                        <div class="tile-content">
+                            <span class="tile-label">Check Out</span>
+                            <h4 id="punchOutDisplay" class="tile-value mb-0">@checkOutDisplay</h4>
+                            <span class="tile-sub text-muted">Departure Time</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Buttons Strip -->
+            <div class="mt-3 d-flex flex-wrap align-items-center justify-content-between gap-2 pt-2 border-top">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="small text-muted fw-semibold">Status:</span>
+                    <span id="punchStatusBadge" class="badge rounded-pill px-3 py-2 fs-7 
+                        @(isPunchedOut ? "bg-info text-dark" : (isPunchedIn ? "bg-success text-white" : "bg-secondary text-white"))">
+                        <i id="punchStatusIcon" class="fa-solid @(isPunchedOut ? "fa-circle-check" : (isPunchedIn ? "fa-circle-play" : "fa-circle-dot")) me-1"></i>
+                        <span id="punchStatusText">
+                            @(isPunchedOut ? "Completed for Today" : (isPunchedIn ? "Punched In / Working" : "Not Punched In"))
+                        </span>
+                    </span>
+                </div>
+
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" 
+                            id="btnPunchIn" 
+                            class="btn btn-punch-in btn-sm fw-bold px-3 py-2"
+                            style="@(isPunchedIn ? "display:none;" : "")">
+                        <i class="fa-solid fa-fingerprint me-1"></i> 1-Click Punch In
+                    </button>
+
+                    <button type="button" 
+                            id="btnPunchOut" 
+                            class="btn btn-punch-out btn-sm fw-bold px-3 py-2"
+                            style="@(!isPunchedIn || isPunchedOut ? "display:none;" : "")">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Punch Out &amp; Finish
+                    </button>
+
+                    <div id="punchCompletedBanner" 
+                         class="alert alert-success d-flex align-items-center mb-0 py-1 px-3 small rounded-3"
+                         style="@(!isPunchedOut ? "display:none !important;" : "")">
+                        <i class="fa-solid fa-circle-check fs-5 text-success me-2"></i>
+                        <div><strong>Shift Completed!</strong> Great job today.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MANUAL ATTENDANCE FORM (WITH INSTANT SYNC & NOW BUTTONS)
+    ============================================================== -->
+    <div class="card border-0 shadow-sm rounded-4 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <h5 class="mb-0 fw-bold text-dark">
+                <i class="fa-solid fa-pen-to-square text-purple me-2"></i>Detailed Attendance Form
+            </h5>
+            @if (isExisting)
+            {
+                <span class="badge bg-light text-success border px-3 py-1">
+                    <i class="fa-solid fa-circle-check me-1"></i> Existing Record Loaded (Auto-Update Enabled)
+                </span>
             }
-        </select>
-        <span asp-validation-for="EmployeeId" class="text-danger"></span>
+        </div>
+
+        <form asp-action="Create" method="post" id="attendanceMainForm">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+
+            <div class="row g-3">
+                <!-- Employee Selection -->
+                <div class="col-md-6 mb-2">
+                    <label asp-for="EmployeeId" class="form-label fw-semibold">Employee <span class="text-danger">*</span></label>
+                    @if (isEmployee)
+                    {
+                        <input type="hidden" asp-for="EmployeeId" id="selectEmployeeId" />
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" class="form-control bg-light" value="@User.Identity?.Name (You)" readonly />
+                        </div>
+                    }
+                    else
+                    {
+                        <select asp-for="EmployeeId" class="form-select" id="selectEmployeeId">
+                            <option value="">-- Select Employee --</option>
+                            @foreach (var e in employees)
+                            {
+                                <option value="@e.Id" selected="@(e.Id == Model.EmployeeId ? "selected" : null)">
+                                    @e.EmployeeCode - @e.FullName (@e.Department)
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+                    }
+                </div>
+
+                <!-- Attendance Date -->
+                <div class="col-md-6 mb-2">
+                    <label asp-for="AttendanceDate" class="form-label fw-semibold">Attendance Date <span class="text-danger">*</span></label>
+                    <input asp-for="AttendanceDate" type="date" class="form-control" id="attendanceDateInput" />
+                    <span asp-validation-for="AttendanceDate" class="text-danger small"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-4 mb-2">
+                    <label asp-for="Status" class="form-label fw-semibold">Status <span class="text-danger">*</span></label>
+                    <select asp-for="Status" class="form-select" id="attendanceStatusSelect">
+                        <option value="Present">Present</option>
+                        <option value="Absent">Absent</option>
+                        <option value="Half Day">Half Day</option>
+                        <option value="Work From Home">Work From Home</option>
+                        <option value="On Leave">On Leave</option>
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger small"></span>
+                </div>
+
+                <!-- Check In with Quick 'Now' button -->
+                <div class="col-md-4 mb-2">
+                    <label asp-for="CheckIn" class="form-label fw-semibold">Check In Time</label>
+                    <div class="input-group">
+                        <input asp-for="CheckIn" type="time" class="form-control font-monospace" id="formCheckInInput" 
+                               value="@(Model.CheckIn.HasValue ? Model.CheckIn.Value.ToString(@"hh\:mm") : "")" />
+                        <button type="button" class="btn btn-outline-success" id="btnSetCheckInNow" title="Set current time">
+                            <i class="fa-solid fa-clock me-1"></i> Now
+                        </button>
+                    </div>
+                    <div class="form-text small text-muted">
+                        Current: <strong id="checkInPreviewText">@(Model.CheckIn.HasValue ? DateTime.Today.Add(Model.CheckIn.Value).ToString("hh:mm tt") : "--:--")</strong>
+                    </div>
+                </div>
+
+                <!-- Check Out with Quick 'Now' button -->
+                <div class="col-md-4 mb-2">
+                    <label asp-for="CheckOut" class="form-label fw-semibold">Check Out Time</label>
+                    <div class="input-group">
+                        <input asp-for="CheckOut" type="time" class="form-control font-monospace" id="formCheckOutInput" 
+                               value="@(Model.CheckOut.HasValue ? Model.CheckOut.Value.ToString(@"hh\:mm") : "")" />
+                        <button type="button" class="btn btn-outline-danger" id="btnSetCheckOutNow" title="Set current time">
+                            <i class="fa-solid fa-clock me-1"></i> Now
+                        </button>
+                    </div>
+                    <div class="form-text small text-muted">
+                        Current: <strong id="checkOutPreviewText">@(Model.CheckOut.HasValue ? DateTime.Today.Add(Model.CheckOut.Value).ToString("hh:mm tt") : "--:--")</strong>
+                    </div>
+                </div>
+
+                <!-- Remarks -->
+                <div class="col-12 mb-3">
+                    <label asp-for="Remarks" class="form-label fw-semibold">Remarks / Note</label>
+                    <textarea asp-for="Remarks" class="form-control" id="formRemarksInput" rows="2" placeholder="e.g. Working from Office, Onsite Client Meeting, Shift note..."></textarea>
+                    <span asp-validation-for="Remarks" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <!-- Submit Button Area -->
+            <div class="d-flex align-items-center gap-2 pt-2 border-top">
+                <button type="submit" class="btn btn-purple px-4 py-2 fw-bold shadow-sm">
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Save Attendance
+                </button>
+                <a class="btn btn-outline-secondary px-3 py-2" asp-action="Index">
+                    Cancel
+                </a>
+                <span class="text-muted small ms-auto">
+                    <i class="fa-solid fa-rotate text-success me-1"></i> Automatically syncs with dashboard &amp; history.
+                </span>
+            </div>
+        </form>
     </div>
-    <div class="row">
-        <div class="col-md-4 mb-3"><label asp-for="AttendanceDate"></label><input asp-for="AttendanceDate" type="date" class="form-control" /></div>
-        <div class="col-md-4 mb-3"><label asp-for="Status"></label><select asp-for="Status" class="form-select"><option>Present</option><option>Absent</option><option>Half Day</option><option>Work From Home</option><option>On Leave</option></select></div>
-        <div class="col-md-2 mb-3"><label asp-for="CheckIn"></label><input asp-for="CheckIn" type="time" class="form-control" /></div>
-        <div class="col-md-2 mb-3"><label asp-for="CheckOut"></label><input asp-for="CheckOut" type="time" class="form-control" /></div>
-    </div>
-    <div class="mb-3"><label asp-for="Remarks"></label><textarea asp-for="Remarks" class="form-control"></textarea></div>
-    <button class="btn btn-success mb-2">Save Attendance</button> <a class="btn btn-secondary" asp-action="Index">Back</a>
-</form>
+</div>
+
 @section Scripts {
-<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/punch-station.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const formCheckInInput = document.getElementById('formCheckInInput');
+            const formCheckOutInput = document.getElementById('formCheckOutInput');
+            const checkInPreviewText = document.getElementById('checkInPreviewText');
+            const checkOutPreviewText = document.getElementById('checkOutPreviewText');
+            const btnSetCheckInNow = document.getElementById('btnSetCheckInNow');
+            const btnSetCheckOutNow = document.getElementById('btnSetCheckOutNow');
+            const selectEmployeeId = document.getElementById('selectEmployeeId');
+            const attendanceDateInput = document.getElementById('attendanceDateInput');
+            const attendanceStatusSelect = document.getElementById('attendanceStatusSelect');
+            const formRemarksInput = document.getElementById('formRemarksInput');
+
+            function getCurrentTime24() {
+                const now = new Date();
+                const hh = String(now.getHours()).padStart(2, '0');
+                const mm = String(now.getMinutes()).padStart(2, '0');
+                return `${hh}:${mm}`;
+            }
+
+            function formatTime12(time24) {
+                if (!time24) return "--:--";
+                const parts = time24.split(':');
+                let h = parseInt(parts[0], 10);
+                const m = parts[1];
+                const ampm = h >= 12 ? 'PM' : 'AM';
+                h = h % 12;
+                h = h ? h : 12;
+                return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+            }
+
+            // Quick 'Now' buttons for form
+            if (btnSetCheckInNow && formCheckInInput) {
+                btnSetCheckInNow.addEventListener('click', function () {
+                    const time24 = getCurrentTime24();
+                    formCheckInInput.value = time24;
+                    if (checkInPreviewText) checkInPreviewText.textContent = formatTime12(time24);
+                    const punchInDisplay = document.getElementById('punchInDisplay');
+                    if (punchInDisplay) punchInDisplay.textContent = formatTime12(time24);
+                });
+            }
+
+            if (btnSetCheckOutNow && formCheckOutInput) {
+                btnSetCheckOutNow.addEventListener('click', function () {
+                    const time24 = getCurrentTime24();
+                    formCheckOutInput.value = time24;
+                    if (checkOutPreviewText) checkOutPreviewText.textContent = formatTime12(time24);
+                    const punchOutDisplay = document.getElementById('punchOutDisplay');
+                    if (punchOutDisplay) punchOutDisplay.textContent = formatTime12(time24);
+                });
+            }
+
+            // Sync input change with preview
+            if (formCheckInInput) {
+                formCheckInInput.addEventListener('input', function () {
+                    if (checkInPreviewText) checkInPreviewText.textContent = formatTime12(this.value);
+                });
+            }
+
+            if (formCheckOutInput) {
+                formCheckOutInput.addEventListener('input', function () {
+                    if (checkOutPreviewText) checkOutPreviewText.textContent = formatTime12(this.value);
+                });
+            }
+
+            // Auto-sync top punch station with bottom form inputs when 1-Click buttons are clicked
+            const originalPunchInHandler = document.getElementById('btnPunchIn');
+            if (originalPunchInHandler) {
+                originalPunchInHandler.addEventListener('click', function () {
+                    setTimeout(function () {
+                        if (formCheckInInput && !formCheckInInput.value) {
+                            formCheckInInput.value = getCurrentTime24();
+                            if (checkInPreviewText) checkInPreviewText.textContent = formatTime12(formCheckInInput.value);
+                        }
+                    }, 500);
+                });
+            }
+
+            const originalPunchOutHandler = document.getElementById('btnPunchOut');
+            if (originalPunchOutHandler) {
+                originalPunchOutHandler.addEventListener('click', function () {
+                    setTimeout(function () {
+                        if (formCheckOutInput && !formCheckOutInput.value) {
+                            formCheckOutInput.value = getCurrentTime24();
+                            if (checkOutPreviewText) checkOutPreviewText.textContent = formatTime12(formCheckOutInput.value);
+                        }
+                    }, 500);
+                });
+            }
+
+            // Auto-fetch attendance record when employee or date changes (for HR / multi-employee)
+            async function checkExistingRecord() {
+                const empId = selectEmployeeId ? selectEmployeeId.value : '';
+                const dateVal = attendanceDateInput ? attendanceDateInput.value : '';
+                if (!empId || !dateVal) return;
+
+                try {
+                    const resp = await fetch(`/Attendance/GetAttendanceRecord?employeeId=${empId}&date=${dateVal}`);
+                    const data = await resp.json();
+                    if (data.found) {
+                        if (attendanceStatusSelect && data.status) attendanceStatusSelect.value = data.status;
+                        if (formCheckInInput && data.checkIn) {
+                            formCheckInInput.value = data.checkIn;
+                            if (checkInPreviewText) checkInPreviewText.textContent = data.checkInDisplay || formatTime12(data.checkIn);
+                        }
+                        if (formCheckOutInput && data.checkOut) {
+                            formCheckOutInput.value = data.checkOut;
+                            if (checkOutPreviewText) checkOutPreviewText.textContent = data.checkOutDisplay || formatTime12(data.checkOut);
+                        }
+                        if (formRemarksInput && data.remarks) formRemarksInput.value = data.remarks;
+                    }
+                } catch (e) {
+                    console.log('Record lookup:', e);
+                }
+            }
+
+            if (selectEmployeeId) selectEmployeeId.addEventListener('change', checkExistingRecord);
+            if (attendanceDateInput) attendanceDateInput.addEventListener('change', checkExistingRecord);
+        });
+    </script>
 }

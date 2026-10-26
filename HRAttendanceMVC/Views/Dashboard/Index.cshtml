@@ -24,7 +24,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
         <p class="hero-description">
             Plan, Recruit, Onboard, Pay, Manage, Upskill, Appraise and
-            Empower your people ó all in one platform.
+            Empower your people all in one platform.
         </p>
 
 
@@ -153,118 +153,357 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         }
         
 
-    </section>
+    
+    <!-- ==============================================================
+         1-CLICK PUNCH IN / PUNCH OUT & LIVE TIMER CARD (EMPLOYEE)
+    ============================================================== -->
+    @{
+        var empDto = ViewBag.EmployeeData as HRAttendanceMVC.Application.DTOs.EmployeeDashboardDto;
+    }
+
+    @if (empDto != null && empDto.IsFound)
+    {
+        <section class="punch-widget-section mb-4" id="punchWidgetStation" data-punched-in="@(empDto.IsPunchedIn ? "true" : "false")" data-punched-out="@(empDto.IsPunchedOut ? "true" : "false")" data-checkin-raw="@(empDto.TodayCheckInTime?.ToString(@"hh\:mm\:ss") ?? "")" data-checkout-raw="@(empDto.TodayCheckOutTime?.ToString(@"hh\:mm\:ss") ?? "")">
+            <div class="punch-card shadow-sm border-0">
+                <div class="punch-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="avatar-circle">
+                            <i class="fa-solid fa-user-clock fs-4 text-purple"></i>
+                        </div>
+                        <div>
+                            <h4 class="mb-0 fw-bold">Daily Attendance &amp; Punch Station</h4>
+                            <p class="text-muted mb-0 small">
+                                Hello, <span class="fw-semibold text-dark">@(empDto.Employee?.FullName ?? User.Identity?.Name)</span> 
+                                &bull; <span class="badge bg-light text-dark border">@(empDto.Employee?.Designation ?? "Employee")</span> 
+                                <span class="badge bg-light text-secondary border">@(empDto.Employee?.Department ?? "General")</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="header-clock-pill d-flex align-items-center gap-2">
+                        <i class="fa-regular fa-calendar-check text-purple"></i>
+                        <span id="liveCurrentDate" class="fw-semibold text-secondary">--</span>
+                        <span class="clock-divider">|</span>
+                        <i class="fa-regular fa-clock text-purple"></i>
+                        <span id="liveDigitalClock" class="fw-bold fs-6 text-dark font-monospace">--:--:--</span>
+                    </div>
+                </div>
+
+                <div class="punch-card-body p-4">
+                    <div class="row g-4 align-items-center">
+                        
+                        <!-- 3 Stat Tiles -->
+                        <div class="col-lg-7 col-md-12">
+                            <div class="row g-3">
+                                <!-- Punch In -->
+                                <div class="col-sm-4">
+                                    <div class="punch-stat-tile punch-stat-in">
+                                        <div class="tile-icon">
+                                            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                                        </div>
+                                        <div class="tile-content">
+                                            <span class="tile-label">Punch In</span>
+                                            <h4 id="punchInDisplay" class="tile-value mb-0">
+                                                @(string.IsNullOrEmpty(empDto.TodayCheckIn) ? "--:--" : empDto.TodayCheckIn)
+                                            </h4>
+                                            <span class="tile-sub text-muted">Arrival Time</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Live Stopwatch / Active Duration -->
+                                <div class="col-sm-4">
+                                    <div class="punch-stat-tile punch-stat-timer @(empDto.IsPunchedIn && !empDto.IsPunchedOut ? "active-glow" : "")" id="punchTimerTile">
+                                        <div class="tile-icon">
+                                            <i class="fa-solid fa-stopwatch @(empDto.IsPunchedIn && !empDto.IsPunchedOut ? "fa-spin" : "")" id="stopwatchIcon"></i>
+                                        </div>
+                                        <div class="tile-content">
+                                            <span class="tile-label">Live Work Timer</span>
+                                            <h4 id="punchLiveTimerDisplay" class="tile-value mb-0 font-monospace text-primary">
+                                                @(string.IsNullOrEmpty(empDto.FormattedWorkingDuration) ? "00h 00m 00s" : empDto.FormattedWorkingDuration)
+                                            </h4>
+                                            <span id="punchTimerSub" class="tile-sub text-muted">
+                                                @(empDto.IsPunchedOut ? "Shift Completed" : (empDto.IsPunchedIn ? "Active Working" : "Not Started"))
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Punch Out -->
+                                <div class="col-sm-4">
+                                    <div class="punch-stat-tile punch-stat-out">
+                                        <div class="tile-icon">
+                                            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                        </div>
+                                        <div class="tile-content">
+                                            <span class="tile-label">Punch Out</span>
+                                            <h4 id="punchOutDisplay" class="tile-value mb-0">
+                                                @(string.IsNullOrEmpty(empDto.TodayCheckOut) ? "--:--" : empDto.TodayCheckOut)
+                                            </h4>
+                                            <span class="tile-sub text-muted">Departure Time</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status Badge & Remarks -->
+                            <div class="mt-3 d-flex flex-wrap align-items-center gap-2">
+                                <span class="small text-muted fw-semibold">Today's Status:</span>
+                                <span id="punchStatusBadge" class="badge rounded-pill px-3 py-2 fs-7 
+                                    @(empDto.IsPunchedOut ? "bg-info text-dark" : (empDto.IsPunchedIn ? "bg-success text-white" : "bg-secondary text-white"))">
+                                    <i id="punchStatusIcon" class="fa-solid @(empDto.IsPunchedOut ? "fa-circle-check" : (empDto.IsPunchedIn ? "fa-circle-play" : "fa-circle-dot")) me-1"></i>
+                                    <span id="punchStatusText">
+                                        @(empDto.IsPunchedOut ? "Completed for Today" : (empDto.IsPunchedIn ? "Punched In / Working" : "Not Punched In"))
+                                    </span>
+                                </span>
+
+                                @if (!string.IsNullOrEmpty(empDto.Remarks))
+                                {
+                                    <span id="existingRemarksBadge" class="badge bg-light text-secondary border px-2 py-1 small">
+                                        <i class="fa-regular fa-comment-dots me-1"></i> <span id="remarksText">@empDto.Remarks</span>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span id="existingRemarksBadge" class="badge bg-light text-secondary border px-2 py-1 small" style="display:none;">
+                                        <i class="fa-regular fa-comment-dots me-1"></i> <span id="remarksText"></span>
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Action Area -->
+                        <div class="col-lg-5 col-md-12">
+                            <div class="punch-action-box p-3 rounded-4 bg-light border">
+                                <div class="mb-2">
+                                    <label for="punchRemarks" class="form-label small fw-semibold text-secondary mb-1">
+                                        <i class="fa-solid fa-location-dot me-1 text-purple"></i> Work Mode / Note:
+                                    </label>
+                                    <select id="punchRemarks" class="form-select form-select-sm">
+                                        <option value="Working from Office">√∞≈∏¬è¬¢ Working from Office</option>
+                                        <option value="Work From Home (WFH)">√∞≈∏¬è¬† Work From Home (WFH)</option>
+                                        <option value="Client Site / Field Visit">√∞≈∏≈°‚Äî Client Site / Field Visit</option>
+                                        <option value="Half Day Shift">√¢¬è¬±√Ø¬∏¬è Half Day Shift</option>
+                                    </select>
+                                </div>
+
+                                <form id="punchForm" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <div class="d-grid gap-2">
+                                        <!-- Punch In Button -->
+                                        <button type="button" 
+                                                id="btnPunchIn" 
+                                                class="btn btn-punch-in btn-lg fw-bold shadow-sm"
+                                                style="@(empDto.IsPunchedIn ? "display:none;" : "")">
+                                            <i class="fa-solid fa-fingerprint fs-4 me-2"></i> 1-Click Punch In
+                                        </button>
+
+                                        <!-- Punch Out Button -->
+                                        <button type="button" 
+                                                id="btnPunchOut" 
+                                                class="btn btn-punch-out btn-lg fw-bold shadow-sm"
+                                                style="@(!empDto.IsPunchedIn || empDto.IsPunchedOut ? "display:none;" : "")">
+                                            <i class="fa-solid fa-right-from-bracket fs-4 me-2"></i> Punch Out &amp; Finish
+                                        </button>
+
+                                        <!-- Shift Finished Alert -->
+                                        <div id="punchCompletedBanner" 
+                                             class="alert alert-success d-flex align-items-center mb-0 py-2 px-3 small rounded-3"
+                                             style="@(!empDto.IsPunchedOut ? "display:none !important;" : "")">
+                                            <i class="fa-solid fa-circle-check fs-4 text-success me-2"></i>
+                                            <div>
+                                                <strong>Shift Completed!</strong> Great job today. Have a restful evening!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <div class="d-flex justify-content-between align-items-center mt-2 px-1">
+                                    <span class="text-muted x-small">
+                                        <i class="fa-solid fa-shield-halved text-success me-1"></i> Real-time server sync
+                                    </span>
+                                    <a asp-controller="Attendance" asp-action="Index" class="x-small text-decoration-none fw-semibold text-purple">
+                                        My Attendance History &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+    else if (User.IsInRole("Employee"))
+    {
+        <div class="alert alert-warning mt-4 mx-auto text-start" style="max-width: 900px; border-radius: 14px;">
+            <div class="d-flex align-items-center">
+                <i class="fa-solid fa-triangle-exclamation fs-4 me-3 text-warning"></i>
+                <div>
+                    <strong>Employee Record Not Linked:</strong>
+                    <p class="mb-0 small text-muted">Your logged in account is not yet connected with an employee profile. Please ask HR to add your employee record with your email address.</p>
+                </div>
+            </div>
+        </div>
+    }
+</section>
+
 
 
     <!-- =========================
          NAVOS SECTION
     ========================== -->
-    <section class="navos-card">
+    <section class="navos-card" id="navosCard">
 
-        <div class="navos-left">
+        <!-- 1. DEFAULT VIEW (EXACTLY AS SHOWN IN SCREENSHOT WITH CENTER PLAY BUTTON) -->
+        <div class="navos-content-wrap" id="navosDefaultView" onclick="playNavosVideo(event)">
 
-            <div class="navos-logo">
-                <span>HR</span>
+            <!-- =========================
+                 LEFT COLUMN
+            ========================== -->
+            <div class="navos-left">
+
+                <div class="navos-logo">
+                    <span>HR</span>
+                </div>
+
+                <h2>
+                    NAV<span>igate.</span><br />
+                    O<span>perate.</span><br />
+                    S<span>upport.</span>
+                </h2>
+
+
+                <a href="@Url.Action("Index", "Attendance")" class="quick-command text-decoration-none text-dark" onclick="event.stopPropagation()">
+                    <span>
+                        <i class="fa-solid fa-terminal"></i>
+                    </span>
+                    <strong>View today's attendance</strong>
+                </a>
+
+                <a href="@Url.Action("Index", "Attendance")" class="quick-command text-decoration-none text-dark" onclick="event.stopPropagation()">
+                    <span>
+                        <i class="fa-solid fa-terminal"></i>
+                    </span>
+                    <strong>Generate attendance report</strong>
+                </a>
+
+                <a href="@Url.Action("Index", "LeaveRequest")" class="quick-command text-decoration-none text-dark" onclick="event.stopPropagation()">
+                    <span>
+                        <i class="fa-solid fa-terminal"></i>
+                    </span>
+                    <strong>Check pending leaves</strong>
+                </a>
+
             </div>
 
-            <h2>
-                NAV<span>igate.</span><br />
-                O<span>perate.</span><br />
-                S<span>upport.</span>
-            </h2>
-
-            <p>
-                Your HR dashboard assistant that helps you perform
-                attendance and payroll tasks with simple commands.
-            </p>
-
-
-            <div class="quick-command">
-                <span>
-                    <i class="fa-solid fa-terminal"></i>
-                </span>
-                <strong>View today's attendance</strong>
+            <!-- =========================
+                 CENTER PLAY BUTTON
+            ========================== -->
+            <div class="navos-center-play-box" title="Click to Watch Human Resource Management System Video">
+                <button type="button" class="navos-center-play-btn" onclick="playNavosVideo(event)">
+                    <i class="fa-solid fa-play"></i>
+                </button>
             </div>
 
+            <!-- =========================
+                 RIGHT: CHAT WINDOW
+            ========================== -->
+            <div class="navos-right">
 
-            <div class="quick-command">
-                <span>
-                    <i class="fa-solid fa-terminal"></i>
-                </span>
-                <strong>Generate attendance report</strong>
-            </div>
+                <div class="chat-window navos-clickable-chat" onclick="playNavosVideo(event)" title="Click to Watch Human Resource Management System Video">
 
+                    <div class="chat-header">
+                        <span>
+                            <i class="fa-solid fa-robot"></i>
+                            HR Assistant
+                        </span>
 
-            <div class="quick-command">
-                <span>
-                    <i class="fa-solid fa-terminal"></i>
-                </span>
-                <strong>Check pending leaves</strong>
+                        <span class="chat-header-diamonds">
+                            <i class="fa-solid fa-diamond"></i>
+                            <i class="fa-solid fa-diamond"></i>
+                            <i class="fa-solid fa-diamond"></i>
+                        </span>
+                    </div>
+
+                    <div class="chat-body">
+
+                        <div class="bot-message">
+                            Hi, how can I help you today?
+                        </div>
+
+                        <div class="user-message">
+                            Show today's attendance
+                        </div>
+
+                        <div class="bot-message">
+                            Today's attendance report is ready.
+                            You can view it from the Attendance section.
+                        </div>
+
+                    </div>
+
+                    <div class="chat-input">
+
+                        <span>
+                            <i class="fa-solid fa-paperclip"></i>
+                        </span>
+
+                        <span class="placeholder">
+                            Please type your query
+                        </span>
+
+                        <button type="button">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
 
+        <!-- 2. IN-PLACE VIDEO PLAYER (RUNS DIRECTLY IN THIS CARD ON THIS PAGE) -->
+        <div class="navos-video-player-wrap" id="navosVideoPlayerWrap" style="display: none;">
 
-        <!-- =========================
-             CHAT
-        ========================== -->
-        <div class="navos-right">
-
-            <div class="chat-window">
-
-                <div class="chat-header">
-                    <span>
-                        <i class="fa-solid fa-robot"></i>
-                        HR Assistant
+            <div class="navos-video-player-header">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="video-live-pill">
+                        <span class="video-pulse-dot"></span>
+                        <i class="fa-solid fa-play"></i> PLAYING
                     </span>
-
-                    <span>ïïï</span>
+                    <strong class="text-white navos-video-title">Human Resource Management System (HRMS)</strong>
                 </div>
 
+                <button type="button" class="btn-navos-close-video" onclick="closeNavosVideo(event)" title="Close Video & Return to Assistant">
+                    <i class="fa-solid fa-xmark me-1"></i> Close Video
+                </button>
+            </div>
 
-                <div class="chat-body">
+            <div class="navos-video-iframe-container">
+                <iframe id="navosHrmsIframe"
+                        src=""
+                        title="Human Resource Management System Video"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen></iframe>
+            </div>
 
-                    <div class="bot-message">
-                        Hi, how can I help you today?
-                    </div>
+            <div class="navos-video-player-footer">
+                <span class="text-white-50 small">
+                    <i class="fa-solid fa-circle-info text-info me-1"></i>
+                    HRMS Overview: Attendance, Leave &amp; Payroll Management System
+                </span>
 
-
-                    <div class="user-message">
-                        Show today's attendance
-                    </div>
-
-
-                    <div class="bot-message">
-                        Today's attendance report is ready.
-                        You can view it from the Attendance section.
-                    </div>
-
-                </div>
-
-
-                <div class="chat-input">
-
-                    <span>
-                        <i class="fa-solid fa-paperclip"></i>
-                    </span>
-
-                    <span class="placeholder">
-                        Please type your query
-                    </span>
-
-                    <button type="button">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-
-                </div>
-
+                <button type="button" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1" onclick="closeNavosVideo(event)">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back to HR Assistant
+                </button>
             </div>
 
         </div>
 
     </section>
-
-
     <!-- =========================
          QUICK ACTIONS
     ========================== -->
@@ -352,7 +591,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                     <i class="fa-solid fa-user-gear"></i>
                 </div>
                 <h3>Stop stitching together 5 tools for one employee lifecycle</h3>
-                <p>Recruitment, onboarding, payroll, attendance, PMS, expense claims, exit, alumni ó all under a single login. One employee record, zero duplicate data entry.</p>
+                <p>Recruitment, onboarding, payroll, attendance, PMS, expense claims, exit, alumni ÔøΩ all under a single login. One employee record, zero duplicate data entry.</p>
             </div>
 
             <!-- Card 2 (Purple) -->
@@ -369,8 +608,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                 <div class="img-card-icon icon-blue">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
-                <h3>HR NAVOS ó the only AI HR assistant you'll ever need</h3>
-                <p>Grant leave, pull reports, update records, approve requisitions ó by typing what you need, not clicking through menus. NAVOS is execution-first and respects your roles and permissions. Included on all paid plans.</p>
+                <h3>HR NAVOS ÔøΩ the only AI HR assistant you'll ever need</h3>
+                <p>Grant leave, pull reports, update records, approve requisitions ÔøΩ by typing what you need, not clicking through menus. NAVOS is execution-first and respects your roles and permissions. Included on all paid plans.</p>
             </div>
 
             <!-- Card 4 (Orange) -->
@@ -379,7 +618,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                     <i class="fa-solid fa-calendar-days"></i>
                 </div>
                 <h3>Attendance data that actually flows into payroll</h3>
-                <p>Biometric, GPS, GeoMark+, or VISAGE face recognition ó every punch flows into one leave and attendance engine, straight through to payroll. No reconciliation spreadsheets.</p>
+                <p>Biometric, GPS, GeoMark+, or VISAGE face recognition ÔøΩ every punch flows into one leave and attendance engine, straight through to payroll. No reconciliation spreadsheets.</p>
             </div>
 
             <!-- Card 5 (Full Width Pink) -->
@@ -388,7 +627,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                     <i class="fa-solid fa-mobile-screen-button"></i>
                 </div>
                 <h3>Your HR team shouldn't be answering "where's my payslip?" 200 times a month</h3>
-                <p>Payslips, leave balances, claims, Form 16, tax declarations ó employees access everything from the HR app. HR gets hours back, every single week.</p>
+                <p>Payslips, leave balances, claims, Form 16, tax declarations ÔøΩ employees access everything from the HR app. HR gets hours back, every single week.</p>
             </div>
 
         </div>
@@ -405,7 +644,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
         <div class="ecosystem-header">
             <h2>More than software. An <span>ecosystem</span> that grows with your HR team.</h2>
-            <p>Free courses, a nationwide HR community, compliance wikis, and expert webinars ó all included with every plan. No premium tier required.</p>
+            <p>Free courses, a nationwide HR community, compliance wikis, and expert webinars ÔøΩ all included with every plan. No premium tier required.</p>
         </div>
 
         <div class="ecosystem-grid">
@@ -426,7 +665,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                     <i class="fa-solid fa-people-group eco-icon"></i>
                 </div>
                 <h3>HR Community</h3> 
-                <p>HR professionals across India sharing real solutions ó not theory</p>
+                <p>HR professionals across India sharing real solutions ÔøΩ not theory</p>
                 <a href="#" class="know-more">Know More</a>
             </div>
 
@@ -446,7 +685,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                     <i class="fa-solid fa-list-check eco-icon"></i>
                 </div>
                 <h3>HR Compliances Wiki</h3>
-                <p>State-by-state reference for PF, ESI, PT, LWF, minimum wages ó updated monthly</p>
+                <p>State-by-state reference for PF, ESI, PT, LWF, minimum wages ÔøΩ updated monthly</p>
                 <a href="#" class="know-more">Know More</a>
             </div>
 
@@ -456,7 +695,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                     <i class="fa-solid fa-podcast eco-icon"></i>
                 </div>
                 <h3>FM Podcasts</h3>
-                <p>CHROs and practitioners talking real problems ó not product pitches</p>
+                <p>CHROs and practitioners talking real problems ÔøΩ not product pitches</p>
                 <a href="#" class="know-more">Know More</a>
             </div>
 
@@ -466,7 +705,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                     <i class="fa-solid fa-display eco-icon"></i>
                 </div>
                 <h3>Parichay Webinars</h3>
-                <p>Live sessions on statutory updates, budget impact, and evolving labour codes ó with Q&A</p>
+                <p>Live sessions on statutory updates, budget impact, and evolving labour codes ÔøΩ with Q&A</p>
                 <a href="#" class="know-more">Know More</a>
             </div>
 
@@ -475,3 +714,50 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     </section>
 
 </div>
+
+@section Scripts {
+    <script src="~/js/punch-station.js" asp-append-version="true"></script>
+    <script>
+        function playNavosVideo(event) {
+            if (event) {
+                if (event.target.closest('.quick-command')) return;
+            }
+            const defaultView = document.getElementById('navosDefaultView');
+            const playerWrap = document.getElementById('navosVideoPlayerWrap');
+            const iframe = document.getElementById('navosHrmsIframe');
+            const navosCard = document.getElementById('navosCard');
+
+            if (defaultView && playerWrap && iframe) {
+                defaultView.style.display = 'none';
+                playerWrap.style.display = 'flex';
+                if (navosCard) {
+                    navosCard.classList.add('playing-video');
+                }
+                iframe.src = 'https://www.youtube.com/embed/uu-j7zXGEPA?autoplay=1&rel=0&modestbranding=1';
+            }
+        }
+
+        function closeNavosVideo(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            const defaultView = document.getElementById('navosDefaultView');
+            const playerWrap = document.getElementById('navosVideoPlayerWrap');
+            const iframe = document.getElementById('navosHrmsIframe');
+            const navosCard = document.getElementById('navosCard');
+
+            if (iframe) {
+                iframe.src = '';
+            }
+            if (playerWrap) {
+                playerWrap.style.display = 'none';
+            }
+            if (navosCard) {
+                navosCard.classList.remove('playing-video');
+            }
+            if (defaultView) {
+                defaultView.style.display = 'flex';
+            }
+        }
+    </script>
+}

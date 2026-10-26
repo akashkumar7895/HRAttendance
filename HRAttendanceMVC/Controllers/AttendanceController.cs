@@ -82,7 +82,6 @@ public class AttendanceController : Controller
             query = query.Where(x => x.Employee != null && x.Employee.HrUserId == CurrentHrUserId);
         }
 
-      
         if (date.HasValue)
         {
             query = query.Where(x => x.AttendanceDate.Date == date.Value.Date);
@@ -94,13 +93,11 @@ public class AttendanceController : Controller
             ViewBag.SelectedDate = null;
         }
 
-       
         if (!string.IsNullOrWhiteSpace(status))
         {
             query = query.Where(x => x.Status == status);
         }
 
-       
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = search.Trim().ToLower();
@@ -129,24 +126,63 @@ public class AttendanceController : Controller
         ViewBag.PresentCount = list.Count(x => x.Status == "Present");
         ViewBag.AbsentCount = list.Count(x => x.Status == "Absent");
 
+        var myEmpIdForCounts = IsEmployeeRole ? await GetMyEmployeeIdAsync() : null;
+        var dailyCounts = await _db.Attendances
+            .Include(x => x.Employee)
+            .AsNoTracking()
+            .Where(x => (IsEmployeeRole ? x.EmployeeId == (myEmpIdForCounts ?? 0) : (CurrentHrUserId > 0 ? (x.Employee != null && x.Employee.HrUserId == CurrentHrUserId) : true))
+                && x.AttendanceDate.Year == selectedYear
+                && x.AttendanceDate.Month == selectedMonth)
+            .GroupBy(x => x.AttendanceDate.Date)
+            .Select(g => new
+            {
+                Date = g.Key,
+                Present = g.Count(x => x.Status == "Present"),
+                Absent = g.Count(x => x.Status == "Absent")
+            })
+            .ToDictionaryAsync(x => x.Date, x => (x.Present, x.Absent));
+
+        ViewBag.DailyCounts = dailyCounts;
+
         return View(list);
     }
 
-    public async Task<IActionResult> Create(DateTime? date)
+    public async Task<IActionResult> Create(DateTime? date, int? employeeId)
     {
-        await LoadEmployeesAsync();               
+        await LoadEmployeesAsync();
 
-        var model = new Attendance
-        {
-            AttendanceDate = date?.Date ?? DateTime.Today,
-            Status = "Present"
-        };
+        var targetDate = (date ?? DateTime.Today).Date;
+        int? targetEmpId = null;
 
-       
         if (IsEmployeeRole)
         {
-            var myId = await GetMyEmployeeIdAsync();
-            if (myId.HasValue) model.EmployeeId = myId.Value;
+            targetEmpId = await GetMyEmployeeIdAsync();
+        }
+        else if (employeeId.HasValue)
+        {
+            targetEmpId = employeeId.Value;
+        }
+
+        Attendance? model = null;
+        if (targetEmpId.HasValue)
+        {
+            model = await _attendanceService.GetAttendanceByEmployeeAndDateAsync(targetEmpId.Value, targetDate);
+        }
+
+        if (model == null)
+        {
+            model = new Attendance
+            {
+                AttendanceDate = targetDate,
+                Status = "Present"
+            };
+            if (targetEmpId.HasValue) model.EmployeeId = targetEmpId.Value;
+        }
+
+        ViewBag.IsExistingRecord = (model.Id > 0);
+        if (targetEmpId.HasValue)
+        {
+            ViewBag.TodayAttendance = await _attendanceService.GetTodayAttendanceAsync(targetEmpId.Value);
         }
 
         return View(model);
@@ -155,7 +191,6 @@ public class AttendanceController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Attendance attendance)
     {
-       
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
@@ -178,6 +213,27 @@ public class AttendanceController : Controller
             return View(attendance);
         }
 
+        // Upsert: If attendance already exists for this employee and date, update it seamlessly
+        var existing = await _attendanceService.GetAttendanceByEmployeeAndDateAsync(attendance.EmployeeId, attendance.AttendanceDate);
+        if (existing != null)
+        {
+            existing.Status = attendance.Status;
+            existing.CheckIn = attendance.CheckIn;
+            existing.CheckOut = attendance.CheckOut;
+            existing.Remarks = attendance.Remarks;
+
+            var updateResult = await _attendanceService.UpdateAttendanceAsync(existing.Id, existing);
+            if (!updateResult.Success)
+            {
+                ModelState.AddModelError(string.Empty, updateResult.Message ?? "Failed to update attendance.");
+                await LoadEmployeesAsync();
+                return View(attendance);
+            }
+
+            TempData["Success"] = "Attendance saved successfully! Dashboard updated.";
+            return RedirectToAction("Index", "Dashboard");
+        }
+
         var result = await _attendanceService.CreateAttendanceAsync(attendance);
         if (!result.Success)
         {
@@ -195,7 +251,7 @@ public class AttendanceController : Controller
         }
 
         TempData["Success"] = result.Message;
-        return RedirectToAction(nameof(Index), new { month = attendance.AttendanceDate.Month, year = attendance.AttendanceDate.Year });
+        return RedirectToAction("Index", "Dashboard");
     }
 
     public async Task<IActionResult> Edit(int id)
@@ -223,7 +279,6 @@ public class AttendanceController : Controller
     {
         if (id != attendance.Id) return BadRequest();
 
-        // Ownership check + EmployeeId force
         if (IsEmployeeRole)
         {
             var myId = await GetMyEmployeeIdAsync();
@@ -295,5 +350,194 @@ public class AttendanceController : Controller
         }
 
         return RedirectToAction(nameof(Index), new { month = item.AttendanceDate.Month, year = item.AttendanceDate.Year });
+    }
+
+    // =========================================================================
+    // 1-CLICK PUNCH IN / PUNCH OUT
+    // =========================================================================
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> PunchIn(string? remarks)
+    {
+        var myId = await GetMyEmployeeIdAsync();
+        if (!myId.HasValue)
+        {
+            if (IsAjaxRequest())
+            {
+                return Json(new { success = false, message = "Employee profile not found for your account. Please contact HR." });
+            }
+            TempData["Error"] = "Employee profile not found for your account. Please contact HR.";
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        var result = await _attendanceService.PunchInAsync(myId.Value, remarks);
+
+        if (IsAjaxRequest())
+        {
+            var checkInStr = result.Data?.CheckIn.HasValue == true
+                ? DateTime.Today.Add(result.Data.CheckIn.Value).ToString("hh:mm tt")
+                : null;
+
+            var checkInRaw = result.Data?.CheckIn?.ToString(@"hh\:mm\:ss");
+
+            return Json(new
+            {
+                success = result.Success,
+                message = result.Message,
+                checkIn = checkInStr,
+                checkInRaw = checkInRaw,
+                checkInTime24 = result.Data?.CheckIn?.ToString(@"hh\:mm"),
+                status = result.Data?.Status ?? "Present",
+                isPunchedIn = true,
+                isPunchedOut = false
+            });
+        }
+
+        if (result.Success) TempData["Success"] = result.Message;
+        else TempData["Error"] = result.Message;
+
+        return RedirectToAction("Index", "Dashboard");
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> PunchOut(string? remarks)
+    {
+        var myId = await GetMyEmployeeIdAsync();
+        if (!myId.HasValue)
+        {
+            if (IsAjaxRequest())
+            {
+                return Json(new { success = false, message = "Employee profile not found for your account. Please contact HR." });
+            }
+            TempData["Error"] = "Employee profile not found for your account. Please contact HR.";
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        var result = await _attendanceService.PunchOutAsync(myId.Value, remarks);
+
+        if (IsAjaxRequest())
+        {
+            var checkOutStr = result.Data?.CheckOut.HasValue == true
+                ? DateTime.Today.Add(result.Data.CheckOut.Value).ToString("hh:mm tt")
+                : null;
+
+            var checkOutRaw = result.Data?.CheckOut?.ToString(@"hh\:mm\:ss");
+
+            string? duration = null;
+            if (result.Data?.CheckIn.HasValue == true && result.Data?.CheckOut.HasValue == true)
+            {
+                var diff = result.Data.CheckOut.Value - result.Data.CheckIn.Value;
+                duration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
+            }
+
+            return Json(new
+            {
+                success = result.Success,
+                message = result.Message,
+                checkOut = checkOutStr,
+                checkOutRaw = checkOutRaw,
+                checkOutTime24 = result.Data?.CheckOut?.ToString(@"hh\:mm"),
+                duration = duration,
+                isPunchedIn = true,
+                isPunchedOut = true
+            });
+        }
+
+        if (result.Success) TempData["Success"] = result.Message;
+        else TempData["Error"] = result.Message;
+
+        return RedirectToAction("Index", "Dashboard");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAttendanceRecord(int employeeId, DateTime date)
+    {
+        if (IsEmployeeRole)
+        {
+            var myId = await GetMyEmployeeIdAsync();
+            if (!myId.HasValue || myId.Value != employeeId)
+            {
+                return Json(new { found = false });
+            }
+        }
+        else if (CurrentHrUserId > 0)
+        {
+            var emp = await _employeeService.GetEmployeeByIdAsync(employeeId);
+            if (emp == null || emp.HrUserId != CurrentHrUserId)
+            {
+                return Json(new { found = false });
+            }
+        }
+
+        var record = await _attendanceService.GetAttendanceByEmployeeAndDateAsync(employeeId, date);
+        if (record == null)
+        {
+            return Json(new { found = false });
+        }
+
+        return Json(new
+        {
+            found = true,
+            id = record.Id,
+            status = record.Status,
+            checkIn = record.CheckIn?.ToString(@"hh\:mm"),
+            checkInDisplay = record.CheckIn.HasValue ? DateTime.Today.Add(record.CheckIn.Value).ToString("hh:mm tt") : null,
+            checkOut = record.CheckOut?.ToString(@"hh\:mm"),
+            checkOutDisplay = record.CheckOut.HasValue ? DateTime.Today.Add(record.CheckOut.Value).ToString("hh:mm tt") : null,
+            remarks = record.Remarks
+        });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> TodayPunchStatus()
+    {
+        var myId = await GetMyEmployeeIdAsync();
+        if (!myId.HasValue)
+        {
+            return Json(new { found = false });
+        }
+
+        var att = await _attendanceService.GetTodayAttendanceAsync(myId.Value);
+        if (att == null)
+        {
+            return Json(new { found = true, isPunchedIn = false, isPunchedOut = false, status = "Not Marked" });
+        }
+
+        string? duration = null;
+        if (att.CheckIn.HasValue && att.CheckOut.HasValue)
+        {
+            var diff = att.CheckOut.Value - att.CheckIn.Value;
+            duration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
+        }
+        else if (att.CheckIn.HasValue)
+        {
+            var diff = DateTime.Now.TimeOfDay - att.CheckIn.Value;
+            if (diff.TotalSeconds > 0)
+            {
+                duration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
+            }
+        }
+
+        return Json(new
+        {
+            found = true,
+            isPunchedIn = att.CheckIn.HasValue,
+            isPunchedOut = att.CheckOut.HasValue,
+            checkIn = att.CheckIn.HasValue ? DateTime.Today.Add(att.CheckIn.Value).ToString("hh:mm tt") : null,
+            checkInRaw = att.CheckIn?.ToString(@"hh\:mm\:ss"),
+            checkOut = att.CheckOut.HasValue ? DateTime.Today.Add(att.CheckOut.Value).ToString("hh:mm tt") : null,
+            status = att.Status,
+            duration = duration,
+            remarks = att.Remarks
+        });
+    }
+
+    private bool IsAjaxRequest()
+    {
+        return Request.Headers["X-Requested-With"] == "XMLHttpRequest"
+            || (Request.Headers["Accept"].ToString().Contains("application/json", StringComparison.OrdinalIgnoreCase))
+            || Request.Query.ContainsKey("isAjax");
     }
 }

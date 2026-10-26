@@ -1,4 +1,4 @@
-﻿using HRAttendanceMVC.Domain.Enities;
+using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 
@@ -90,5 +90,95 @@ public class AttendanceService : IAttendanceService
     public async Task<int> GetTodayPresentCountAsync(int? hrUserId = null)
     {
         return await _unitOfWork.Attendances.GetPresentCountByDateAsync(DateTime.Today, hrUserId);
+    }
+
+    public async Task<Attendance?> GetTodayAttendanceAsync(int employeeId)
+    {
+        return await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, DateTime.Today);
+    }
+
+    public async Task<Attendance?> GetAttendanceByEmployeeAndDateAsync(int employeeId, DateTime date)
+    {
+        return await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, date.Date);
+    }
+
+    public async Task<ServiceResult<Attendance>> PunchInAsync(int employeeId, string? remarks = null)
+    {
+        var today = DateTime.Today;
+        var existing = await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, today);
+        var nowTime = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+
+        if (existing != null)
+        {
+            if (existing.CheckIn.HasValue)
+            {
+                var punchTimeStr = DateTime.Today.Add(existing.CheckIn.Value).ToString("hh:mm tt");
+                return ServiceResult<Attendance>.Failed($"You have already punched in today at {punchTimeStr}.");
+            }
+
+            existing.CheckIn = nowTime;
+            existing.Status = "Present";
+            if (!string.IsNullOrWhiteSpace(remarks))
+            {
+                existing.Remarks = string.IsNullOrWhiteSpace(existing.Remarks) ? remarks : $"{existing.Remarks} | {remarks}";
+            }
+
+            _unitOfWork.Attendances.Update(existing);
+            await _unitOfWork.SaveChangesAsync();
+
+            var punchInStr = DateTime.Today.Add(nowTime).ToString("hh:mm tt");
+            return ServiceResult<Attendance>.Ok(existing, $"Punched in successfully at {punchInStr}!");
+        }
+
+        var attendance = new Attendance
+        {
+            EmployeeId = employeeId,
+            AttendanceDate = today,
+            CheckIn = nowTime,
+            Status = "Present",
+            Remarks = string.IsNullOrWhiteSpace(remarks) ? "1-Click Punch In" : remarks
+        };
+
+        await _unitOfWork.Attendances.AddAsync(attendance);
+        await _unitOfWork.SaveChangesAsync();
+
+        var timeStr = DateTime.Today.Add(nowTime).ToString("hh:mm tt");
+        return ServiceResult<Attendance>.Ok(attendance, $"Punched in successfully at {timeStr}!");
+    }
+
+    public async Task<ServiceResult<Attendance>> PunchOutAsync(int employeeId, string? remarks = null)
+    {
+        var today = DateTime.Today;
+        var existing = await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, today);
+
+        if (existing == null || !existing.CheckIn.HasValue)
+        {
+            return ServiceResult<Attendance>.Failed("Please punch in first before punching out.");
+        }
+
+        if (existing.CheckOut.HasValue)
+        {
+            var punchOutStr = DateTime.Today.Add(existing.CheckOut.Value).ToString("hh:mm tt");
+            return ServiceResult<Attendance>.Failed($"You have already punched out today at {punchOutStr}.");
+        }
+
+        var nowTime = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+        existing.CheckOut = nowTime;
+
+        if (!string.IsNullOrWhiteSpace(remarks))
+        {
+            existing.Remarks = string.IsNullOrWhiteSpace(existing.Remarks) ? remarks : $"{existing.Remarks} | {remarks}";
+        }
+
+        _unitOfWork.Attendances.Update(existing);
+        await _unitOfWork.SaveChangesAsync();
+
+        var worked = nowTime - existing.CheckIn.Value;
+        var hours = (int)worked.TotalHours;
+        var minutes = worked.Minutes;
+        var durationStr = $"{hours}h {minutes}m";
+
+        var outTimeStr = DateTime.Today.Add(nowTime).ToString("hh:mm tt");
+        return ServiceResult<Attendance>.Ok(existing, $"Punched out successfully at {outTimeStr}! Total time worked: {durationStr}.");
     }
 }

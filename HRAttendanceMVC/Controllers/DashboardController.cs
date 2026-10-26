@@ -19,6 +19,8 @@ public class DashboardController : Controller
 
     public async Task<IActionResult> Index()
     {
+        var userEmail = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
+
         if (User.IsInRole("HR"))
         {
             int hrId = int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 0;
@@ -28,19 +30,33 @@ public class DashboardController : Controller
             ViewBag.TodayAbsent = Math.Max(0, summary.ActiveEmployees - summary.TodayPresent);
             ViewBag.PendingLeaves = summary.PendingLeaves;
             ViewBag.TotalLeaveTypes = summary.TotalLeaveTypes;
+
+            // Check if this HR user also has an employee record to punch in/out
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                var empData = await _dashboardService.GetEmployeeDashboardSummaryAsync(userEmail);
+                if (empData.IsFound)
+                {
+                    ViewBag.EmployeeData = empData;
+                }
+            }
         }
         else if (User.IsInRole("Employee"))
         {
-            var email = User.FindFirst(ClaimTypes.Email)?.Value ?? "";
-            var empData = await _dashboardService.GetEmployeeDashboardSummaryAsync(email);
+            var empData = await _dashboardService.GetEmployeeDashboardSummaryAsync(userEmail);
 
             if (empData.IsFound && empData.Employee != null)
             {
+                bool isPresentToday = empData.TodayAttendanceStatus == "Present"
+                    || empData.TodayAttendanceStatus == "Half Day"
+                    || empData.TodayAttendanceStatus == "Work From Home";
+
                 ViewBag.Employees = empData.Employee.IsActive ? 1 : 0;
-                ViewBag.TodayPresent = empData.TodayAttendanceStatus == "Present" ? 1 : 0;
+                ViewBag.TodayPresent = isPresentToday ? 1 : 0;
                 ViewBag.TodayAbsent = empData.TodayAttendanceStatus == "Absent" ? 1 : 0;
                 ViewBag.PendingLeaves = empData.PendingLeavesCount;
                 ViewBag.TotalLeaveTypes = await _dashboardService.GetLeaveTypeCountForHrAsync(empData.Employee.HrUserId);
+                ViewBag.EmployeeData = empData;
             }
             else
             {
@@ -49,6 +65,7 @@ public class DashboardController : Controller
                 ViewBag.TodayAbsent = 0;
                 ViewBag.PendingLeaves = 0;
                 ViewBag.TotalLeaveTypes = 0;
+                ViewBag.EmployeeData = empData;
             }
         }
         else

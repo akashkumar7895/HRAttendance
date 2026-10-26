@@ -43,13 +43,34 @@ public class DashboardService : IDashboardService
 
         var leaveRequests = await _unitOfWork.LeaveRequests.GetByEmployeeIdWithDetailsAsync(emp.Id);
 
+        string? workDuration = null;
+        if (todayAtt?.CheckIn.HasValue == true && todayAtt?.CheckOut.HasValue == true)
+        {
+            var diff = todayAtt.CheckOut.Value - todayAtt.CheckIn.Value;
+            workDuration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
+        }
+        else if (todayAtt?.CheckIn.HasValue == true)
+        {
+            var nowTime = DateTime.Now.TimeOfDay;
+            if (nowTime > todayAtt.CheckIn.Value)
+            {
+                var diff = nowTime - todayAtt.CheckIn.Value;
+                workDuration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
+            }
+        }
+
         return new EmployeeDashboardDto
         {
             IsFound = true,
             Employee = emp,
+            TodayAttendanceId = todayAtt?.Id,
             TodayAttendanceStatus = todayAtt != null ? todayAtt.Status : "Not Marked",
-            TodayCheckIn = todayAtt?.CheckIn?.ToString(@"hh\:mm"),
-            TodayCheckOut = todayAtt?.CheckOut?.ToString(@"hh\:mm"),
+            TodayCheckIn = todayAtt?.CheckIn.HasValue == true ? DateTime.Today.Add(todayAtt.CheckIn.Value).ToString("hh:mm tt") : null,
+            TodayCheckOut = todayAtt?.CheckOut.HasValue == true ? DateTime.Today.Add(todayAtt.CheckOut.Value).ToString("hh:mm tt") : null,
+            TodayCheckInTime = todayAtt?.CheckIn,
+            TodayCheckOutTime = todayAtt?.CheckOut,
+            FormattedWorkingDuration = workDuration,
+            Remarks = todayAtt?.Remarks,
             TotalPresentDays = attendances.Count(x => x.Status == "Present"),
             PendingLeavesCount = leaveRequests.Count(x => x.Status == "Pending"),
             ApprovedLeavesCount = leaveRequests.Count(x => x.Status == "Approved"),

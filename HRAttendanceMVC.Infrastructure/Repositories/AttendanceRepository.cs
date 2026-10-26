@@ -1,4 +1,4 @@
-﻿using HRAttendanceMVC.Domain.Enities;
+using HRAttendanceMVC.Domain.Enities;
 using HRAttendanceMVC.Infrastructure.Data;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +33,14 @@ public class AttendanceRepository : Repository<Attendance>, IAttendanceRepositor
             .FirstOrDefaultAsync(x => x.Id == id);
     }
 
+    public async Task<Attendance?> GetByEmployeeAndDateAsync(int employeeId, DateTime date)
+    {
+        var targetDate = date.Date;
+        return await DbSet
+            .Include(x => x.Employee)
+            .FirstOrDefaultAsync(x => x.EmployeeId == employeeId && x.AttendanceDate.Date == targetDate);
+    }
+
     public async Task<bool> ExistsForEmployeeAndDateAsync(int employeeId, DateTime date, int? excludeId = null)
     {
         var targetDate = date.Date;
@@ -46,7 +54,7 @@ public class AttendanceRepository : Repository<Attendance>, IAttendanceRepositor
     {
         var targetDate = date.Date;
         var query = DbSet
-            .Where(x => x.AttendanceDate.Date == targetDate && x.Status == "Present");
+            .Where(x => x.AttendanceDate.Date == targetDate && (x.Status == "Present" || x.Status == "Half Day" || x.Status == "Work From Home"));
 
         if (hrUserId.HasValue)
         {

@@ -1,4 +1,4 @@
-@model IEnumerable<Attendance>
+﻿@model IEnumerable<Attendance>
 @{
     ViewData["Title"] = "Attendance History";
     int selectedMonth = ViewBag.SelectedMonth ?? DateTime.Today.Month;
@@ -261,10 +261,35 @@
                                     </span>
                                 </td>
                                 <td>
-                                    @(x.CheckIn.HasValue ? x.CheckIn.Value.ToString(@"hh\:mm") : "-")
+                                    @if (x.CheckIn.HasValue)
+                                    {
+                                        <span class="badge bg-light text-dark border font-monospace px-2 py-1">
+                                            <i class="fa-solid fa-arrow-right-to-bracket text-success me-1"></i>@(DateTime.Today.Add(x.CheckIn.Value).ToString("hh:mm tt"))
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">-</span>
+                                    }
                                 </td>
                                 <td>
-                                    @(x.CheckOut.HasValue ? x.CheckOut.Value.ToString(@"hh\:mm") : "-")
+                                    @if (x.CheckOut.HasValue)
+                                    {
+                                        <span class="badge bg-light text-dark border font-monospace px-2 py-1">
+                                            <i class="fa-solid fa-arrow-right-from-bracket text-danger me-1"></i>@(DateTime.Today.Add(x.CheckOut.Value).ToString("hh:mm tt"))
+                                        </span>
+                                        @if (x.CheckIn.HasValue)
+                                        {
+                                            var diff = x.CheckOut.Value - x.CheckIn.Value;
+                                            <div class="text-muted small mt-1" style="font-size: 11px;">
+                                                <i class="fa-regular fa-clock me-1 text-primary"></i>@((int)diff.TotalHours)h @(diff.Minutes)m
+                                            </div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">-</span>
+                                    }
                                 </td>
                                 <td>
                                     <span class="text-muted small">
