@@ -63,4 +63,24 @@ public class AttendanceRepository : Repository<Attendance>, IAttendanceRepositor
 
         return await query.CountAsync();
     }
+
+    public async Task<IReadOnlyList<Attendance>> GetAllWithEmployeeAsync(int? employeeId = null, int? hrUserId = null, int count = 50)
+    {
+        var query = DbSet.Include(x => x.Employee).AsQueryable();
+
+        if (employeeId.HasValue)
+        {
+            query = query.Where(x => x.EmployeeId == employeeId.Value);
+        }
+        else if (hrUserId.HasValue)
+        {
+            query = query.Where(x => x.Employee != null && x.Employee.HrUserId == hrUserId.Value);
+        }
+
+        return await query
+            .OrderByDescending(x => x.AttendanceDate)
+            .ThenByDescending(x => x.CheckIn)
+            .Take(count)
+            .ToListAsync();
+    }
 }

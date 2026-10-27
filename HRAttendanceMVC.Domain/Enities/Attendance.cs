@@ -25,4 +25,16 @@ public class Attendance
 
     [StringLength(300)]
     public string? Remarks { get; set; }
+
+    [StringLength(50)]
+    public string? PunchSource { get; set; } = "Web Portal";
+
+    [StringLength(50)]
+    public string? CheckInSource { get; set; }
+
+    [StringLength(50)]
+    public string? CheckOutSource { get; set; }
+
+    [StringLength(100)]
+    public string? DeviceId { get; set; }
 }

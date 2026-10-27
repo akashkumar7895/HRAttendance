@@ -9,4 +9,5 @@ public interface IAttendanceRepository : IRepository<Attendance>
     Task<Attendance?> GetByEmployeeAndDateAsync(int employeeId, DateTime date);
     Task<bool> ExistsForEmployeeAndDateAsync(int employeeId, DateTime date, int? excludeId = null);
     Task<int> GetPresentCountByDateAsync(DateTime date, int? hrUserId = null);
+    Task<IReadOnlyList<Attendance>> GetAllWithEmployeeAsync(int? employeeId = null, int? hrUserId = null, int count = 50);
 }

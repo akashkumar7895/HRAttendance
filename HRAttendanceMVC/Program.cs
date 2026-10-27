@@ -28,7 +28,7 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
 builder.Services.AddScoped<ILeaveRequestRepository, LeaveRequestRepository>();
 builder.Services.AddScoped<ILeaveTypeRepository, LeaveTypeRepository>();
-builder.Services.AddScoped<IUserRepository, UserRepository>(); // <--- Fix 1
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Application Services
@@ -37,7 +37,7 @@ builder.Services.AddScoped<IAttendanceService, AttendanceService>();
 builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 builder.Services.AddScoped<ILeaveTypeService, LeaveTypeService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-builder.Services.AddScoped<IAuthService, AuthService>(); // <--- Fix 2
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
 builder.Services.AddScoped<IPayrollRepository, PayrollRepository>();
@@ -56,15 +56,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// Prevent browser caching of sensitive data across logins and back-button navigation
-//app.Use(async (context, next) =>
-//{
-//    context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-//    context.Response.Headers["Pragma"] = "no-cache";
-//    context.Response.Headers["Expires"] = "0";
-//    await next();
-//});
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -78,6 +69,33 @@ try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         db.Database.Migrate();
+
+        // Safe self-healing check: Ensure Biometric & Source tracking columns exist in Attendances table
+        try
+        {
+            db.Database.ExecuteSqlRaw(@"
+                IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Attendances') AND name = 'PunchSource')
+                BEGIN
+                    ALTER TABLE Attendances ADD PunchSource NVARCHAR(50) NULL DEFAULT 'Web Portal';
+                END
+                IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Attendances') AND name = 'CheckInSource')
+                BEGIN
+                    ALTER TABLE Attendances ADD CheckInSource NVARCHAR(50) NULL;
+                END
+                IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Attendances') AND name = 'CheckOutSource')
+                BEGIN
+                    ALTER TABLE Attendances ADD CheckOutSource NVARCHAR(50) NULL;
+                END
+                IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Attendances') AND name = 'DeviceId')
+                BEGIN
+                    ALTER TABLE Attendances ADD DeviceId NVARCHAR(100) NULL;
+                END
+            ");
+        }
+        catch (Exception dbColEx)
+        {
+            Console.WriteLine($"[Startup Info] Column check notice: {dbColEx.Message}");
+        }
     }
 }
 catch (Exception ex)

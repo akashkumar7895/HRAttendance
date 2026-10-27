@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Attendance>
+@model IEnumerable<Attendance>
 @{
     ViewData["Title"] = "Attendance History";
     int selectedMonth = ViewBag.SelectedMonth ?? DateTime.Today.Month;
@@ -28,7 +28,6 @@
             <h2 class="mb-0 fw-bold">
                 <i class="fa-solid fa-calendar-check text-primary me-2"></i>Attendance History
             </h2>
-            
         </div>
         <div class="d-flex gap-2">
             <a class="btn btn-outline-secondary" asp-controller="Dashboard" asp-action="Index">
@@ -102,7 +101,7 @@
                            name="search" 
                            value="@search" 
                            class="form-control" 
-                           placeholder="Search" 
+                           placeholder="Search by name, employee code..." 
                            autocomplete="off" />
                 </div>
 
@@ -192,21 +191,36 @@
 
     <!-- Attendance Table -->
     <div class="card border-0 shadow-sm">
-        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 fw-bold text-dark fs-6">
-                <i class="fa-solid fa-list-check text-primary me-2"></i>
-                @if (!string.IsNullOrEmpty(selectedDate))
-                {
-                    <span>Records for Date: @selectedDate</span>
-                }
-                else
-                {
-                    <span>Attendance Records for @monthName @selectedYear</span>
-                }
-            </h5>
-            <span class="badge bg-primary rounded-pill px-3 py-2" id="visibleRowCountBadge">
-                @(Model?.Count() ?? 0) records
-            </span>
+        <div class="card-header bg-white py-3 border-bottom d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div class="d-flex align-items-center gap-3">
+                <h5 class="mb-0 fw-bold text-dark fs-6">
+                    <i class="fa-solid fa-list-check text-primary me-2"></i>
+                    @if (!string.IsNullOrEmpty(selectedDate))
+                    {
+                        <span>Records for Date: @selectedDate</span>
+                    }
+                    else
+                    {
+                        <span>Attendance Records for @monthName @selectedYear</span>
+                    }
+                </h5>
+                <span class="badge bg-primary rounded-pill px-3 py-2" id="visibleRowCountBadge">
+                    @(Model?.Count() ?? 0) records
+                </span>
+            </div>
+
+            <!-- Quick Source Filter Buttons -->
+            <div class="btn-group btn-group-sm" role="group" aria-label="Source Filter">
+                <button type="button" class="btn btn-outline-secondary active fw-semibold" data-source-filter="all">
+                    All Sources
+                </button>
+                <button type="button" class="btn btn-outline-primary fw-semibold" data-source-filter="biometric">
+                    <i class="fa-solid fa-fingerprint me-1"></i> Biometric Machine
+                </button>
+                <button type="button" class="btn btn-outline-purple fw-semibold" data-source-filter="web">
+                    <i class="fa-solid fa-globe me-1"></i> Web Portal
+                </button>
+            </div>
         </div>
 
         <div class="table-responsive">
@@ -219,6 +233,7 @@
                         <th>Status</th>
                         <th>Check In</th>
                         <th>Check Out</th>
+                        <th>Source</th>
                         <th>Remarks</th>
                         <th>Action</th>
                     </tr>
@@ -238,7 +253,11 @@
                                 _ => "bg-light text-dark border"
                             };
 
-                            <tr class="attendance-row">
+                            var punchSrc = string.IsNullOrEmpty(x.PunchSource) ? "Web Portal" : x.PunchSource;
+                            var inSrc = string.IsNullOrEmpty(x.CheckInSource) ? punchSrc : x.CheckInSource;
+                            var outSrc = string.IsNullOrEmpty(x.CheckOutSource) ? punchSrc : x.CheckOutSource;
+
+                            <tr class="attendance-row" data-punch-source="@punchSrc.ToLowerInvariant()">
                                 <td class="text-muted small">@index</td>
                                 <td>
                                     <div class="fw-semibold text-dark">@x.Employee?.FullName</div>
@@ -266,6 +285,12 @@
                                         <span class="badge bg-light text-dark border font-monospace px-2 py-1">
                                             <i class="fa-solid fa-arrow-right-to-bracket text-success me-1"></i>@(DateTime.Today.Add(x.CheckIn.Value).ToString("hh:mm tt"))
                                         </span>
+                                        @if (inSrc == "Biometric Machine")
+                                        {
+                                            <div class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-0 mt-1" style="font-size: 10px;">
+                                                <i class="fa-solid fa-fingerprint me-1"></i>Machine
+                                            </div>
+                                        }
                                     }
                                     else
                                     {
@@ -289,6 +314,32 @@
                                     else
                                     {
                                         <span class="text-muted small">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (punchSrc == "Biometric Machine")
+                                    {
+                                        <span class="badge bg-primary text-white px-2 py-1 shadow-sm">
+                                            <i class="fa-solid fa-fingerprint me-1"></i> Biometric
+                                        </span>
+                                    }
+                                    else if (punchSrc == "Hybrid")
+                                    {
+                                        <span class="badge bg-warning text-dark px-2 py-1 shadow-sm">
+                                            <i class="fa-solid fa-arrows-split-up-and-left me-1"></i> Hybrid
+                                        </span>
+                                    }
+                                    else if (punchSrc == "Manual Entry")
+                                    {
+                                        <span class="badge bg-secondary text-white px-2 py-1">
+                                            <i class="fa-solid fa-pen-to-square me-1"></i> Manual
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-purple text-white px-2 py-1 shadow-sm">
+                                            <i class="fa-solid fa-globe me-1"></i> Web Portal
+                                        </span>
                                     }
                                 </td>
                                 <td>
@@ -326,22 +377,31 @@
 
 @section Scripts {
     <script>
-        // Real-Time Live Client Search Bar Filter
         document.addEventListener('DOMContentLoaded', function () {
             const searchInput = document.getElementById('attendanceSearchInput');
             const table = document.getElementById('attendanceTable');
             const badge = document.getElementById('visibleRowCountBadge');
+            const filterBtns = document.querySelectorAll('[data-source-filter]');
+            let currentSource = 'all';
 
-            if (!searchInput || !table) return;
-
-            searchInput.addEventListener('input', function () {
-                const query = this.value.toLowerCase().trim();
+            function filterRows() {
+                const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
                 const rows = table.querySelectorAll('tbody tr.attendance-row');
                 let visibleCount = 0;
 
                 rows.forEach(function (row) {
                     const rowText = row.textContent.toLowerCase();
-                    if (rowText.includes(query)) {
+                    const src = row.getAttribute('data-punch-source') || '';
+                    const matchesSearch = !query || rowText.includes(query);
+                    let matchesSource = true;
+
+                    if (currentSource === 'biometric') {
+                        matchesSource = src.includes('biometric');
+                    } else if (currentSource === 'web') {
+                        matchesSource = src.includes('web');
+                    }
+
+                    if (matchesSearch && matchesSource) {
                         row.style.display = '';
                         visibleCount++;
                     } else {
@@ -352,6 +412,17 @@
                 if (badge) {
                     badge.textContent = visibleCount + ' records';
                 }
+            }
+
+            if (searchInput) searchInput.addEventListener('input', filterRows);
+
+            filterBtns.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSource = this.getAttribute('data-source-filter');
+                    filterRows();
+                });
             });
         });
     </script>

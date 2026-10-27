@@ -9,6 +9,9 @@
     bool isPunchedOut = Model.CheckOut.HasValue;
     string checkInDisplay = TimeHelper.Format12(Model.CheckIn);
     string checkOutDisplay = TimeHelper.Format12(Model.CheckOut);
+    var recentLogs = ViewBag.RecentLogs as IEnumerable<Attendance> ?? Enumerable.Empty<Attendance>();
+    var bioLogs = recentLogs.Where(x => x.PunchSource == "Biometric Machine" || x.CheckInSource == "Biometric Machine" || x.CheckOutSource == "Biometric Machine").ToList();
+    var webLogs = recentLogs.Where(x => x.PunchSource == "Web Portal" || x.CheckInSource == "Web Portal" || x.CheckOutSource == "Web Portal" || string.IsNullOrEmpty(x.PunchSource)).ToList();
 }
 
 <div class="container py-3" style="max-width: 1000px;">
@@ -18,7 +21,6 @@
             <h2 class="mb-0 fw-bold">
                 <i class="fa-solid fa-calendar-check text-purple me-2"></i>Mark Attendance
             </h2>
-            
         </div>
         <div>
             <a class="btn btn-outline-secondary" asp-action="Index">
@@ -268,6 +270,154 @@
             </div>
         </form>
     </div>
+
+    <!-- ==============================================================
+         ATTENDANCE LOGS & HISTORY: BIOMETRIC VS WEB PORTAL TABS
+    ============================================================== -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 mt-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom gap-2">
+            <div>
+                <h5 class="mb-1 fw-bold text-dark">
+                    <i class="fa-solid fa-clock-rotate-left text-purple me-2"></i>Attendance Logs &amp; History
+                </h5>
+                <span class="text-muted small">Live separate tracking for Realtime Biometric Device &amp; Website Portal punches</span>
+            </div>
+            
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#testBiometricModal">
+                    <i class="fa-solid fa-fingerprint me-1"></i> Test Biometric Punch
+                </button>
+                <a class="btn btn-sm btn-outline-secondary" asp-action="Index">
+                    Full History <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <ul class="nav nav-pills mb-3 gap-2" id="attendanceHistoryTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active px-3 py-2 fw-semibold" id="tab-all-btn" data-bs-toggle="pill" data-bs-target="#tab-all" type="button" role="tab">
+                    <i class="fa-solid fa-list-check me-1"></i> All Records 
+                    <span class="badge bg-secondary ms-1">@recentLogs.Count()</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link px-3 py-2 fw-semibold text-primary border border-primary-subtle" id="tab-bio-btn" data-bs-toggle="pill" data-bs-target="#tab-bio" type="button" role="tab" style="background-color: rgba(13, 110, 253, 0.08);">
+                    <i class="fa-solid fa-fingerprint me-1"></i> Biometric Machine 
+                    <span class="badge bg-primary ms-1">@bioLogs.Count</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link px-3 py-2 fw-semibold text-purple border border-purple-subtle" id="tab-web-btn" data-bs-toggle="pill" data-bs-target="#tab-web" type="button" role="tab" style="background-color: rgba(150, 2, 203, 0.08);">
+                    <i class="fa-solid fa-globe me-1"></i> Web Portal 
+                    <span class="badge bg-purple text-white ms-1">@webLogs.Count</span>
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Contents -->
+        <div class="tab-content" id="attendanceHistoryTabContent">
+            <!-- TAB 1: ALL RECORDS -->
+            <div class="tab-pane fade show active" id="tab-all" role="tabpanel">
+                @if (recentLogs.Any())
+                {
+                    @await Html.PartialAsync("_AttendanceHistoryTable", recentLogs)
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted">
+                        <i class="fa-regular fa-calendar-xmark fs-2 opacity-50 mb-2"></i>
+                        <p class="mb-0">No attendance records logged yet.</p>
+                    </div>
+                }
+            </div>
+
+            <!-- TAB 2: BIOMETRIC MACHINE -->
+            <div class="tab-pane fade" id="tab-bio" role="tabpanel">
+                @if (bioLogs.Any())
+                {
+                    @await Html.PartialAsync("_AttendanceHistoryTable", bioLogs)
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted bg-light rounded-3 p-3">
+                        <i class="fa-solid fa-fingerprint fs-2 text-primary opacity-50 mb-2"></i>
+                        <h6 class="fw-bold">No Biometric Machine Punches Yet</h6>
+                        <p class="small text-muted mb-2">Punches from your REALTIME machine (Jio WiFi) will automatically appear in this tab.</p>
+                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#testBiometricModal">
+                            <i class="fa-solid fa-bolt me-1"></i> Simulate Test Biometric Punch
+                        </button>
+                    </div>
+                }
+            </div>
+
+            <!-- TAB 3: WEB PORTAL -->
+            <div class="tab-pane fade" id="tab-web" role="tabpanel">
+                @if (webLogs.Any())
+                {
+                    @await Html.PartialAsync("_AttendanceHistoryTable", webLogs)
+                }
+                else
+                {
+                    <div class="text-center py-4 text-muted bg-light rounded-3 p-3">
+                        <i class="fa-solid fa-globe fs-2 text-purple opacity-50 mb-2"></i>
+                        <h6 class="fw-bold">No Web Portal Punches Yet</h6>
+                        <p class="small text-muted mb-0">Punches made via the 1-Click Punch In button above will appear here.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ==============================================================
+     MODAL: SIMULATE REALTIME BIOMETRIC PUNCH (FOR TESTING)
+============================================================== -->
+<div class="modal fade" id="testBiometricModal" tabindex="-1" aria-labelledby="testBiometricModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-header bg-primary text-white rounded-top-4">
+                <h6 class="modal-title fw-bold" id="testBiometricModalLabel">
+                    <i class="fa-solid fa-fingerprint me-2"></i>REALTIME Machine - Test Simulator
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="small text-muted mb-3">
+                    Yeh simulator test punch bhejega jaise REALTIME machine Jio WiFi se punch bhejti hai.
+                </p>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Employee</label>
+                    <select id="simEmployeeSelect" class="form-select">
+                        @foreach (var e in employees)
+                        {
+                            <option value="@e.EmployeeCode">@e.EmployeeCode - @e.FullName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-semibold text-secondary">Punch Type</label>
+                    <select id="simPunchType" class="form-select">
+                        <option value="In">Check In (Duty On)</option>
+                        <option value="Out">Check Out (Duty Off)</option>
+                    </select>
+                </div>
+
+                <div class="p-2 rounded bg-light border text-muted small">
+                    <i class="fa-solid fa-wifi text-success me-1"></i> Device: <strong>REALTIME Bio-Device (Jio WiFi)</strong><br />
+                    <i class="fa-solid fa-cloud text-primary me-1"></i> Target: <code>/api/biometric/realtime</code>
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary btn-sm fw-bold px-3" id="btnExecuteSimulatePunch">
+                    <i class="fa-solid fa-bolt me-1"></i> Punch Now (Simulate)
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
@@ -419,6 +569,41 @@
             // Fetch record on load if employee is pre-selected
             if (selectEmployeeId && selectEmployeeId.value) {
                 checkExistingRecord();
+            }
+
+            // --- Biometric Simulator Action ---
+            const btnSim = document.getElementById('btnExecuteSimulatePunch');
+            if (btnSim) {
+                btnSim.addEventListener('click', async function () {
+                    const empCode = document.getElementById('simEmployeeSelect').value;
+                    const pType = document.getElementById('simPunchType').value;
+                    btnSim.disabled = true;
+                    btnSim.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Punching...';
+
+                    try {
+                        const fd = new FormData();
+                        fd.append('employeeCode', empCode);
+                        fd.append('punchType', pType);
+
+                        const res = await fetch('/api/biometric/simulate', {
+                            method: 'POST',
+                            body: fd
+                        });
+                        const result = await res.json();
+                        if (result.success) {
+                            alert(result.message || 'Biometric Punch registered successfully!');
+                            window.location.reload();
+                        } else {
+                            alert('Error: ' + result.message);
+                            btnSim.disabled = false;
+                            btnSim.innerHTML = '<i class="fa-solid fa-bolt me-1"></i> Punch Now (Simulate)';
+                        }
+                    } catch (err) {
+                        alert('Network error while simulating punch: ' + err);
+                        btnSim.disabled = false;
+                        btnSim.innerHTML = '<i class="fa-solid fa-bolt me-1"></i> Punch Now (Simulate)';
+                    }
+                });
             }
         });
     </script>

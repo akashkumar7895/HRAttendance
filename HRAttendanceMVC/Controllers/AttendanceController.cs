@@ -203,6 +203,10 @@ public class AttendanceController : Controller
             ViewBag.TodayAttendance = await _attendanceService.GetTodayAttendanceAsync(targetEmpId.Value);
         }
 
+        int? logEmpId = IsEmployeeRole ? targetEmpId : null;
+        int? logHrUserId = IsEmployeeRole ? null : (CurrentHrUserId > 0 ? (int?)CurrentHrUserId : null);
+        ViewBag.RecentLogs = await _attendanceService.GetRecentLogsAsync(logEmpId, logHrUserId, 30);
+
         return View(model);
     }
 
@@ -446,7 +450,7 @@ public class AttendanceController : Controller
             parsedClientTime = ct;
         }
 
-        var result = await _attendanceService.PunchInAsync(targetEmpId.Value, remarks, parsedClientTime);
+        var result = await _attendanceService.PunchInAsync(targetEmpId.Value, remarks, parsedClientTime, "Web Portal");
 
         if (IsAjaxRequest())
         {
@@ -526,7 +530,7 @@ public class AttendanceController : Controller
             parsedClientTime = ctOut;
         }
 
-        var result = await _attendanceService.PunchOutAsync(targetEmpId.Value, remarks, parsedClientTime);
+        var result = await _attendanceService.PunchOutAsync(targetEmpId.Value, remarks, parsedClientTime, "Web Portal");
 
         if (IsAjaxRequest())
         {
