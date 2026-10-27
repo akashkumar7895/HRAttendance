@@ -6,8 +6,8 @@
     bool isExisting = (ViewBag.IsExistingRecord == true) || (Model.Id > 0);
     bool isPunchedIn = Model.CheckIn.HasValue;
     bool isPunchedOut = Model.CheckOut.HasValue;
-    string checkInDisplay = Model.CheckIn.HasValue ? DateTime.Today.Add(Model.CheckIn.Value).ToString("hh:mm tt") : "--:--";
-    string checkOutDisplay = Model.CheckOut.HasValue ? DateTime.Today.Add(Model.CheckOut.Value).ToString("hh:mm tt") : "--:--";
+    string checkInDisplay = TimeHelper.Format12(Model.CheckIn);
+    string checkOutDisplay = TimeHelper.Format12(Model.CheckOut);
 }
 
 <div class="container py-3" style="max-width: 1000px;">

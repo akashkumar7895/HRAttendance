@@ -1,4 +1,5 @@
 using HRAttendanceMVC.Domain.Enities;
+using HRAttendanceMVC.Domain.Helpers;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 
@@ -89,12 +90,12 @@ public class AttendanceService : IAttendanceService
 
     public async Task<int> GetTodayPresentCountAsync(int? hrUserId = null)
     {
-        return await _unitOfWork.Attendances.GetPresentCountByDateAsync(DateTime.Today, hrUserId);
+        return await _unitOfWork.Attendances.GetPresentCountByDateAsync(TimeHelper.Today, hrUserId);
     }
 
     public async Task<Attendance?> GetTodayAttendanceAsync(int employeeId)
     {
-        return await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, DateTime.Today);
+        return await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, TimeHelper.Today);
     }
 
     public async Task<Attendance?> GetAttendanceByEmployeeAndDateAsync(int employeeId, DateTime date)
@@ -102,17 +103,18 @@ public class AttendanceService : IAttendanceService
         return await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, date.Date);
     }
 
-    public async Task<ServiceResult<Attendance>> PunchInAsync(int employeeId, string? remarks = null)
+    public async Task<ServiceResult<Attendance>> PunchInAsync(int employeeId, string? remarks = null, TimeSpan? clientTime = null)
     {
-        var today = DateTime.Today;
+        var today = TimeHelper.Today;
         var existing = await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, today);
-        var nowTime = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+        var now = TimeHelper.Now;
+        var nowTime = clientTime ?? new TimeSpan(now.Hour, now.Minute, now.Second);
 
         if (existing != null)
         {
             if (existing.CheckIn.HasValue)
             {
-                var punchTimeStr = DateTime.Today.Add(existing.CheckIn.Value).ToString("hh:mm tt");
+                var punchTimeStr = TimeHelper.Format12(existing.CheckIn.Value);
                 return ServiceResult<Attendance>.Failed($"You have already punched in today at {punchTimeStr}.");
             }
 
@@ -126,7 +128,7 @@ public class AttendanceService : IAttendanceService
             _unitOfWork.Attendances.Update(existing);
             await _unitOfWork.SaveChangesAsync();
 
-            var punchInStr = DateTime.Today.Add(nowTime).ToString("hh:mm tt");
+            var punchInStr = TimeHelper.Format12(nowTime);
             return ServiceResult<Attendance>.Ok(existing, $"Punched in successfully at {punchInStr}!");
         }
 
@@ -142,13 +144,13 @@ public class AttendanceService : IAttendanceService
         await _unitOfWork.Attendances.AddAsync(attendance);
         await _unitOfWork.SaveChangesAsync();
 
-        var timeStr = DateTime.Today.Add(nowTime).ToString("hh:mm tt");
+        var timeStr = TimeHelper.Format12(nowTime);
         return ServiceResult<Attendance>.Ok(attendance, $"Punched in successfully at {timeStr}!");
     }
 
-    public async Task<ServiceResult<Attendance>> PunchOutAsync(int employeeId, string? remarks = null)
+    public async Task<ServiceResult<Attendance>> PunchOutAsync(int employeeId, string? remarks = null, TimeSpan? clientTime = null)
     {
-        var today = DateTime.Today;
+        var today = TimeHelper.Today;
         var existing = await _unitOfWork.Attendances.GetByEmployeeAndDateAsync(employeeId, today);
 
         if (existing == null || !existing.CheckIn.HasValue)
@@ -158,11 +160,12 @@ public class AttendanceService : IAttendanceService
 
         if (existing.CheckOut.HasValue)
         {
-            var punchOutStr = DateTime.Today.Add(existing.CheckOut.Value).ToString("hh:mm tt");
+            var punchOutStr = TimeHelper.Format12(existing.CheckOut.Value);
             return ServiceResult<Attendance>.Failed($"You have already punched out today at {punchOutStr}.");
         }
 
-        var nowTime = new TimeSpan(DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+        var now = TimeHelper.Now;
+        var nowTime = clientTime ?? new TimeSpan(now.Hour, now.Minute, now.Second);
         existing.CheckOut = nowTime;
 
         if (!string.IsNullOrWhiteSpace(remarks))
@@ -174,11 +177,11 @@ public class AttendanceService : IAttendanceService
         await _unitOfWork.SaveChangesAsync();
 
         var worked = nowTime - existing.CheckIn.Value;
-        var hours = (int)worked.TotalHours;
-        var minutes = worked.Minutes;
+        var hours = (int)Math.Max(0, worked.TotalHours);
+        var minutes = Math.Max(0, worked.Minutes);
         var durationStr = $"{hours}h {minutes}m";
 
-        var outTimeStr = DateTime.Today.Add(nowTime).ToString("hh:mm tt");
+        var outTimeStr = TimeHelper.Format12(nowTime);
         return ServiceResult<Attendance>.Ok(existing, $"Punched out successfully at {outTimeStr}! Total time worked: {durationStr}.");
     }
 }

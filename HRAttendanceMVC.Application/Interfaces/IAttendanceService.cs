@@ -12,6 +12,6 @@ public interface IAttendanceService
     Task<ServiceResult> DeleteAttendanceAsync(int id);
     Task<int> GetTodayPresentCountAsync(int? hrUserId = null);
     Task<Attendance?> GetTodayAttendanceAsync(int employeeId);
-    Task<ServiceResult<Attendance>> PunchInAsync(int employeeId, string? remarks = null);
-    Task<ServiceResult<Attendance>> PunchOutAsync(int employeeId, string? remarks = null);
+    Task<ServiceResult<Attendance>> PunchInAsync(int employeeId, string? remarks = null, TimeSpan? clientTime = null);
+    Task<ServiceResult<Attendance>> PunchOutAsync(int employeeId, string? remarks = null, TimeSpan? clientTime = null);
 }

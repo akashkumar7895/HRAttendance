@@ -1,4 +1,5 @@
 using HRAttendanceMVC.Domain.Enities;
+using HRAttendanceMVC.Domain.Helpers;
 using HRAttendanceMVC.Application.Interfaces;
 using HRAttendanceMVC.Infrastructure.Data;         
 using Microsoft.AspNetCore.Mvc;
@@ -397,7 +398,7 @@ public class AttendanceController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> PunchIn(string? remarks, int? employeeId)
+    public async Task<IActionResult> PunchIn(string? remarks, int? employeeId, string? clientTime = null)
     {
         int? targetEmpId = null;
         if (employeeId.HasValue && !IsEmployeeRole)
@@ -439,12 +440,18 @@ public class AttendanceController : Controller
             return RedirectToAction("Index", "Dashboard");
         }
 
-        var result = await _attendanceService.PunchInAsync(targetEmpId.Value, remarks);
+        TimeSpan? parsedClientTime = null;
+        if (!string.IsNullOrWhiteSpace(clientTime) && TimeSpan.TryParse(clientTime, out var ct))
+        {
+            parsedClientTime = ct;
+        }
+
+        var result = await _attendanceService.PunchInAsync(targetEmpId.Value, remarks, parsedClientTime);
 
         if (IsAjaxRequest())
         {
             var checkInStr = result.Data?.CheckIn.HasValue == true
-                ? DateTime.Today.Add(result.Data.CheckIn.Value).ToString("hh:mm tt")
+                ? TimeHelper.Format12(result.Data.CheckIn.Value)
                 : null;
 
             var checkInRaw = result.Data?.CheckIn?.ToString(@"hh\:mm\:ss");
@@ -471,7 +478,7 @@ public class AttendanceController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> PunchOut(string? remarks, int? employeeId)
+    public async Task<IActionResult> PunchOut(string? remarks, int? employeeId, string? clientTime = null)
     {
         int? targetEmpId = null;
         if (employeeId.HasValue && !IsEmployeeRole)
@@ -513,12 +520,18 @@ public class AttendanceController : Controller
             return RedirectToAction("Index", "Dashboard");
         }
 
-        var result = await _attendanceService.PunchOutAsync(targetEmpId.Value, remarks);
+        TimeSpan? parsedClientTime = null;
+        if (!string.IsNullOrWhiteSpace(clientTime) && TimeSpan.TryParse(clientTime, out var ctOut))
+        {
+            parsedClientTime = ctOut;
+        }
+
+        var result = await _attendanceService.PunchOutAsync(targetEmpId.Value, remarks, parsedClientTime);
 
         if (IsAjaxRequest())
         {
             var checkOutStr = result.Data?.CheckOut.HasValue == true
-                ? DateTime.Today.Add(result.Data.CheckOut.Value).ToString("hh:mm tt")
+                ? TimeHelper.Format12(result.Data.CheckOut.Value)
                 : null;
 
             var checkOutRaw = result.Data?.CheckOut?.ToString(@"hh\:mm\:ss");
@@ -527,9 +540,9 @@ public class AttendanceController : Controller
             if (result.Data?.CheckIn.HasValue == true && result.Data?.CheckOut.HasValue == true)
             {
                 var diff = result.Data.CheckOut.Value - result.Data.CheckIn.Value;
-                var h = (int)diff.TotalHours;
-                var m = diff.Minutes;
-                var s = diff.Seconds;
+                var h = (int)Math.Max(0, diff.TotalHours);
+                var m = Math.Max(0, diff.Minutes);
+                var s = Math.Max(0, diff.Seconds);
                 duration = $"{h:D2}h {m:D2}m {s:D2}s";
             }
 
@@ -592,9 +605,9 @@ public class AttendanceController : Controller
             var s = diff.Seconds;
             duration = $"{h:D2}h {m:D2}m {s:D2}s";
         }
-        else if (record.CheckIn.HasValue && date.Date == DateTime.Today)
+        else if (record.CheckIn.HasValue && date.Date == TimeHelper.Today)
         {
-            var diff = DateTime.Now.TimeOfDay - record.CheckIn.Value;
+            var diff = TimeHelper.Now.TimeOfDay - record.CheckIn.Value;
             if (diff.TotalSeconds > 0)
             {
                 var h = (int)diff.TotalHours;
@@ -611,10 +624,10 @@ public class AttendanceController : Controller
             status = record.Status,
             checkIn = record.CheckIn?.ToString(@"hh\:mm"),
             checkInRaw = record.CheckIn?.ToString(@"hh\:mm\:ss"),
-            checkInDisplay = record.CheckIn.HasValue ? DateTime.Today.Add(record.CheckIn.Value).ToString("hh:mm tt") : null,
+            checkInDisplay = TimeHelper.Format12(record.CheckIn),
             checkOut = record.CheckOut?.ToString(@"hh\:mm"),
             checkOutRaw = record.CheckOut?.ToString(@"hh\:mm\:ss"),
-            checkOutDisplay = record.CheckOut.HasValue ? DateTime.Today.Add(record.CheckOut.Value).ToString("hh:mm tt") : null,
+            checkOutDisplay = TimeHelper.Format12(record.CheckOut),
             duration = duration,
             isPunchedIn = record.CheckIn.HasValue,
             isPunchedOut = record.CheckOut.HasValue,
@@ -645,7 +658,7 @@ public class AttendanceController : Controller
         }
         else if (att.CheckIn.HasValue)
         {
-            var diff = DateTime.Now.TimeOfDay - att.CheckIn.Value;
+            var diff = TimeHelper.Now.TimeOfDay - att.CheckIn.Value;
             if (diff.TotalSeconds > 0)
             {
                 duration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
@@ -657,9 +670,9 @@ public class AttendanceController : Controller
             found = true,
             isPunchedIn = att.CheckIn.HasValue,
             isPunchedOut = att.CheckOut.HasValue,
-            checkIn = att.CheckIn.HasValue ? DateTime.Today.Add(att.CheckIn.Value).ToString("hh:mm tt") : null,
+            checkIn = TimeHelper.Format12(att.CheckIn),
             checkInRaw = att.CheckIn?.ToString(@"hh\:mm\:ss"),
-            checkOut = att.CheckOut.HasValue ? DateTime.Today.Add(att.CheckOut.Value).ToString("hh:mm tt") : null,
+            checkOut = TimeHelper.Format12(att.CheckOut),
             status = att.Status,
             duration = duration,
             remarks = att.Remarks

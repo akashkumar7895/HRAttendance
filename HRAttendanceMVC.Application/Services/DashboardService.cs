@@ -1,4 +1,5 @@
 using HRAttendanceMVC.Application.DTOs;
+using HRAttendanceMVC.Domain.Helpers;
 using HRAttendanceMVC.Infrastructure.Interfaces;
 using HRAttendanceMVC.Application.Interfaces;
 
@@ -16,7 +17,7 @@ public class DashboardService : IDashboardService
     public async Task<DashboardSummaryDto> GetDashboardSummaryAsync(int? hrUserId = null)
     {
         var activeEmployees = await _unitOfWork.Employees.GetActiveCountAsync(hrUserId);
-        var todayPresent = await _unitOfWork.Attendances.GetPresentCountByDateAsync(DateTime.Today, hrUserId);
+        var todayPresent = await _unitOfWork.Attendances.GetPresentCountByDateAsync(TimeHelper.Today, hrUserId);
         var pendingLeaves = await _unitOfWork.LeaveRequests.GetPendingCountAsync(hrUserId);
         var totalLeaveTypes = await _unitOfWork.LeaveTypes.GetCountAsync(hrUserId);
 
@@ -37,7 +38,7 @@ public class DashboardService : IDashboardService
             return new EmployeeDashboardDto { IsFound = false };
         }
 
-        var today = DateTime.Today;
+        var today = TimeHelper.Today;
         var attendances = await _unitOfWork.Attendances.FindAsync(x => x.EmployeeId == emp.Id);
         var todayAtt = attendances.FirstOrDefault(x => x.AttendanceDate.Date == today);
 
@@ -47,14 +48,14 @@ public class DashboardService : IDashboardService
         if (todayAtt?.CheckIn.HasValue == true && todayAtt?.CheckOut.HasValue == true)
         {
             var diff = todayAtt.CheckOut.Value - todayAtt.CheckIn.Value;
-            var h = (int)diff.TotalHours;
-            var m = diff.Minutes;
-            var s = diff.Seconds;
+            var h = (int)Math.Max(0, diff.TotalHours);
+            var m = Math.Max(0, diff.Minutes);
+            var s = Math.Max(0, diff.Seconds);
             workDuration = $"{h:D2}h {m:D2}m {s:D2}s";
         }
         else if (todayAtt?.CheckIn.HasValue == true)
         {
-            var nowTime = DateTime.Now.TimeOfDay;
+            var nowTime = TimeHelper.Now.TimeOfDay;
             if (nowTime > todayAtt.CheckIn.Value)
             {
                 var diff = nowTime - todayAtt.CheckIn.Value;
@@ -62,6 +63,10 @@ public class DashboardService : IDashboardService
                 var m = diff.Minutes;
                 var s = diff.Seconds;
                 workDuration = $"{h:D2}h {m:D2}m {s:D2}s";
+            }
+            else
+            {
+                workDuration = "00h 00m 00s";
             }
         }
 
@@ -71,8 +76,8 @@ public class DashboardService : IDashboardService
             Employee = emp,
             TodayAttendanceId = todayAtt?.Id,
             TodayAttendanceStatus = todayAtt != null ? todayAtt.Status : "Not Marked",
-            TodayCheckIn = todayAtt?.CheckIn.HasValue == true ? DateTime.Today.Add(todayAtt.CheckIn.Value).ToString("hh:mm tt") : null,
-            TodayCheckOut = todayAtt?.CheckOut.HasValue == true ? DateTime.Today.Add(todayAtt.CheckOut.Value).ToString("hh:mm tt") : null,
+            TodayCheckIn = TimeHelper.Format12(todayAtt?.CheckIn),
+            TodayCheckOut = TimeHelper.Format12(todayAtt?.CheckOut),
             TodayCheckInTime = todayAtt?.CheckIn,
             TodayCheckOutTime = todayAtt?.CheckOut,
             FormattedWorkingDuration = workDuration,

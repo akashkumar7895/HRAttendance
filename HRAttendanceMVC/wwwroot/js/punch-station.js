@@ -276,10 +276,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const originalHtml = btnPunchIn.innerHTML;
             btnPunchIn.innerHTML = '<i class="fa-solid fa-spinner fa-spin fs-4 me-2"></i> Punching In...';
 
+            // Capture exact live client time
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            const clientTime24 = `${hh}:${mm}:${ss}`;
+            const clientTime12 = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
             try {
                 const formData = new URLSearchParams();
                 formData.append('__RequestVerificationToken', getVerificationToken());
                 formData.append('remarks', remarksVal);
+                formData.append('clientTime', clientTime24);
 
                 const empSelect = document.getElementById('selectEmployeeId');
                 if (empSelect && empSelect.value) {
@@ -300,18 +309,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.success) {
                     isPunchedIn = true;
                     isPunchedOut = false;
-                    checkInTimeRaw = data.checkInRaw || new Date().toTimeString().split(' ')[0];
+                    checkInTimeRaw = data.checkInRaw || clientTime24;
 
-                    if (punchInDisplay) punchInDisplay.textContent = data.checkIn;
+                    const liveCheckInFormatted = data.checkIn || clientTime12;
+                    if (punchInDisplay) punchInDisplay.textContent = liveCheckInFormatted;
                     
                     // Also sync with form input if present on Mark Attendance page
                     const formCheckIn = document.getElementById('formCheckInInput');
-                    if (formCheckIn && data.checkInTime24) {
-                        formCheckIn.value = data.checkInTime24;
+                    if (formCheckIn) {
+                        formCheckIn.value = data.checkInTime24 || `${hh}:${mm}`;
                     }
                     const checkInPreview = document.getElementById('checkInPreviewText');
-                    if (checkInPreview && data.checkIn) {
-                        checkInPreview.textContent = data.checkIn;
+                    if (checkInPreview) {
+                        checkInPreview.textContent = liveCheckInFormatted;
                     }
 
                     btnPunchIn.style.display = 'none';
@@ -363,10 +373,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const originalHtml = btnPunchOut.innerHTML;
             btnPunchOut.innerHTML = '<i class="fa-solid fa-spinner fa-spin fs-4 me-2"></i> Punching Out...';
 
+            // Capture exact live client time
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            const clientTime24 = `${hh}:${mm}:${ss}`;
+            const clientTime12 = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+
             try {
                 const formData = new URLSearchParams();
                 formData.append('__RequestVerificationToken', getVerificationToken());
                 formData.append('remarks', remarksVal);
+                formData.append('clientTime', clientTime24);
 
                 const empSelect = document.getElementById('selectEmployeeId');
                 if (empSelect && empSelect.value) {
@@ -386,18 +405,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (data.success) {
                     isPunchedOut = true;
-                    checkOutTimeRaw = data.checkOutRaw || new Date().toTimeString().split(' ')[0];
+                    checkOutTimeRaw = data.checkOutRaw || clientTime24;
 
-                    if (punchOutDisplay) punchOutDisplay.textContent = data.checkOut;
+                    const liveCheckOutFormatted = data.checkOut || clientTime12;
+                    if (punchOutDisplay) punchOutDisplay.textContent = liveCheckOutFormatted;
 
                     // Also sync with form input if present on Mark Attendance page
                     const formCheckOut = document.getElementById('formCheckOutInput');
-                    if (formCheckOut && data.checkOutTime24) {
-                        formCheckOut.value = data.checkOutTime24;
+                    if (formCheckOut) {
+                        formCheckOut.value = data.checkOutTime24 || `${hh}:${mm}`;
                     }
                     const checkOutPreview = document.getElementById('checkOutPreviewText');
-                    if (checkOutPreview && data.checkOut) {
-                        checkOutPreview.textContent = data.checkOut;
+                    if (checkOutPreview) {
+                        checkOutPreview.textContent = liveCheckOutFormatted;
                     }
 
                     btnPunchOut.style.display = 'none';
