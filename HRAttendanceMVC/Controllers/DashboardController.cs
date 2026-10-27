@@ -1,6 +1,9 @@
 using HRAttendanceMVC.Application.Interfaces;
+using HRAttendanceMVC.Domain.Enities;
+using HRAttendanceMVC.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace HRAttendanceMVC.Controllers;
@@ -10,11 +13,16 @@ public class DashboardController : Controller
 {
     private readonly IDashboardService _dashboardService;
     private readonly IEmployeeService _employeeService;
+    private readonly AppDbContext _db;
 
-    public DashboardController(IDashboardService dashboardService, IEmployeeService employeeService)
+    public DashboardController(
+        IDashboardService dashboardService, 
+        IEmployeeService employeeService,
+        AppDbContext db)
     {
         _dashboardService = dashboardService;
         _employeeService = employeeService;
+        _db = db;
     }
 
     public async Task<IActionResult> Index()
@@ -30,16 +38,7 @@ public class DashboardController : Controller
             ViewBag.TodayAbsent = Math.Max(0, summary.ActiveEmployees - summary.TodayPresent);
             ViewBag.PendingLeaves = summary.PendingLeaves;
             ViewBag.TotalLeaveTypes = summary.TotalLeaveTypes;
-
-            // Check if this HR user also has an employee record to punch in/out
-            if (!string.IsNullOrEmpty(userEmail))
-            {
-                var empData = await _dashboardService.GetEmployeeDashboardSummaryAsync(userEmail);
-                if (empData.IsFound)
-                {
-                    ViewBag.EmployeeData = empData;
-                }
-            }
+            ViewBag.EmployeeData = null; // Punch Station is only for employees
         }
         else if (User.IsInRole("Employee"))
         {

@@ -161,7 +161,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         var empDto = ViewBag.EmployeeData as HRAttendanceMVC.Application.DTOs.EmployeeDashboardDto;
     }
 
-    @if (empDto != null && empDto.IsFound)
+    @if (User.IsInRole("Employee") && empDto != null && empDto.IsFound)
     {
         <section class="punch-widget-section mb-4" id="punchWidgetStation" data-punched-in="@(empDto.IsPunchedIn ? "true" : "false")" data-punched-out="@(empDto.IsPunchedOut ? "true" : "false")" data-checkin-raw="@(empDto.TodayCheckInTime?.ToString(@"hh\:mm\:ss") ?? "")" data-checkout-raw="@(empDto.TodayCheckOutTime?.ToString(@"hh\:mm\:ss") ?? "")">
             <div class="punch-card shadow-sm border-0">

@@ -65,7 +65,8 @@
             <div class="col-md-4 mb-2">
                 <label asp-for="CheckIn" class="form-label fw-semibold">Check In Time</label>
                 <div class="input-group">
-                    <input asp-for="CheckIn" type="time" class="form-control font-monospace" id="editCheckInInput" />
+                    <input asp-for="CheckIn" type="time" class="form-control font-monospace" id="editCheckInInput" 
+                           value="@(Model.CheckIn.HasValue ? Model.CheckIn.Value.ToString(@"hh\:mm") : "")" />
                     <button type="button" class="btn btn-outline-success" id="btnEditCheckInNow" title="Set current time">
                         <i class="fa-solid fa-clock me-1"></i> Now
                     </button>
@@ -78,7 +79,8 @@
             <div class="col-md-4 mb-2">
                 <label asp-for="CheckOut" class="form-label fw-semibold">Check Out Time</label>
                 <div class="input-group">
-                    <input asp-for="CheckOut" type="time" class="form-control font-monospace" id="editCheckOutInput" />
+                    <input asp-for="CheckOut" type="time" class="form-control font-monospace" id="editCheckOutInput" 
+                           value="@(Model.CheckOut.HasValue ? Model.CheckOut.Value.ToString(@"hh\:mm") : "")" />
                     <button type="button" class="btn btn-outline-danger" id="btnEditCheckOutNow" title="Set current time">
                         <i class="fa-solid fa-clock me-1"></i> Now
                     </button>

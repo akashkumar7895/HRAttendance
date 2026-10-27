@@ -47,7 +47,10 @@ public class DashboardService : IDashboardService
         if (todayAtt?.CheckIn.HasValue == true && todayAtt?.CheckOut.HasValue == true)
         {
             var diff = todayAtt.CheckOut.Value - todayAtt.CheckIn.Value;
-            workDuration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
+            var h = (int)diff.TotalHours;
+            var m = diff.Minutes;
+            var s = diff.Seconds;
+            workDuration = $"{h:D2}h {m:D2}m {s:D2}s";
         }
         else if (todayAtt?.CheckIn.HasValue == true)
         {
@@ -55,7 +58,10 @@ public class DashboardService : IDashboardService
             if (nowTime > todayAtt.CheckIn.Value)
             {
                 var diff = nowTime - todayAtt.CheckIn.Value;
-                workDuration = $"{(int)diff.TotalHours}h {diff.Minutes}m";
+                var h = (int)diff.TotalHours;
+                var m = diff.Minutes;
+                var s = diff.Seconds;
+                workDuration = $"{h:D2}h {m:D2}m {s:D2}s";
             }
         }
 

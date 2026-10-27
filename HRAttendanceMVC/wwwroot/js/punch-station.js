@@ -69,10 +69,11 @@ document.addEventListener('DOMContentLoaded', function () {
     function parseTodayTime(timeStr) {
         if (!timeStr) return null;
         const parts = timeStr.split(':');
+        if (parts.length < 2) return null;
         const d = new Date();
         d.setHours(parseInt(parts[0], 10) || 0);
         d.setMinutes(parseInt(parts[1], 10) || 0);
-        d.setSeconds(parseInt(parts[2], 10) || 0);
+        d.setSeconds(parts.length > 2 ? (parseInt(parts[2], 10) || 0) : 0);
         d.setMilliseconds(0);
         return d;
     }
@@ -160,6 +161,113 @@ document.addEventListener('DOMContentLoaded', function () {
         return tokenInput ? tokenInput.value : '';
     }
 
+    // --- Expose Global Syncer for Multi-Employee & Form Switching ---
+    window.syncPunchStationFromData = function (data) {
+        if (!data) return;
+
+        if (data.found) {
+            isPunchedIn = Boolean(data.isPunchedIn);
+            isPunchedOut = Boolean(data.isPunchedOut);
+            checkInTimeRaw = data.checkInRaw || '';
+            checkOutTimeRaw = data.checkOutRaw || '';
+
+            station.setAttribute('data-punched-in', isPunchedIn ? 'true' : 'false');
+            station.setAttribute('data-punched-out', isPunchedOut ? 'true' : 'false');
+            station.setAttribute('data-checkin-raw', checkInTimeRaw);
+            station.setAttribute('data-checkout-raw', checkOutTimeRaw);
+
+            if (punchInDisplay) punchInDisplay.textContent = data.checkInDisplay || '--:--';
+            if (punchOutDisplay) punchOutDisplay.textContent = data.checkOutDisplay || '--:--';
+
+            if (btnPunchIn) btnPunchIn.style.display = isPunchedIn ? 'none' : 'inline-block';
+            if (btnPunchOut) {
+                btnPunchOut.style.display = (isPunchedIn && !isPunchedOut) ? 'inline-block' : 'none';
+                btnPunchOut.disabled = false;
+            }
+            if (completedBanner) {
+                completedBanner.style.setProperty('display', isPunchedOut ? 'flex' : 'none', 'important');
+            }
+
+            if (statusBadge) {
+                if (isPunchedOut) {
+                    statusBadge.className = 'badge rounded-pill px-3 py-2 fs-7 bg-info text-dark';
+                } else if (isPunchedIn) {
+                    statusBadge.className = 'badge rounded-pill px-3 py-2 fs-7 bg-success text-white';
+                } else {
+                    statusBadge.className = 'badge rounded-pill px-3 py-2 fs-7 bg-secondary text-white';
+                }
+            }
+            if (statusText) {
+                if (isPunchedOut) statusText.textContent = 'Completed for Today';
+                else if (isPunchedIn) statusText.textContent = 'Punched In / Working';
+                else statusText.textContent = data.status || 'Not Punched In';
+            }
+            if (statusIcon) {
+                if (isPunchedOut) statusIcon.className = 'fa-solid fa-circle-check me-1';
+                else if (isPunchedIn) statusIcon.className = 'fa-solid fa-circle-play me-1';
+                else statusIcon.className = 'fa-solid fa-circle-dot me-1';
+            }
+
+            if (timerTile) {
+                if (isPunchedIn && !isPunchedOut) timerTile.classList.add('active-glow');
+                else timerTile.classList.remove('active-glow');
+            }
+            if (stopwatchIcon) {
+                if (isPunchedIn && !isPunchedOut) stopwatchIcon.classList.add('fa-spin');
+                else stopwatchIcon.classList.remove('fa-spin');
+            }
+            if (timerSub) {
+                if (isPunchedOut) timerSub.textContent = 'Shift Completed';
+                else if (isPunchedIn) timerSub.textContent = 'Active Working';
+                else timerSub.textContent = 'Not Started';
+            }
+
+            if (isPunchedIn && !isPunchedOut) {
+                startStopwatch();
+            } else if (isPunchedOut) {
+                stopStopwatch();
+                if (timerDisplay) {
+                    timerDisplay.textContent = data.duration || timerDisplay.textContent;
+                }
+            } else {
+                stopStopwatch();
+                if (timerDisplay) timerDisplay.textContent = '00h 00m 00s';
+            }
+        } else {
+            // Record not found - Reset to blank state cleanly
+            isPunchedIn = false;
+            isPunchedOut = false;
+            checkInTimeRaw = '';
+            checkOutTimeRaw = '';
+
+            station.setAttribute('data-punched-in', 'false');
+            station.setAttribute('data-punched-out', 'false');
+            station.setAttribute('data-checkin-raw', '');
+            station.setAttribute('data-checkout-raw', '');
+
+            if (punchInDisplay) punchInDisplay.textContent = '--:--';
+            if (punchOutDisplay) punchOutDisplay.textContent = '--:--';
+
+            if (btnPunchIn) {
+                btnPunchIn.style.display = 'inline-block';
+                btnPunchIn.disabled = false;
+            }
+            if (btnPunchOut) btnPunchOut.style.display = 'none';
+            if (completedBanner) completedBanner.style.setProperty('display', 'none', 'important');
+
+            if (statusBadge) statusBadge.className = 'badge rounded-pill px-3 py-2 fs-7 bg-secondary text-white';
+            if (statusText) statusText.textContent = 'Not Punched In';
+            if (statusIcon) statusIcon.className = 'fa-solid fa-circle-dot me-1';
+
+            if (timerTile) timerTile.classList.remove('active-glow');
+            if (stopwatchIcon) stopwatchIcon.classList.remove('fa-spin');
+            if (timerSub) timerSub.textContent = 'Not Started';
+
+            stopStopwatch();
+            if (timerDisplay) timerDisplay.textContent = '00h 00m 00s';
+        }
+    };
+
     // --- 1-Click Punch In Action ---
     if (btnPunchIn) {
         btnPunchIn.addEventListener('click', async function () {
@@ -172,6 +280,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const formData = new URLSearchParams();
                 formData.append('__RequestVerificationToken', getVerificationToken());
                 formData.append('remarks', remarksVal);
+
+                const empSelect = document.getElementById('selectEmployeeId');
+                if (empSelect && empSelect.value) {
+                    formData.append('employeeId', empSelect.value);
+                }
 
                 const response = await fetch('/Attendance/PunchIn', {
                     method: 'POST',
@@ -203,7 +316,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     btnPunchIn.style.display = 'none';
                     if (btnPunchOut) {
-                        btnPunchOut.style.display = 'block';
+                        btnPunchOut.style.display = 'inline-block';
                         btnPunchOut.disabled = false;
                     }
 
@@ -255,6 +368,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 formData.append('__RequestVerificationToken', getVerificationToken());
                 formData.append('remarks', remarksVal);
 
+                const empSelect = document.getElementById('selectEmployeeId');
+                if (empSelect && empSelect.value) {
+                    formData.append('employeeId', empSelect.value);
+                }
+
                 const response = await fetch('/Attendance/PunchOut', {
                     method: 'POST',
                     headers: {
@@ -283,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     btnPunchOut.style.display = 'none';
-                    if (completedBanner) completedBanner.style.display = 'flex';
+                    if (completedBanner) completedBanner.style.setProperty('display', 'flex', 'important');
 
                     if (statusBadge) {
                         statusBadge.className = 'badge rounded-pill px-3 py-2 fs-7 bg-info text-dark';
@@ -296,6 +414,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (timerSub) timerSub.textContent = 'Shift Completed';
 
                     stopStopwatch();
+                    if (data.duration && timerDisplay) {
+                        timerDisplay.textContent = data.duration;
+                    }
                     showNotification(data.message || 'Punched out successfully!', true);
                 } else {
                     btnPunchOut.disabled = false;
