@@ -43,7 +43,7 @@ public class DashboardController : Controller
         else if (User.IsInRole("Employee"))
         {
             var empData = await _dashboardService.GetEmployeeDashboardSummaryAsync(userEmail);
-
+                                                                                                                                                               
             if (empData.IsFound && empData.Employee != null)
             {
                 bool isPresentToday = empData.TodayAttendanceStatus == "Present"
